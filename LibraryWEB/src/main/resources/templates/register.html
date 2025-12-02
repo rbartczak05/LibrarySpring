@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{register.title}">Rejestracja</title>
+    <link rel="stylesheet" th:href="@{/css/app.css(v=${#dates.createNow().time})}"/>
+</head>
+<body>
+<div th:with="breadcrumb=${#messages.msgOrNull('breadcrumb.register')}">
+<div class="page" th:replace="~{layout :: content(${breadcrumb}, ~{::pageContent})}">
+<div th:fragment="pageContent">
+
+<h2 th:text="#{register.header}">Rejestracja nowego czytelnika</h2>
+
+<div th:if="${param.success}">
+    <p th:text="#{register.success}">Rejestracja przebiegła pomyślnie!</p>
+    <p><a th:href="@{/loans}" th:text="#{menu.loans}">Lista alokacji</a></p>
+    <hr/>
+</div>
+
+<form th:action="@{/readers/register}" th:object="${readerDto}" method="post">
+    <div>
+        <label for="login" th:text="#{reader.login}">Login</label>
+        <input id="login" type="text" th:field="*{login}">
+        <p class="error" th:if="${#fields.hasErrors('login')}" th:errors="*{login}">błędny login</p>
+    </div>
+    <div>
+        <label for="email" th:text="#{reader.email}">Email</label>
+        <input id="email" type="email" th:field="*{email}">
+        <p class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">błędny email</p>
+    </div>
+    <div>
+        <label for="age" th:text="#{reader.age}">Wiek</label>
+        <input id="age" type="number" th:field="*{age}">
+        <p class="error" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">błędny wiek</p>
+    </div>
+    <div style="margin-top: 12px;">
+        <button type="submit" th:text="#{btn.register}">Zarejestruj</button>
+        <a th:href="@{/loans}" th:text="#{btn.cancel}">Anuluj</a>
+    </div>
+    
+</form>
+
+</div>
+</div>
+</div>
+</body>
+</html>

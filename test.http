@@ -1,0 +1,7 @@
+
+POST http://localhost:8082/loans?readerId=691a56e78bc2ff455033096f&bookSetId=691a56e78bc2ff4550330977
+
+#PUT http://localhost:8082/loans/691a56e78bc2ff455033097d/end
+
+
+
