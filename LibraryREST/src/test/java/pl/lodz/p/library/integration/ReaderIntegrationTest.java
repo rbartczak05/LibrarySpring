@@ -7,7 +7,7 @@ import pl.lodz.p.library.dto.ReaderDTO;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
-public class ReaderRestTest extends BaseTestSetup {
+public class ReaderIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void createReaderTest() {

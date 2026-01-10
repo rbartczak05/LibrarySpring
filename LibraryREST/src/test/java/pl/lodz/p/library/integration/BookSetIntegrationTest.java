@@ -10,7 +10,7 @@ import java.util.UUID;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
-public class BookSetRestTest extends BaseTestSetup {
+public class BookSetIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void createBookSetTest() {

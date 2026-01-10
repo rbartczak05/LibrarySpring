@@ -21,25 +21,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Testcontainers
-@SpringBootTest
-class UserServiceTest {
+class UserServiceTest extends BaseServiceTest {
 
-    @Container
-    static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest");
-    @Autowired
-    private UserRepository userRepository;
     private UserService userService;
-
-    @DynamicPropertySource
-    static void setProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
-    }
 
     @BeforeEach
     void setUp() {
         userService = new UserService(userRepository);
-        userRepository.deleteAll();
     }
 
     @Test

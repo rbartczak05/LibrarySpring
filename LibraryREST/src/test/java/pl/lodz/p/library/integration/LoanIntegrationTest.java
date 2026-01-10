@@ -12,7 +12,7 @@ import java.util.UUID;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
-public class LoanRestTest extends BaseTestSetup {
+public class LoanIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void createLoanTest() {

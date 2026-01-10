@@ -34,7 +34,7 @@ public class BookSetService {
         return bookSetRepository.findBookByTitle(title);
     }
 
-    public List<BookSet> findBookSetByAuthor(String author) {
+    public List<BookSet> findBookSetsByAuthor(String author) {
         return bookSetRepository.findBooksByAuthor(author);
     }
 

@@ -3,54 +3,23 @@ package pl.lodz.p.library.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.MongoDBContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.library.exception.BookSetNotAvailableException;
 import pl.lodz.p.library.exception.BookSetNotFoundException;
 import pl.lodz.p.library.exception.BookSetTitleException;
 import pl.lodz.p.library.model.BookSet;
 import pl.lodz.p.library.model.Loan;
 import pl.lodz.p.library.model.Reader;
-import pl.lodz.p.library.repository.BookSetRepository;
-import pl.lodz.p.library.repository.LoanRepository;
-import pl.lodz.p.library.repository.UserRepository;
 
 import java.util.List;
 import java.util.UUID;
 
-@Testcontainers
-@SpringBootTest
-class BookSetServiceTest {
-
-    @Container
-    static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest");
-
-    @Autowired
-    private BookSetRepository bookSetRepository;
-    @Autowired
-    private LoanRepository loanRepository;
-    @Autowired
-    private UserRepository userRepository;
+class BookSetServiceTest extends BaseServiceTest {
 
     private BookSetService bookSetService;
-
-    @DynamicPropertySource
-    static void setProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
-    }
 
     @BeforeEach
     void setUp() {
         bookSetService = new BookSetService(bookSetRepository, loanRepository);
-
-        loanRepository.deleteAll();
-        userRepository.deleteAll();
-        bookSetRepository.deleteAll();
     }
 
     @Test
