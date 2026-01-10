@@ -1,38 +1,45 @@
 package pl.lodz.p.library.service;
 
+import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.library.repository.BookSetRepository;
 import pl.lodz.p.library.repository.LoanRepository;
 import pl.lodz.p.library.repository.UserRepository;
 
-@Testcontainers
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class BaseServiceTest {
 
-    @Container
     static final MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest");
 
+    static {
+        mongoDBContainer.start();
+    }
+
+    @LocalServerPort
+    protected int port;
+    @Autowired
+    protected UserRepository userRepository;
     @Autowired
     protected BookSetRepository bookSetRepository;
     @Autowired
     protected LoanRepository loanRepository;
-    @Autowired
-    protected UserRepository userRepository;
 
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.data.mongodb.uri", mongoDBContainer::getConnectionString);
+        registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
     }
 
     @BeforeEach
     void cleanUp() {
+        RestAssured.port = port;
+        RestAssured.baseURI = "http://localhost";
+
         loanRepository.deleteAll();
         userRepository.deleteAll();
         bookSetRepository.deleteAll();

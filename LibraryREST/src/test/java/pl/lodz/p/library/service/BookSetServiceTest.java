@@ -3,9 +3,9 @@ package pl.lodz.p.library.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pl.lodz.p.library.exception.BookSetHasInvalidFieldValueException;
 import pl.lodz.p.library.exception.BookSetNotAvailableException;
 import pl.lodz.p.library.exception.BookSetNotFoundException;
-import pl.lodz.p.library.exception.BookSetTitleException;
 import pl.lodz.p.library.model.BookSet;
 import pl.lodz.p.library.model.Loan;
 import pl.lodz.p.library.model.Reader;
@@ -32,8 +32,7 @@ class BookSetServiceTest extends BaseServiceTest {
 
     @Test
     void addBookSetFailEmptyTitleTest() {
-        BookSet book = new BookSet("", "Frank Herbert", 1965, 5);
-        Assertions.assertThrows(BookSetTitleException.class, () -> bookSetService.addBookSet(book));
+        Assertions.assertThrows(BookSetHasInvalidFieldValueException.class, () -> new BookSet("", "Frank Herbert", 1965, 5));
     }
 
     @Test

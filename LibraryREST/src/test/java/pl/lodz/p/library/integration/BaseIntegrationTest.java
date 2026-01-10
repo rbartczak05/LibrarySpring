@@ -8,18 +8,18 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.library.repository.BookSetRepository;
 import pl.lodz.p.library.repository.LoanRepository;
 import pl.lodz.p.library.repository.UserRepository;
 
-@Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class BaseIntegrationTest {
 
-    @Container
     static final MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest");
+
+    static {
+        mongoDBContainer.start();
+    }
 
     @LocalServerPort
     protected int port;
@@ -32,7 +32,7 @@ public abstract class BaseIntegrationTest {
 
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.data.mongodb.uri", mongoDBContainer::getConnectionString);
+        registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
     }
 
     @BeforeEach
