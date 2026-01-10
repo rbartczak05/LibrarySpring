@@ -72,7 +72,7 @@ public class UserService {
         User existingUser = findUserById(id);
 
         if (userUpdates == null) {
-            throw new UserNotFoundException(HttpStatus.NOT_FOUND, "UserUpdates not found");
+            throw new UserNotFoundException(HttpStatus.NOT_FOUND, "User Updates not found");
         }
         userRepository.findUserByLogin(userUpdates.getLogin()).ifPresent(foundUser -> {
             if (!foundUser.getId().equals(id)) {

@@ -1,9 +1,11 @@
 package pl.lodz.p.library.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import pl.lodz.p.library.exception.BookSetTimeException;
 import pl.lodz.p.library.exception.ReaderNotFoundException;
@@ -16,8 +18,15 @@ public class Loan {
     private String id;
     private boolean active;
     @NotNull
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startTime;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime returnTime;
+    @NotNull
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endTime;
     @NotBlank
     private String readerId;
@@ -25,6 +34,15 @@ public class Loan {
     private String bookSetId;
 
     public Loan(String readerId, String bookSetId, LocalDateTime startTime) {
+        if (readerId == null || readerId.isEmpty()) {
+            throw new ReaderNotFoundException(HttpStatus.CONFLICT, "Reader does not exist");
+        }
+        if (bookSetId == null || bookSetId.isEmpty()) {
+            throw new ReaderNotFoundException(HttpStatus.CONFLICT, "Book set does not exist");
+        }
+        if (startTime == null) {
+            throw new BookSetTimeException(HttpStatus.CONFLICT, "Start time cannot be null");
+        }
         this.active = true;
         this.startTime = startTime;
         this.returnTime = null;
@@ -62,6 +80,15 @@ public class Loan {
     }
 
     public void setStartTime(LocalDateTime startTime) {
+        if (startTime == null) {
+            throw new BookSetTimeException(HttpStatus.CONFLICT, "Start time cannot be null");
+        }
+        if (returnTime != null && returnTime.isBefore(startTime)) {
+            throw new BookSetTimeException(HttpStatus.CONFLICT, "Return time must be after start time");
+        }
+        if (endTime != null && endTime.isBefore(startTime)) {
+            throw new BookSetTimeException(HttpStatus.CONFLICT, "End time must be after start time");
+        }
         this.startTime = startTime;
     }
 
@@ -81,7 +108,10 @@ public class Loan {
     }
 
     public void setEndTime(LocalDateTime endTime) {
-        if (endTime != null && endTime.isBefore(startTime)) {
+        if (endTime == null) {
+            throw new BookSetTimeException(HttpStatus.CONFLICT, "End time cannot be null");
+        }
+        if (endTime.isBefore(startTime)) {
             throw new BookSetTimeException(HttpStatus.CONFLICT, "End time must be after start time");
         }
         this.endTime = endTime;
@@ -92,7 +122,7 @@ public class Loan {
     }
 
     public void setReaderId(String readerId) {
-        if (readerId != null && readerId.isEmpty()) {
+        if (readerId == null || readerId.isEmpty()) {
             throw new ReaderNotFoundException(HttpStatus.CONFLICT, "Reader does not exist");
         }
         this.readerId = readerId;
@@ -103,7 +133,7 @@ public class Loan {
     }
 
     public void setBookSetId(String bookSetId) {
-        if (bookSetId != null && bookSetId.isEmpty()) {
+        if (bookSetId == null || bookSetId.isEmpty()) {
             throw new ReaderNotFoundException(HttpStatus.CONFLICT, "Book set does not exist");
         }
         this.bookSetId = bookSetId;
@@ -111,14 +141,6 @@ public class Loan {
 
     @Override
     public String toString() {
-        return "Loan{" +
-                "id=" + id +
-                ", active=" + active +
-                ", startTime=" + startTime +
-                ", returnTime=" + returnTime +
-                ", endTime=" + endTime +
-                ", readerId=" + readerId +
-                ", bookSetId=" + bookSetId +
-                '}';
+        return "Loan{" + "id=" + id + ", active=" + active + ", startTime=" + startTime + ", returnTime=" + returnTime + ", endTime=" + endTime + ", readerId=" + readerId + ", bookSetId=" + bookSetId + '}';
     }
 }

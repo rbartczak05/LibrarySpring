@@ -94,20 +94,43 @@ class LoanServiceTest {
     }
 
     @Test
-    void createLoanFailTest() {
+    void createLoanFailReaderInactiveTest() {
         Reader readerInactive = new Reader("readerInactive", "readerInactive@mail.com", 20);
         userRepository.save(readerInactive);
         Assertions.assertThrows(ReaderIsInactiveException.class, () -> loanService.createLoan(readerInactive.getId(), book1.getId()));
+    }
 
+    @Test
+    void createLoanFailBookUnavailableTest() {
         BookSet bookUnavailable = new BookSet("bookUnavailable", "author", 2000, 0);
         bookSetRepository.save(bookUnavailable);
         Assertions.assertThrows(BookSetNotAvailableException.class, () -> loanService.createLoan(reader1.getId(), bookUnavailable.getId()));
+    }
 
+    @Test
+    void createLoanFailReaderMaxLoansTest() {
         reader1.setCurrentLoansCount(5);
         userRepository.save(reader1);
         Assertions.assertThrows(ReaderLimitsException.class, () -> loanService.createLoan(reader1.getId(), book1.getId()));
     }
 
+    @Test
+    void createLoanFailResourceAlreadyAllocatedTest() {
+        BookSet rareBook = new BookSet("Rare Book", "Famous Author", 1999, 1);
+        bookSetRepository.save(rareBook);
+
+        Reader reader2 = new Reader("reader2", "reader2@mail.com", 25);
+        reader2.setActive(true);
+        userRepository.save(reader2);
+
+        loanService.createLoan(reader1.getId(), rareBook.getId());
+
+        BookSet bookAfterFirstLoan = bookSetService.findBookSetById(rareBook.getId());
+        Assertions.assertEquals(0, bookAfterFirstLoan.getQuantity());
+        Assertions.assertFalse(bookAfterFirstLoan.isAvailable());
+
+        Assertions.assertThrows(BookSetNotAvailableException.class, () -> loanService.createLoan(reader2.getId(), rareBook.getId()));
+    }
     @Test
     void findAllLoansTest() {
         Reader reader2 = new Reader("reader2", "reader2@mail.com", 20);

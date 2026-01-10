@@ -94,7 +94,11 @@ public class LoanRestTest extends BaseTestSetup {
         String user1 = createReader(true);
         String user2 = createReader(true);
 
-        createLoan(user1, bookId);
+        given()
+                .queryParam("readerId", user1)
+                .queryParam("bookSetId", bookId)
+                .post("/loans")
+                .then().statusCode(201);
 
         given()
                 .queryParam("readerId", user2)
@@ -111,8 +115,8 @@ public class LoanRestTest extends BaseTestSetup {
         return id;
     }
 
-    private String createBookSet(int qty) {
-        BookSetDTO dto = new BookSetDTO(null, "Title", "Author", 2020, qty);
+    private String createBookSet(int quantity) {
+        BookSetDTO dto = new BookSetDTO(null, "Title", "Author", 2020, quantity);
         return given().contentType(ContentType.JSON).body(dto).post("/book_set").then().statusCode(201).extract().path("id");
     }
 

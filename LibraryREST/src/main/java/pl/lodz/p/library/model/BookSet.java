@@ -31,9 +31,9 @@ public class BookSet {
      * @param quantity    - pozostała ilość sztuk
      */
     public BookSet(String title, String author, int releaseYear, int quantity) {
-        if (title == null || author == null || releaseYear < 0) {
+        if (title == null || title.isEmpty() || author == null || author.isEmpty() || releaseYear < 0) {
             throw new BookSetHasInvalidFieldValueException(HttpStatus.CONFLICT,
-                    "Title, author or release year can't be null");
+                    "Title, author or release year can't be null or empty");
         }
         this.title = title;
         this.author = author;
