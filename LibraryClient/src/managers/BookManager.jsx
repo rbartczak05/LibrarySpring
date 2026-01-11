@@ -81,7 +81,7 @@ const BookManager = () => {
             <h2>Książki</h2>
 
             <div>
-                <h4>Dodaj nową pozycję</h4>
+                <label>Dodaj nową pozycję</label>
                 <form onSubmit={handleSubmit}>
                     <input name="title" placeholder="Tytuł" value={form.title} onChange={handleChange} required />
                     <input name="author" placeholder="Autor" value={form.author} onChange={handleChange} required />
