@@ -1,0 +1,73 @@
+
+/* Menu górne */
+#root > div > div:first-of-type {
+    background-color: #0f5c8d;
+    padding: 15px;
+    border-radius: 10px 10px 10px 10px;
+}
+
+/* Linki w nawigacji */
+#root > div > div:first-of-type a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 8px 12px;
+    border-radius: 4px;
+}
+
+/* Nagłówki */
+h1, h2, h3 {
+    color: #0c476e;
+}
+
+/* Formularze */
+form {
+    max-width: 400px;
+    margin: 20px auto;
+    border-radius: 8px;
+}
+
+/* Elementy wewnątrz formularza */
+form label {
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #333;
+}
+
+form input, form select {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+h2 + div {
+    background-color: #eee;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Tabele */
+table {
+    margin-top: 20px;
+    background: white;
+}
+
+/* Przyciski wewnątrz tabel */
+td button {
+    margin-right: 5px;
+    padding: 5px 10px;
+    font-size: 13px;
+}
+td button:last-child {
+    background-color: #26b2c5;
+}
+td button:last-child:hover {
+    background-color: #09869a;
+}

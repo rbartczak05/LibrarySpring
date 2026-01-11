@@ -54,7 +54,7 @@ const LoanManager = () => {
             <h2>Wypożyczenia</h2>
 
             <div>
-                <h3>Nowa Alokacja</h3>
+                <h4>Nowa Alokacja</h4>
                 <form onSubmit={handleCreate}>
                     <input
                         placeholder="Podaj ID Czytelnika"
