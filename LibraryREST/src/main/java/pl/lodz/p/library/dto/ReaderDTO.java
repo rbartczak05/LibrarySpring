@@ -2,6 +2,7 @@ package pl.lodz.p.library.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import pl.lodz.p.library.exception.ReaderIsInactiveException;
 import pl.lodz.p.library.exception.ReaderLimitsException;
@@ -11,6 +12,7 @@ public class ReaderDTO extends UserDTO {
 
     @Min(0)
     @Max(maxLoans)
+    @NotNull
     private int currentLoansCount = 0;
 
     public ReaderDTO() {
