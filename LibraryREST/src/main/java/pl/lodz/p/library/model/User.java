@@ -15,7 +15,8 @@ import pl.lodz.p.library.exception.UserHasInvalidFieldValueException;
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
-        property = "type")
+        property = "type",
+        visible = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Reader.class, name = "reader"),
         @JsonSubTypes.Type(value = Librarian.class, name = "librarian"),
