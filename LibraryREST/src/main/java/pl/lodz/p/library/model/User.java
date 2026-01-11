@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -35,9 +36,11 @@ public abstract class User {
     @Indexed(unique = true)
     private String email;
 
-    // Jackson domyślnie wstawia 0 więc jak ktoś nic nie da to wyrzuci błąd
-    @Min(1)
+    @Min(value = 1)
+    @NotNull
     private int age;
+
+    @NotNull
     private boolean active;
 
     public User(String login, String email, int age) {

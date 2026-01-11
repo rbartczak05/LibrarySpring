@@ -106,6 +106,24 @@ class LoanServiceTest extends BaseServiceTest {
     }
 
     @Test
+    void createLoanFailReaderMaxLoansLimitReachedTest() {
+        BookSet book = new BookSet("Available Book", "Author", 2024, 10);
+        bookSetRepository.save(book);
+
+        Reader reader = new Reader("limitUser", "limit@mail.com", 20);
+        reader.setActive(true);
+        reader.setCurrentLoansCount(5);
+        userRepository.save(reader);
+
+        Assertions.assertThrows(ReaderLimitsException.class, () -> {
+            loanService.createLoan(reader.getId(), book.getId());
+        });
+
+        BookSet bookAfterFail = bookSetService.findBookSetById(book.getId());
+        Assertions.assertEquals(10, bookAfterFail.getQuantity());
+    }
+
+    @Test
     void findAllLoansTest() {
         Reader reader2 = new Reader("reader2", "reader2@mail.com", 20);
         reader2.setActive(true);

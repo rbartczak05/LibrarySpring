@@ -108,6 +108,29 @@ public class LoanIntegrationTest extends BaseIntegrationTest {
                 .statusCode(409);
     }
 
+    @Test
+    void createLoanFailReaderMaxLoansExceededTest() {
+        String bookId = createBookSet(10);
+
+        String userId = createReader(true);
+
+        for (int i = 0; i < 5; i++) {
+            given()
+                    .queryParam("readerId", userId)
+                    .queryParam("bookSetId", bookId)
+                    .post("/loans")
+                    .then()
+                    .statusCode(201);
+        }
+
+        given()
+                .queryParam("readerId", userId)
+                .queryParam("bookSetId", bookId)
+                .post("/loans")
+                .then()
+                .statusCode(409);
+    }
+
     private String createReader(boolean active) {
         ReaderDTO reader = new ReaderDTO(null, "u" + UUID.randomUUID(), "m" + UUID.randomUUID() + "@test.pl", 20, false, "reader", 0);
         String id = given().contentType(ContentType.JSON).body(reader).post("/readers").then().statusCode(201).extract().path("id");

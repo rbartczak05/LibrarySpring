@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.http.HttpStatus;
@@ -32,10 +33,14 @@ public abstract class UserDTO {
     @Indexed(unique = true)
     private String email;
 
-    // Jackson domyślnie wstawia 0 więc jak ktoś nic nie da to wyrzuci błąd
     @Min(value = 1)
+    @NotNull
     private int age;
+
+    @NotNull
     private boolean active;
+
+    @NotBlank
     private String type;
 
     public UserDTO() {

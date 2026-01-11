@@ -11,6 +11,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.lodz.p.library.converter.LoanConverter;
 import pl.lodz.p.library.dto.LoanDTO;
+import pl.lodz.p.library.exception.BookSetNotAvailableException;
 import pl.lodz.p.library.exception.LoanNotFoundException;
 import pl.lodz.p.library.exception.ReaderLimitsException;
 import pl.lodz.p.library.model.Loan;
@@ -188,6 +189,30 @@ class LoanControllerTest {
                         .param("bookSetId", bookSetId))
                 .andExpect(status().isBadRequest())
                 .andExpect(status().is(400));
+    }
+
+    @Test
+    void createLoanFailWhenResourceAlreadyAllocatedTest() throws Exception {
+        when(loanService.createLoan(any(), any(), any()))
+                .thenThrow(new BookSetNotAvailableException(HttpStatus.CONFLICT, "BookSet is not available"));
+
+        mockMvc.perform(post("/loans")
+                        .param("readerId", readerId)
+                        .param("bookSetId", bookSetId))
+                .andExpect(status().isConflict())
+                .andExpect(status().reason("BookSet is not available"));
+    }
+
+    @Test
+    void createLoanFailReaderLimitTest() throws Exception {
+        when(loanService.createLoan(any(), any(), any()))
+                .thenThrow(new ReaderLimitsException(HttpStatus.CONFLICT, "Reader reached the maximum number of loans"));
+
+        mockMvc.perform(post("/loans")
+                        .param("readerId", readerId)
+                        .param("bookSetId", bookSetId))
+                .andExpect(status().isConflict())
+                .andExpect(status().reason("Reader reached the maximum number of loans"));
     }
 
     @Test
