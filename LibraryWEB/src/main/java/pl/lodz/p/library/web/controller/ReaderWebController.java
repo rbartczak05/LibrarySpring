@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.client.HttpClientErrorException;
 import pl.lodz.p.library.web.dto.ReaderDTO;
 import pl.lodz.p.library.web.service.RestReaderWebService;
 
@@ -33,9 +34,12 @@ public class ReaderWebController {
         if (bindingResult.hasErrors()) {
             return "register";
         }
-
-        restReaderWebService.registerReader(readerDto);
-
+        try {
+            restReaderWebService.registerReader(readerDto);
+        } catch (HttpClientErrorException e) {
+            bindingResult.reject("error.userExists");
+            return "register";
+        }
         return "redirect:/readers/register?success";
     }
 

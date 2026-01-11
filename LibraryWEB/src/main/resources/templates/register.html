@@ -20,6 +20,10 @@
 
 <form th:action="@{/readers/register}" th:object="${readerDto}" method="post">
     <div>
+        <div th:if="${#fields.hasErrors('global')}">
+            <p class="error" th:each="err : ${#fields.errors('global')}" th:text="${err}"></p>
+        </div>
+
         <label for="login" th:text="#{reader.login}">Login</label>
         <input id="login" type="text" th:field="*{login}">
         <p class="error" th:if="${#fields.hasErrors('login')}" th:errors="*{login}">błędny login</p>
@@ -31,7 +35,7 @@
     </div>
     <div>
         <label for="age" th:text="#{reader.age}">Wiek</label>
-        <input id="age" type="number" th:field="*{age}">
+        <input id="age" type="number" th:min="1" th:field="*{age}">
         <p class="error" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">błędny wiek</p>
     </div>
     <div style="margin-top: 12px;">
