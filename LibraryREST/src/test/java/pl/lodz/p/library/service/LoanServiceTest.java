@@ -141,7 +141,7 @@ class LoanServiceTest extends BaseServiceTest {
     @Test
     void findLoanByIdTest() {
         Loan loan = loanService.createLoan(reader1.getId(), book1.getId());
-        Loan found = loanService.findLoanById(loan.getId());
+        Loan found = (Loan) loanService.findLoanById(loan.getId());
         Assertions.assertEquals(loan.getId(), found.getId());
     }
 

@@ -96,7 +96,7 @@ public class ReaderIntegrationTest extends BaseIntegrationTest {
                 .when()
                 .post("/readers")
                 .then()
-                .statusCode(409);
+                .statusCode(400);
     }
 
     @Test

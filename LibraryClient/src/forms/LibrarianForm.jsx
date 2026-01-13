@@ -61,20 +61,42 @@ const LibrarianForm = () => {
             <form onSubmit={handleSubmit}>
                 <label>
                     Login:
-                    <input name="login" value={formData.login} onChange={handleChange} required />
+                    <input
+                        name="login"
+                        value={formData.login}
+                        onChange={handleChange}
+                        required
+                        minLength="3"
+                        maxLength="20"
+                    />
                 </label>
                 <label>
                     Email:
-                    <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+                    <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        maxLength="100"
+                        pattern="^.+@.+$"
+                    />
                 </label>
                 <label>
                     Wiek:
-                    <input type="number" name="age" value={formData.age} onChange={handleChange} required />
+                    <input
+                        type="number"
+                        name="age"
+                        value={formData.age}
+                        onChange={handleChange}
+                        required
+                        min="1"
+                    />
                 </label>
 
                 <div>
                     <button type="submit">Dodaj</button>
-                    <button type="button" onClick={() => navigate('/librarians')}>Anuluj</button>
+                    <button type="button" onClick={() => navigate('/admins')}>Anuluj</button>
                 </div>
             </form>
         </div>

@@ -90,7 +90,7 @@ public class BookSetIntegrationTest extends BaseIntegrationTest {
                 .when()
                 .post("/book_set")
                 .then()
-                .statusCode(409);
+                .statusCode(400);
     }
 
     @Test
@@ -108,7 +108,7 @@ public class BookSetIntegrationTest extends BaseIntegrationTest {
                 .when()
                 .delete("/book_set/{id}", bookId)
                 .then()
-                .statusCode(400);
+                .statusCode(409);
     }
 
     private String createBook(String title, int qty) {
@@ -123,7 +123,8 @@ public class BookSetIntegrationTest extends BaseIntegrationTest {
     }
 
     private String createUserAndActivate() {
-        ReaderDTO reader = new ReaderDTO(null, "r" + UUID.randomUUID(), "mail" + UUID.randomUUID() + "@test.pl", 20, false, "reader", 0);
+        String shortId = UUID.randomUUID().toString().substring(0, 8);
+        ReaderDTO reader = new ReaderDTO(null, "r" + shortId, "mail" + shortId + "@test.pl", 20, false, "reader", 0);
         String id = given()
                 .contentType(ContentType.JSON)
                 .body(reader)

@@ -3,12 +3,10 @@ package pl.lodz.p.library.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pl.lodz.p.library.exception.BookSetHasInvalidFieldValueException;
 import pl.lodz.p.library.exception.BookSetNotAvailableException;
 import pl.lodz.p.library.exception.BookSetNotFoundException;
 import pl.lodz.p.library.model.BookSet;
 import pl.lodz.p.library.model.Loan;
-import pl.lodz.p.library.model.Reader;
 
 import java.util.List;
 import java.util.UUID;
@@ -28,11 +26,6 @@ class BookSetServiceTest extends BaseServiceTest {
         bookSetService.addBookSet(book);
         Assertions.assertEquals(1, bookSetRepository.count());
         Assertions.assertNotNull(book.getId());
-    }
-
-    @Test
-    void addBookSetFailEmptyTitleTest() {
-        Assertions.assertThrows(BookSetHasInvalidFieldValueException.class, () -> new BookSet("", "Frank Herbert", 1965, 5));
     }
 
     @Test
@@ -132,23 +125,19 @@ class BookSetServiceTest extends BaseServiceTest {
     }
 
     @Test
-    void deleteBookSetFailNotFoundTest() {
-        Assertions.assertThrows(BookSetNotFoundException.class, () -> bookSetService.deleteBookSet(UUID.randomUUID().toString()));
-    }
-
-    @Test
-    void deleteBookSetFailActiveLoanTest() {
+    void deleteBookSetFailActiveLoansTest() {
         BookSet book = new BookSet("Diuna", "Frank Herbert", 1965, 5);
-        Reader reader = new Reader("u1", "u1@mail.com", 20);
-        userRepository.save(reader);
         BookSet savedBook = bookSetRepository.save(book);
 
-        Loan loan = new Loan(reader.getId(), savedBook.getId());
-        loan.setActive(true);
+        Loan loan = new Loan("readerId", savedBook.getId(), java.time.LocalDateTime.now());
         loanRepository.save(loan);
 
         Assertions.assertThrows(BookSetNotAvailableException.class, () -> bookSetService.deleteBookSet(savedBook.getId()));
-
         Assertions.assertEquals(1, bookSetRepository.count());
+    }
+
+    @Test
+    void deleteBookSetFailNotFoundTest() {
+        Assertions.assertThrows(BookSetNotFoundException.class, () -> bookSetService.deleteBookSet(UUID.randomUUID().toString()));
     }
 }

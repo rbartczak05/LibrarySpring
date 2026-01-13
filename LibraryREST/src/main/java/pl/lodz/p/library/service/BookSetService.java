@@ -6,9 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.library.exception.BookSetNotAvailableException;
 import pl.lodz.p.library.exception.BookSetNotFoundException;
-import pl.lodz.p.library.exception.BookSetTitleException;
-import pl.lodz.p.library.exception.IdException;
 import pl.lodz.p.library.model.BookSet;
+import pl.lodz.p.library.model.Loan;
 import pl.lodz.p.library.repository.BookSetRepository;
 import pl.lodz.p.library.repository.LoanRepository;
 
@@ -60,26 +59,12 @@ public class BookSetService {
 
     @Transactional
     public BookSet addBookSet(BookSet bookSet) {
-        if (bookSet.getId() != null && bookSetRepository.findById(bookSet.getId()).isPresent()) {
-            throw new IdException(HttpStatus.CONFLICT, "BookSet with ID: " + bookSet.getId() + " already exists");
-        }
-        if (bookSet.getTitle() == null || "".equals(bookSet.getTitle())) {
-            throw new BookSetTitleException(HttpStatus.CONFLICT, "BookSet title cannot be empty");
-        }
         return bookSetRepository.save(bookSet);
     }
 
     @Transactional
     public BookSet updateBookSet(String id, BookSet bookSetUpdates) {
-        if (bookSetUpdates == null) {
-            throw new BookSetNotFoundException(HttpStatus.NOT_FOUND, "BookSetUpdates not found");
-        }
-
         BookSet existingBookSet = findBookSetById(id);
-
-        if (existingBookSet == null) {
-            throw new BookSetNotFoundException(HttpStatus.NOT_FOUND, "BookSet with id: " + id + " not found");
-        }
 
         existingBookSet.setQuantity(bookSetUpdates.getQuantity());
 
@@ -90,12 +75,9 @@ public class BookSetService {
     public void deleteBookSet(String id) {
         BookSet bookSet = findBookSetById(id);
 
-        if (bookSet == null) {
-            throw new BookSetNotFoundException(HttpStatus.NOT_FOUND, "BookSet with id: " + id + " not found");
-        }
-
-        if (loanRepository.findByBookSetIdAndActive(id, true).size() > 0) {
-            throw new BookSetNotAvailableException(HttpStatus.BAD_REQUEST, "Cannot delete BookSet with id: " + id + ". It has active loans.");
+        List<Loan> activeLoans = loanRepository.findByBookSetIdAndActive(id, true);
+        if (!activeLoans.isEmpty()) {
+            throw new BookSetNotAvailableException(HttpStatus.CONFLICT, "Nie można usunąć książki o ID: " + id + ", ponieważ posiada aktywne wypożyczenia.");
         }
 
         bookSetRepository.delete(bookSet);

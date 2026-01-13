@@ -4,25 +4,24 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.Id;
-import org.springframework.http.HttpStatus;
-import pl.lodz.p.library.exception.BookSetQuantityException;
 
 public class BookSetDTO {
+
     @Id
     private String id;
 
-    @NotBlank
+    @NotBlank(message = "Tytuł książki nie może być pusty.")
     private String title;
 
-    @NotBlank
+    @NotBlank(message = "Autor książki nie może być pusty.")
     private String author;
 
-    @Min(0)
-    @NotNull
+    @NotNull(message = "Rok wydania jest wymagany.")
+    @Min(value = 0, message = "Rok wydania musi być liczbą nieujemną.")
     private int releaseYear;
 
-    @Min(0)
-    @NotNull
+    @NotNull(message = "Ilość sztuk jest wymagana.")
+    @Min(value = 0, message = "Ilość sztuk na stanie musi być 0 lub większa.")
     private int quantity;
 
     public BookSetDTO(String id, String title, String author, int releaseYear, int quantity) {
@@ -74,11 +73,7 @@ public class BookSetDTO {
     }
 
     public void setQuantity(int quantity) {
-        if (quantity >= 0) {
-            this.quantity = quantity;
-        } else {
-            throw new BookSetQuantityException(HttpStatus.CONFLICT, "Quantity must be greater than or equal to 0");
-        }
+        this.quantity = quantity;
     }
 
     public boolean isAvailable() {

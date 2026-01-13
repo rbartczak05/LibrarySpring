@@ -61,12 +61,14 @@ const LoanManager = () => {
                         value={newLoan.readerId}
                         onChange={e => setNewLoan({...newLoan, readerId: e.target.value})}
                         required
+                        minLength="1"
                     />
                     <input
                         placeholder="Podaj ID Książki"
                         value={newLoan.bookSetId}
                         onChange={e => setNewLoan({...newLoan, bookSetId: e.target.value})}
                         required
+                        minLength="1"
                     />
                     <button type="submit">WYPOŻYCZ</button>
                 </form>

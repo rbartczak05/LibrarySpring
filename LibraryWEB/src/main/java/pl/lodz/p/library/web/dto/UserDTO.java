@@ -32,7 +32,6 @@ public abstract class UserDTO {
     @Indexed(unique = true)
     private String email;
 
-    // Jackson domyślnie wstawia 0 więc jak ktoś nic nie da to wyrzuci błąd
     @Min(value = 1)
     private int age;
     private boolean active;

@@ -83,10 +83,40 @@ const BookManager = () => {
             <div>
                 <label>Dodaj nową pozycję</label>
                 <form onSubmit={handleSubmit}>
-                    <input name="title" placeholder="Tytuł" value={form.title} onChange={handleChange} required />
-                    <input name="author" placeholder="Autor" value={form.author} onChange={handleChange} required />
-                    <input name="releaseYear" type="number" placeholder="Rok wydania" value={form.releaseYear} onChange={handleChange} required />
-                    <input name="quantity" type="number" placeholder="Ilość sztuk" value={form.quantity} onChange={handleChange} required min="0" />
+                    <input
+                        name="title"
+                        placeholder="Tytuł"
+                        value={form.title}
+                        onChange={handleChange}
+                        required
+                        minLength="1"
+                    />
+                    <input
+                        name="author"
+                        placeholder="Autor"
+                        value={form.author}
+                        onChange={handleChange}
+                        required
+                        minLength="1"
+                    />
+                    <input
+                        name="releaseYear"
+                        type="number"
+                        placeholder="Rok wydania"
+                        value={form.releaseYear}
+                        onChange={handleChange}
+                        required
+                        min="0"
+                    />
+                    <input
+                        name="quantity"
+                        type="number"
+                        placeholder="Ilość sztuk"
+                        value={form.quantity}
+                        onChange={handleChange}
+                        required
+                        min="0"
+                    />
                     <button type="submit">Dodaj</button>
                 </form>
             </div>

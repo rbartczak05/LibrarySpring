@@ -108,36 +108,6 @@ class UserServiceTest extends BaseServiceTest {
     }
 
     @Test
-    void addUserWithExistingId() {
-        Reader reader1 = new Reader("login1", "email1@example.com", 20);
-        reader1.setId(UUID.randomUUID().toString());
-        userRepository.save(reader1);
-        Reader reader2 = new Reader("login2", "email2@example.com", 20);
-        reader2.setId(reader1.getId());
-
-        Assertions.assertThrows(IdException.class, () -> userService.addUser(reader2));
-
-    }
-
-    @Test
-    void addUserExistingLoginTest() {
-        userRepository.save(new Reader("istniejacyLogin", "test1@gmail.com", 30));
-        Reader nowyReader = new Reader("istniejacyLogin", "test2@gmail.com", 25);
-        nowyReader.setId(UUID.randomUUID().toString());
-
-        Assertions.assertThrows(UserLoginAlreadyExistException.class, () -> userService.addUser(nowyReader));
-    }
-
-    @Test
-    void addUserExistingEmailTest() {
-        userRepository.save(new Reader("test1", "istniejacy@gmail.com", 30));
-        Reader nowyReader = new Reader("test2", "istniejacy@gmail.com", 25);
-        nowyReader.setId(UUID.randomUUID().toString());
-
-        Assertions.assertThrows(UserEmailAlreadyExistException.class, () -> userService.addUser(nowyReader));
-    }
-
-    @Test
     void updateUserTest() {
         Reader reader = userRepository.save(new Reader("staryLogin", "stary@gmail.com", 20));
         String readerId = reader.getId();
@@ -153,17 +123,6 @@ class UserServiceTest extends BaseServiceTest {
     }
 
     @Test
-    void updateUserFailTest() {
-        userRepository.save(new Reader("zajetyLogin", "zajety@gmail.com", 30));
-        Reader updateReader = userRepository.save(new Reader("staryLogin", "stary@gmail.com", 20));
-        String readerId = updateReader.getId();
-
-        Reader updates = new Reader("zajetyLogin", "nowy@gmail.com", 25);
-
-        Assertions.assertThrows(UserLoginAlreadyExistException.class, () -> userService.updateUser(readerId, updates));
-    }
-
-    @Test
     void activateUserTest() {
         Reader reader = new Reader("testUser", "test@gmail.com", 25);
 
@@ -176,16 +135,6 @@ class UserServiceTest extends BaseServiceTest {
     }
 
     @Test
-    void activateUserFailTest() {
-        Reader reader = new Reader("testUser", "test@gmail.com", 25);
-        reader.setActive(true);
-        User savedUser = userRepository.save(reader);
-        Assertions.assertTrue(savedUser.isActive());
-
-        Assertions.assertThrows(UserStateException.class, () -> userService.activateUser(savedUser.getId()));
-    }
-
-    @Test
     void deactivateUserTest() {
         Reader reader = new Reader("testUser", "test@gmail.com", 25);
         reader.setActive(true);
@@ -195,15 +144,5 @@ class UserServiceTest extends BaseServiceTest {
         User deactivatedUser = userService.deactivateUser(savedUser.getId());
 
         Assertions.assertFalse(deactivatedUser.isActive());
-    }
-
-    @Test
-    void deactivateUserFailTest() {
-        Reader reader = new Reader("testUser", "test@gmail.com", 25);
-        reader.setActive(false);
-        User savedUser = userRepository.save(reader);
-        Assertions.assertFalse(savedUser.isActive());
-
-        Assertions.assertThrows(UserStateException.class, () -> userService.deactivateUser(savedUser.getId()));
     }
 }

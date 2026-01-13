@@ -41,11 +41,6 @@ const ReaderForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (parseInt(formData.age) <= 0) {
-            alert("Wiek musi być liczbą dodatnią.");
-            return;
-        }
-
         const msg = id ? "Czy na pewno chcesz zapisać zmiany?" : "Czy na pewno chcesz utworzyć użytkownika?";
         if (!window.confirm(msg)) return;
 
@@ -83,15 +78,40 @@ const ReaderForm = () => {
             <form onSubmit={handleSubmit}>
                 <label>
                     Login:
-                    <input name="login" value={formData.login} onChange={handleChange} required />
+                    <input
+                        name="login"
+                        value={formData.login}
+                        onChange={handleChange}
+                        required
+                        minLength="3"
+                        maxLength="20"
+                        title="Login musi mieć od 3 do 20 znaków."
+                    />
                 </label>
                 <label>
                     Email:
-                    <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+                    <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        maxLength="100"
+                        pattern="^.+@.+$"
+                        title="Podaj poprawny adres email."
+                    />
                 </label>
                 <label>
                     Wiek:
-                    <input type="number" name="age" value={formData.age} onChange={handleChange} required />
+                    <input
+                        type="number"
+                        name="age"
+                        value={formData.age}
+                        onChange={handleChange}
+                        required
+                        min="1"
+                        title="Wiek musi być liczbą dodatnią."
+                    />
                 </label>
 
                 <div>

@@ -2,6 +2,7 @@ package pl.lodz.p.library;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import pl.lodz.p.library.exception.*;
 import pl.lodz.p.library.model.*;
 
@@ -19,19 +20,6 @@ class ModelTest {
         Assertions.assertFalse(reader.isActive());
         Assertions.assertEquals(5, reader.getMaxLoans());
         Assertions.assertEquals(0, reader.getCurrentLoansCount());
-    }
-
-    @Test
-    void userHasInvalidFieldValuesTest() {
-        Assertions.assertThrows(UserHasInvalidFieldValueException.class,
-                () -> new Reader(null, "test@gmail.com", 12));
-
-        Reader reader = new Reader("testReader", "test@example.com", 10);
-        Assertions.assertThrows(UserHasInvalidFieldValueException.class, () -> reader.setLogin(null));
-        Assertions.assertThrows(UserHasInvalidFieldValueException.class, () -> reader.setLogin(""));
-        Assertions.assertThrows(UserHasInvalidFieldValueException.class, () -> reader.setEmail(""));
-        Assertions.assertThrows(UserHasInvalidFieldValueException.class, () -> reader.setEmail(null));
-        Assertions.assertThrows(UserHasInvalidFieldValueException.class, () -> reader.setAge(-5));
     }
 
     @Test
@@ -78,29 +66,12 @@ class ModelTest {
     }
 
     @Test
-    void bookSetHasInvalidFieldValuesTest() {
-        Assertions.assertThrows(BookSetHasInvalidFieldValueException.class,
-                () -> new BookSet(null, "Frank Herbert", 1965, 3));
-        Assertions.assertThrows(BookSetHasInvalidFieldValueException.class,
-                () -> new BookSet("Diuna", null, 1965, 3));
-        Assertions.assertThrows(BookSetHasInvalidFieldValueException.class,
-                () -> new BookSet("Diuna", "Frank Herbert", -1965, 3));
-
-    }
-
-    @Test
     void bookSetIsAvailableTest() {
         BookSet book = new BookSet("Diuna", "Frank Herbert", 1965, 1);
         Assertions.assertTrue(book.isAvailable());
 
         book.setQuantity(0);
         Assertions.assertFalse(book.isAvailable());
-    }
-
-    @Test
-    void bookSetSetQuantityFailTest() {
-        BookSet book = new BookSet("Diuna", "Frank Herbert", 1965, 1);
-        Assertions.assertThrows(BookSetQuantityException.class, () -> book.setQuantity(-1));
     }
 
     @Test

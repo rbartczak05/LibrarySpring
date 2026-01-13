@@ -5,17 +5,14 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.http.HttpStatus;
-import pl.lodz.p.library.exception.UserHasInvalidFieldValueException;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
-        property = "type",
-        visible = true)
+        property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ReaderDTO.class, name = "reader"),
         @JsonSubTypes.Type(value = LibrarianDTO.class, name = "librarian"),
@@ -25,22 +22,18 @@ public abstract class UserDTO {
     @Id
     private String id;
 
-    @NotBlank
-    @Indexed(unique = true)
+    @NotBlank(message = "Login nie może być pusty.")
+    @Length(min = 3, max = 20, message = "Login musi mieć od 3 do 20 znaków.")
     private String login;
 
-    @NotBlank
-    @Email
-    @Indexed(unique = true)
+    @NotBlank(message = "Email nie może być pusty.")
+    @Email(message = "Podany ciąg nie jest poprawnym adresem email.")
+    @Length(min = 3, max = 100, message = "Email musi mieć od 3 do 100 znaków.")
     private String email;
 
-    @Min(value = 1)
-    @NotNull
+    @Min(value = 1, message = "Nie wolno rejestrować nienarodzonych!")
     private int age;
-
-    @NotNull
     private boolean active;
-
     private String type;
 
     public UserDTO() {
@@ -68,12 +61,7 @@ public abstract class UserDTO {
     }
 
     public void setLogin(String login) {
-        if (login != null && !login.isEmpty()) {
-            this.login = login;
-        } else {
-            throw new UserHasInvalidFieldValueException(HttpStatus.CONFLICT, "Login can't be null or empty");
-        }
-
+        this.login = login;
     }
 
     public String getEmail() {
@@ -81,12 +69,7 @@ public abstract class UserDTO {
     }
 
     public void setEmail(String email) {
-        if (email != null && email.contains("@")) {
-            this.email = email;
-        } else {
-            throw new UserHasInvalidFieldValueException(HttpStatus.CONFLICT, "Email can't be null or empty");
-        }
-
+        this.email = email;
     }
 
     public int getAge() {
@@ -94,12 +77,7 @@ public abstract class UserDTO {
     }
 
     public void setAge(int age) {
-        if (age > 0) {
-            this.age = age;
-        } else {
-            throw new UserHasInvalidFieldValueException(HttpStatus.CONFLICT, "Age must be greater than 0");
-        }
-
+        this.age = age;
     }
 
     public boolean isActive() {

@@ -8,11 +8,11 @@ public class BookSetTimeException extends AppBaseException {
         super(message);
     }
 
-    public BookSetTimeException(HttpStatusCode message, String reason, Throwable cause) {
-        super(message, reason, cause);
-    }
-
     public BookSetTimeException(HttpStatusCode message, String reason) {
         super(message, reason);
+    }
+
+    public BookSetTimeException(HttpStatusCode message, String reason, Throwable cause) {
+        super(message, reason, cause);
     }
 }

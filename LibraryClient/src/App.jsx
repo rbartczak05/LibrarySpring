@@ -37,8 +37,6 @@ function App() {
                     <Route path="/readers/edit/:id" element={<ReaderForm />} />
                     <Route path="/readers/:id" element={<ReaderDetails />} />
 
-
-
                     <Route path="/books" element={<BookManager />} />
                     <Route path="/loans" element={<LoanManager />} />
                 </Routes>

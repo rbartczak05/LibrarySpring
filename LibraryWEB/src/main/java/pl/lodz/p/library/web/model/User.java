@@ -35,7 +35,6 @@ public abstract class User {
     @Indexed(unique = true)
     private String email;
 
-    // Jackson domyślnie wstawia 0 więc jak ktoś nic nie da to wyrzuci błąd
     @Min(1)
     private int age;
     private boolean active;

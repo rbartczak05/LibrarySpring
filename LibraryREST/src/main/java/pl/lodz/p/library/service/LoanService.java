@@ -35,7 +35,7 @@ public class LoanService {
 
     public Loan findLoanById(String id) {
         return loanRepository.findById(id)
-                .orElseThrow(() -> new LoanNotFoundException(HttpStatus.NOT_FOUND, "Loan with id: " + id + " not found."));
+                .orElseThrow(() -> new LoanNotFoundException(HttpStatus.NOT_FOUND, "Wypożyczenie o ID: " + id + " nie zostało odnalezione."));
     }
 
     public List<Loan> findLoansByReader(String readerId) {
@@ -78,12 +78,6 @@ public class LoanService {
         Reader reader = (Reader) userService.findUserById(readerId);
         BookSet bookSet = bookSetService.findBookSetById(bookSetId);
 
-        if (reader == null) {
-            throw new ReaderNotFoundException(HttpStatus.NOT_FOUND, "Loan with id: " + readerId + " not found.");
-        }
-        if (bookSet == null) {
-            throw new BookSetNotFoundException(HttpStatus.NOT_FOUND, "BookSet with id: " + bookSetId + " not found.");
-        }
         if (!reader.canBorrowBook()) {
             throw new ReaderLimitsException(HttpStatus.CONFLICT, "Reader with id: " + readerId + " cannot borrow loan.");
         }
@@ -107,17 +101,13 @@ public class LoanService {
     @Transactional
     public Loan updateLoan(String loanId, Loan loanUpdates) {
         if (loanUpdates == null) {
-            throw new LoanNotFoundException(HttpStatus.NOT_FOUND, "LoanUpdates not found.");
-        }
-
-        if (loanRepository.findById(loanId).isEmpty()) {
-            throw new LoanNotFoundException(HttpStatus.NOT_FOUND, "Loan with id: " + loanId + " not found.");
+            throw new LoanNotFoundException(HttpStatus.NOT_FOUND, "Zmiany wypożyczenia nie zostały odnalezione.");
         }
 
         Loan existingLoan = findLoanById(loanId);
 
         if (!existingLoan.isActive()) {
-            throw new LoanAlreadyInactiveException(HttpStatus.BAD_REQUEST, "Loan is already ended.");
+            throw new LoanAlreadyInactiveException(HttpStatus.CONFLICT, "Wypożyczenie zostało już zakończone.");
         }
 
         // Zmiana czasu początkowego i końcowego wypożyczenia wydaje się mieć jakiś seks skoro mamy konstruktor,
@@ -130,14 +120,10 @@ public class LoanService {
 
     @Transactional
     public Loan endLoan(String loanId) {
-        if (loanRepository.findById(loanId).isEmpty()) {
-            throw new LoanNotFoundException(HttpStatus.NOT_FOUND, "Loan with id: " + loanId + " not found.");
-        }
-
         Loan loan = findLoanById(loanId);
 
         if (!loan.isActive()) {
-            throw new LoanAlreadyInactiveException(HttpStatus.BAD_REQUEST, "Loan is already ended.");
+            throw new LoanAlreadyInactiveException(HttpStatus.CONFLICT, "Wypożyczenie zostało już zakończone.");
         }
 
         loan.setActive(false);

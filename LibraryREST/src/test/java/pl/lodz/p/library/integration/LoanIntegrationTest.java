@@ -132,7 +132,8 @@ public class LoanIntegrationTest extends BaseIntegrationTest {
     }
 
     private String createReader(boolean active) {
-        ReaderDTO reader = new ReaderDTO(null, "u" + UUID.randomUUID(), "m" + UUID.randomUUID() + "@test.pl", 20, false, "reader", 0);
+        String shortId = UUID.randomUUID().toString().substring(0, 8);
+        ReaderDTO reader = new ReaderDTO(null, "u" + shortId, "user" + shortId + "@test.pl", 20, false, "reader", 0);
         String id = given().contentType(ContentType.JSON).body(reader).post("/readers").then().statusCode(201).extract().path("id");
         if (active) given().post("/readers/" + id + "/activate");
         return id;

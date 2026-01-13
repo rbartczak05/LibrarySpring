@@ -1,13 +1,13 @@
 package pl.lodz.p.library.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import pl.lodz.p.library.exception.BookSetTimeException;
-import pl.lodz.p.library.exception.ReaderNotFoundException;
 
 import java.time.LocalDateTime;
 
@@ -15,9 +15,10 @@ public class LoanDTO {
     @Id
     private String id;
 
+    @NotNull(message = "Stan wypożyczenia nie może być pusty.")
     private boolean active;
 
-    @NotNull
+    @NotNull(message = "Data rozpoczęcia wypożyczenia nie może być pusta.")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startTime;
@@ -26,30 +27,22 @@ public class LoanDTO {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime returnTime;
 
-    @NotNull
+    @NotNull(message = "Data planowanego zakończenia nie może być pusta.")
+    @Future(message = "Planowana data zakończenia musi być w przyszłości.")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endTime;
 
-    @NotBlank
+    @NotBlank(message = "ID czytelnika jest wymagane do utworzenia wypożyczenia.")
     private String readerId;
 
-    @NotBlank
+    @NotBlank(message = "ID książki jest wymagane do utworzenia wypożyczenia.")
     private String bookSetId;
 
     public LoanDTO() {
     }
 
     public LoanDTO(String id, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime returnTime, String bookSetId, String readerId) {
-        if (readerId == null || readerId.isEmpty()) {
-            throw new ReaderNotFoundException(HttpStatus.CONFLICT, "Reader does not exist");
-        }
-        if (bookSetId == null || bookSetId.isEmpty()) {
-            throw new ReaderNotFoundException(HttpStatus.CONFLICT, "Book set does not exist");
-        }
-        if (startTime == null) {
-            throw new BookSetTimeException(HttpStatus.CONFLICT, "Start time cannot be null");
-        }
         this.active = true;
         this.startTime = startTime;
         this.returnTime = null;
@@ -79,14 +72,11 @@ public class LoanDTO {
     }
 
     public void setStartTime(LocalDateTime startTime) {
-        if (startTime == null) {
-            throw new BookSetTimeException(HttpStatus.CONFLICT, "Start time cannot be null");
+        if (this.returnTime != null && this.returnTime.isBefore(startTime)) {
+            throw new BookSetTimeException(HttpStatus.CONFLICT, "Data zwrotu musi być późniejsza niż data rozpoczęcia.");
         }
-        if (returnTime != null && returnTime.isBefore(startTime)) {
-            throw new BookSetTimeException(HttpStatus.CONFLICT, "Return time must be after start time");
-        }
-        if (endTime != null && endTime.isBefore(startTime)) {
-            throw new BookSetTimeException(HttpStatus.CONFLICT, "End time must be after start time");
+        if (this.endTime != null && this.endTime.isBefore(startTime)) {
+            throw new BookSetTimeException(HttpStatus.CONFLICT, "Data zakończenia musi być późniejsza niż data rozpoczęcia.");
         }
         this.startTime = startTime;
     }
@@ -96,8 +86,8 @@ public class LoanDTO {
     }
 
     public void setReturnTime(LocalDateTime returnTime) {
-        if (returnTime != null && returnTime.isBefore(startTime)) {
-            throw new BookSetTimeException(HttpStatus.CONFLICT, "Return time must be after start time");
+        if (returnTime != null && this.startTime != null && returnTime.isBefore(this.startTime)) {
+            throw new BookSetTimeException(HttpStatus.CONFLICT, "Data zwrotu musi być późniejsza niż data rozpoczęcia.");
         }
         this.returnTime = returnTime;
     }
@@ -107,11 +97,8 @@ public class LoanDTO {
     }
 
     public void setEndTime(LocalDateTime endTime) {
-        if (endTime == null) {
-            throw new BookSetTimeException(HttpStatus.CONFLICT, "End time cannot be null");
-        }
-        if (endTime.isBefore(startTime)) {
-            throw new BookSetTimeException(HttpStatus.CONFLICT, "End time must be after start time");
+        if (endTime != null && this.startTime != null && endTime.isBefore(this.startTime)) {
+            throw new BookSetTimeException(HttpStatus.CONFLICT, "Data zakończenia musi być późniejsza niż data rozpoczęcia.");
         }
         this.endTime = endTime;
     }
@@ -121,9 +108,6 @@ public class LoanDTO {
     }
 
     public void setReaderId(String readerId) {
-        if (readerId != null && readerId.isEmpty()) {
-            throw new ReaderNotFoundException(HttpStatus.CONFLICT, "Reader does not exist");
-        }
         this.readerId = readerId;
     }
 
@@ -132,9 +116,6 @@ public class LoanDTO {
     }
 
     public void setBookSetId(String bookSetId) {
-        if (bookSetId != null && bookSetId.isEmpty()) {
-            throw new ReaderNotFoundException(HttpStatus.CONFLICT, "Book set does not exist");
-        }
         this.bookSetId = bookSetId;
     }
 }

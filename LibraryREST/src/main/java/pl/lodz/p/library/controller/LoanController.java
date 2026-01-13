@@ -34,7 +34,7 @@ public class LoanController {
 
     @GetMapping("/{id}")
     public LoanDTO getLoanById(@PathVariable String id) {
-        return LoanConverter.toDTO(loanService.findLoanById(id));
+        return LoanConverter.toDTO((Loan) loanService.findLoanById(id));
     }
 
     @GetMapping("/reader_id/{readerId}")

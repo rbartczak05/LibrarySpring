@@ -10,9 +10,9 @@ import pl.lodz.p.library.exception.ReaderLimitsException;
 public class ReaderDTO extends UserDTO {
     private final static int maxLoans = 5;
 
-    @Min(0)
-    @Max(maxLoans)
-    @NotNull
+    @NotNull(message = "Liczba wypożyczeń nie może być wartością null.")
+    @Min(value = 0, message = "Czytelnik nie może mieć ujemnej liczby wypożyczeń.")
+    @Max(value = maxLoans, message = "Przekroczono maksymalny limit wypożyczeń dla czytelnika (" + maxLoans + ").")
     private int currentLoansCount = 0;
 
     public ReaderDTO() {
