@@ -1,71 +1,257 @@
 
-/* Menu górne */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f4f6f8;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+/* Główny kontener aplikacji */
+#root {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Stylowanie kontenera nawigacji */
 #root > div > div:first-of-type {
-    background-color: #0f5c8d;
-    padding: 15px;
-    border-radius: 10px 10px 10px 10px;
+    background: linear-gradient(135deg, #0f5c8d 0%, #083b5c 100%);
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(15, 92, 141, 0.2);
+    margin-bottom: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
 }
 
 /* Linki w nawigacji */
 #root > div > div:first-of-type a {
-    color: white;
+    color: rgba(255, 255, 255, 0.9);
     text-decoration: none;
-    font-weight: bold;
-    font-size: 16px;
-    padding: 8px 12px;
-    border-radius: 4px;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
 }
 
-/* Nagłówki */
-h1, h2, h3 {
+#root > div > div:first-of-type a:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+/* NAGŁÓWKI */
+h2 {
     color: #0c476e;
-}
-
-/* Formularze */
-form {
-    max-width: 400px;
-    border-radius: 8px;
-}
-
-/* Elementy wewnątrz formularza */
-form label {
-    margin-bottom: 15px;
-    font-weight: bold;
-    color: #333;
-}
-
-/* Rubryki w formularzu */
-form input, form select {
-    width: 100%;
-    box-sizing: border-box;
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-
-form > div {
-    display: flex;
-    gap: 20px;
-    margin-top: 20px;
-}
-
-h2 + div {
-    padding: 15px;
+    font-size: 28px;
     margin-bottom: 20px;
+    border-bottom: 2px solid #e1e4e8;
+    padding-bottom: 10px;
+}
+
+h3 {
+    color: #0f5c8d;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+/* Div znajdujący się bezpośrednio po h2 */
+h2 + div {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 25px;
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
+    flex-wrap: wrap;
 }
 
-/* Tabele */
+h2 + div label {
+    font-weight: 600;
+    color: #555;
+    margin-right: 5px;
+}
+
+/* TABELE */
 table {
-    margin-top: 20px;
+    width: 100%;
     background: white;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    margin-top: 10px;
 }
 
-/* Przyciski wewnątrz tabel */
-td button:last-child {
-    background-color: #26b2c5;
+thead {
+    background-color: #0f5c8d;
+    color: white;
 }
+
+th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    color: #444;
+    font-size: 15px;
+}
+
+/* Paski zebry i hover */
+tbody tr:nth-child(even) {
+    background-color: #f9fbfd;
+}
+
+tbody tr:hover {
+    background-color: #f0f7fb;
+    transition: background-color 0.2s;
+}
+
+/* Kolumna ID - mniejsza czcionka */
+td:last-child {
+    color: #777;
+}
+
+/* FORMULARZE */
+form {
+    background: white;
+    max-width: 500px;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+}
+
+form label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+/* Pola tekstowe i selecty */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+
+input:focus, select:focus {
+    border-color: #26b2c5;
+    box-shadow: 0 0 0 3px rgba(38, 178, 197, 0.2);
+}
+
+/* Kontener przycisków w formularzu */
+form > div {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+/* PRZYCISKI */
+button {
+    background-color: #26b2c5;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+    background-color: #1a97a8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Przycisk "Anuluj" */
+button[type="button"],
+form button:not([type="submit"]) {
+    background-color: #e2e8f0;
+    color: #475569;
+}
+
+button[type="button"]:hover,
+form button:not([type="submit"]):hover {
+    background-color: #cbd5e1;
+    color: #1e293b;
+}
+
+/* Przyciski wewnątrz tabeli */
+td button {
+    padding: 6px 12px;
+    font-size: 13px;
+    margin-right: 5px;
+    margin-bottom: 2px;
+}
+
+/* Przycisk usuwania/dezaktywacji */
+td button:last-child {
+    background-color: #ef4444;
+}
+
 td button:last-child:hover {
-    background-color: #09869a;
+    background-color: #dc2626;
+}
+
+/* Przycisk "Dodaj" */
+h2 + div a button,
+h2 + div button {
+    background-color: #10b981; /* Zielony dla dodawania */
+}
+
+h2 + div a button:hover,
+h2 + div button:hover {
+    background-color: #059669;
+}
+
+/* Kontener szczegółów */
+h2 + div p {
+    margin: 8px 0;
+    font-size: 16px;
+    padding: 5px 0;
+    border-bottom: 1px dashed #eee;
+}
+
+h2 + div p strong {
+    color: #0f5c8d;
+    display: inline-block;
+    width: 180px; /* Wyrównanie etykiet */
 }

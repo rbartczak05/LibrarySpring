@@ -8,6 +8,7 @@ import pl.lodz.p.library.exception.*;
 import pl.lodz.p.library.model.User;
 import pl.lodz.p.library.repository.UserRepository;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 @Service
@@ -21,12 +22,12 @@ public class UserService {
 
     public User findUserById(String id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(HttpStatus.CONFLICT, "Użytkownik o ID: " + id + " nie istnieje"));
+                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, "Użytkownik o ID: " + id + " nie istnieje"));
     }
 
     public User findUserByLogin(String login) {
         return userRepository.findUserByLogin(login)
-                .orElseThrow(() -> new UserNotFoundException(HttpStatus.CONFLICT, "Użytkownik o loginie: " + login + " nie istnieje"));
+                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, "Użytkownik o loginie: " + login + " nie istnieje"));
     }
 
     public User findUserByEmail(String email) {
@@ -50,16 +51,27 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public void changeUserPasswordInModel(User user, String newPasswordEncrypted) {
+        try {
+            Field passwordField = pl.lodz.p.library.model.User.class.getDeclaredField("password");
+            passwordField.setAccessible(true);
+            passwordField.set(user, newPasswordEncrypted);
+        } catch (Exception e) {
+            throw new RuntimeException("Nie udało się ustawić hasła", e);
+        }
+    }
+
     @Transactional
     public User addUser(User user) {
         return userRepository.save(user);
     }
 
+    // bez zmiany loginu
     @Transactional
     public User updateUser(String id, User userUpdates) {
         User existingUser = findUserById(id);
 
-        existingUser.setLogin(userUpdates.getLogin());
+//        existingUser.setLogin(userUpdates.getLogin());
         existingUser.setEmail(userUpdates.getEmail());
         existingUser.setAge(userUpdates.getAge());
         existingUser.setActive(userUpdates.isActive());

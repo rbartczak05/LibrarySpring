@@ -2,6 +2,7 @@ package pl.lodz.p.library.database;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import pl.lodz.p.library.model.*;
 import pl.lodz.p.library.repository.BookSetRepository;
@@ -18,13 +19,15 @@ public class DataInitializer implements CommandLineRunner {
     private final BookSetRepository bookSetRepository;
     private final LoanRepository loanRepository;
     private final LoanService loanService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public DataInitializer(UserRepository userRepository, BookSetRepository bookSetRepository, LoanRepository loanRepository, LoanService loanService) {
+    public DataInitializer(UserRepository userRepository, BookSetRepository bookSetRepository, LoanRepository loanRepository, LoanService loanService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.bookSetRepository = bookSetRepository;
         this.loanRepository = loanRepository;
         this.loanService = loanService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -33,22 +36,22 @@ public class DataInitializer implements CommandLineRunner {
         userRepository.deleteAll();
         bookSetRepository.deleteAll();
 
-        Reader userJanek = new Reader("janek", "janek@gmail.com", 33);
-        Reader userRemek = new Reader("remek", "remek@wp.pl", 22);
-        Reader userPiotrek = new Reader("piotrek", "piotrek@interia.pl", 22);
-        Reader userGrzegorz = new Reader("grzegorz", "grzegorz@gmail.com", 45);
-        Reader userKrzysztof = new Reader("krzysztof", "krzysztof@gmail.com", 19); // nieaktywny
+        Reader userJanek = new Reader("janek", passwordEncoder.encode("12345"), "janek@gmail.com", 33);
+        Reader userRemek = new Reader("remek", passwordEncoder.encode("12345"), "remek@wp.pl", 22);
+        Reader userPiotrek = new Reader("piotrek", passwordEncoder.encode("12345"), "piotrek@interia.pl", 22);
+        Reader userGrzegorz = new Reader("grzegorz", passwordEncoder.encode("12345"), "grzegorz@gmail.com", 45);
+        Reader userKrzysztof = new Reader("krzysztof", passwordEncoder.encode("12345"), "krzysztof@gmail.com", 19); // nieaktywny
         userJanek.setActive(true);
         userRemek.setActive(true);
         userPiotrek.setActive(true);
         userGrzegorz.setActive(true);
         userRepository.saveAll(List.of(userJanek, userRemek, userPiotrek, userGrzegorz, userKrzysztof));
 
-        Librarian libBarbara = new Librarian("lib.barbara", "barbara@library.pl", 42);
-        Librarian libTomasz = new Librarian("lib.tomasz", "tomasz@library.pl", 51);
+        Librarian libBarbara = new Librarian("lib.barbara", passwordEncoder.encode("12345"), "barbara@library.pl", 42);
+        Librarian libTomasz = new Librarian("lib.tomasz", passwordEncoder.encode("12345"), "tomasz@library.pl", 51);
         userRepository.saveAll(List.of(libBarbara, libTomasz));
 
-        Administrator admin = new Administrator("admin", "admin@root.pl", 35);
+        Administrator admin = new Administrator("admin", passwordEncoder.encode("admin"), "admin@root.pl", 35);
         userRepository.save(admin);
 
         BookSet bookCoNas = new BookSet("Co nas nie zabije", "Wim Hof", 2017, 32);

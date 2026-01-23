@@ -15,6 +15,10 @@ public class Reader extends User {
     @Max(value = maxLoans, message = "Przekroczono maksymalny limit wypożyczeń dla czytelnika (" + maxLoans + ").")
     private int currentLoansCount = 0;
 
+    public Reader(String login, String password, String email, int age) {
+        super(login, password, email, age);
+    }
+
     public Reader(String login, String email, int age) {
         super(login, email, age);
     }

@@ -69,9 +69,7 @@ const ReaderList = () => {
                         <td>{r.id}</td>
                         <td>
                             <Link to={`/readers/${r.id}`}><button>Szczegóły</button></Link>
-                            {' '}
                             <Link to={`/readers/edit/${r.id}`}><button>Edytuj</button></Link>
-                            {' '}
                             <button onClick={() => handleToggleActive(r.id, r.active)}>
                                 {r.active ? 'Dezaktywuj' : 'Aktywuj'}
                             </button>

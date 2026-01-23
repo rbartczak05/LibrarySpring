@@ -85,7 +85,12 @@ const ReaderForm = () => {
                         required
                         minLength="3"
                         maxLength="20"
-                        title="Login musi mieć od 3 do 20 znaków."
+                        title={id
+                            ? "Aby zmienić login, skontaktuj się z administracją biblioteki."
+                            : "Login musi mieć od 3 do 20 znaków."
+                        }
+                        disabled={!!id}
+                        className={id ? 'input-disabled' : ''}
                     />
                 </label>
                 <label>

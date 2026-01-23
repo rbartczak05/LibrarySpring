@@ -1,5 +1,6 @@
 package pl.lodz.p.library.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.validation.constraints.Email;
@@ -30,6 +31,11 @@ public abstract class User {
     @Indexed(unique = true)
     private String login;
 
+    @NotBlank
+    @Length(min = 5, message = "Hasło musi mieć co najmniej 5 znaków.")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
+
     @NotBlank(message = "Email nie może być pusty.")
     @Email(message = "Podany ciąg nie jest poprawnym adresem email.")
     @Length(min = 3, max = 100, message = "Email musi mieć od 3 do 100 znaków.")
@@ -39,6 +45,11 @@ public abstract class User {
     @Min(value = 1, message = "Nie wolno rejestrować nienarodzonych!")
     private int age;
     private boolean active;
+
+    public User(String login, String password, String email, int age) {
+        this(login, email, age);
+        this.password = password;
+    }
 
     public User(String login, String email, int age) {
         this.login = login;
@@ -65,6 +76,14 @@ public abstract class User {
 
     public void setLogin(String login) {
         this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getEmail() {

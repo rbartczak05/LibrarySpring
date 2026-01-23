@@ -4,11 +4,14 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.library.converter.LoanConverter;
 import pl.lodz.p.library.dto.LoanDTO;
 import pl.lodz.p.library.model.Loan;
+import pl.lodz.p.library.model.User;
 import pl.lodz.p.library.service.LoanService;
+import pl.lodz.p.library.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,10 +22,12 @@ import java.util.stream.Collectors;
 public class LoanController {
 
     private final LoanService loanService;
+    private final UserService userService;
 
     @Autowired
-    public LoanController(LoanService loanService) {
+    public LoanController(LoanService loanService, UserService userService) {
         this.loanService = loanService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -83,6 +88,15 @@ public class LoanController {
                               @RequestParam(required = false)
                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime loanStartTime) {
         return LoanConverter.toDTO(loanService.createLoan(readerId, bookSetId, loanStartTime));
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public LoanDTO createMyLoan(@RequestParam String bookSetId) {
+        String currentLogin = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findUserByLogin(currentLogin);
+
+        return LoanConverter.toDTO(loanService.createLoan(user.getId(), bookSetId, LocalDateTime.now()));
     }
 
     @PostMapping("/{id}")

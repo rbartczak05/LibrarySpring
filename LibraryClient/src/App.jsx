@@ -9,6 +9,11 @@ import LibrarianList from './lists/LibrarianList.jsx';
 import LibrarianForm from './forms/LibrarianForm.jsx';
 import BookManager from './managers/BookManager.jsx';
 import LoanManager from './managers/LoanManager.jsx';
+import LoginForm from './forms/LoginForm.jsx'
+import ChangePasswordForm from './forms/ChangePasswordForm.jsx'
+import {useAuth} from "./context/AuthContext.jsx";
+
+const { user, logout } = useAuth();
 
 function App() {
     return (
@@ -16,7 +21,10 @@ function App() {
             <div>
                 <div>
                     <Link to="/">Strona Główna  </Link>
-                    <Link to="/admins">Administratorzy</Link>
+                    {user && <span>Zalogowany jako: {user.login} ({user.role})</span>}
+                    {user && <button onClick={logout}>Wyloguj</button>}
+                    {!user && <Link to="/login">Zaloguj</Link>}
+                    {user?.role === "ADMIN" && <Link to="/admins">Administratorzy</Link>}
                     <Link to="/librarians">Bibliotekarze</Link>
                     <Link to="/readers">Czytelnicy</Link>
                     <Link to="/books">Książki</Link>
@@ -25,6 +33,9 @@ function App() {
 
                 <Routes>
                     <Route path="/" element={<Home />} />
+
+                    <Route path="/auth/login" element={<LoginForm />} />
+                    <Route path={"/auth/change-password"} element={<ChangePasswordForm />} />
 
                     <Route path="/admins" element={<AdministratorList />} />
                     <Route path="/admins/add" element={<AdministratorForm />} />

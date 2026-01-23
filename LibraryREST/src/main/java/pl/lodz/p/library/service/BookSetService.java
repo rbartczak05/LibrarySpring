@@ -26,7 +26,7 @@ public class BookSetService {
 
     public BookSet findBookSetById(String id) {
         return bookSetRepository.findById(id)
-                .orElseThrow(() -> new BookSetNotFoundException(HttpStatus.NOT_FOUND, "BookSet with id: " + id + " not found"));
+                .orElseThrow(() -> new BookSetNotFoundException(HttpStatus.NOT_FOUND, "Książka o ID: " + id + " nie znaleziona."));
     }
 
     public List<BookSet> findBookSetsByTitle(String title) {
