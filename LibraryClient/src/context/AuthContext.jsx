@@ -8,6 +8,17 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem('token'));
 
+    const PERMISSIONS = {
+        'ROLE_ADMIN': ['manage_admins', 'manage_librarians', 'manage_readers', 'manage_loans', 'view_books'],
+        'ROLE_LIBRARIAN': ['manage_readers', 'manage_loans', 'view_books'],
+        'ROLE_READER': ['rent_books', 'view_my_loans', 'view_books']
+    };
+
+    const can = (permission) => {
+        if (!user || !user.role) return false;
+        return PERMISSIONS[user.role].includes(permission);
+    }
+
     useEffect(() => {
         if (token) {
             try {
@@ -35,7 +46,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ user, login, logout, can }}>
             {children}
         </AuthContext.Provider>
     );

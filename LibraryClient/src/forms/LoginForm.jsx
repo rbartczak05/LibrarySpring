@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
 
 const LoginForm = () => {
     const [formData, setFormData] = useState({
@@ -51,6 +52,7 @@ const LoginForm = () => {
                 <div>
                     <button type="submit">Zaloguj</button>
                     <button type="button" onClick={() => navigate('/')}>Anuluj</button>
+                    <label>Nie masz konta? <Link to="/register">Zarejestruj się</Link></label>
                 </div>
             </form>
         </div>

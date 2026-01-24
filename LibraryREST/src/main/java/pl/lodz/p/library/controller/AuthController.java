@@ -18,6 +18,8 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.lodz.p.library.dto.AuthRequest;
 import pl.lodz.p.library.dto.AuthResponse;
 import pl.lodz.p.library.dto.ChangePasswordRequest;
+import pl.lodz.p.library.dto.RegisterRequest;
+import pl.lodz.p.library.model.Reader;
 import pl.lodz.p.library.model.User;
 import pl.lodz.p.library.security.JwtService;
 import pl.lodz.p.library.service.UserService;
@@ -82,5 +84,14 @@ public class AuthController {
         userService.addUser(user);
 
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<Void> register( @RequestBody RegisterRequest request) {
+        Reader reader = new Reader(request.getLogin(), passwordEncoder.encode(request.getPassword()),
+                request.getEmail(), request.getAge());
+
+        userService.addUser(reader);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

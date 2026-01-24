@@ -49,9 +49,11 @@ public class DataInitializer implements CommandLineRunner {
 
         Librarian libBarbara = new Librarian("lib.barbara", passwordEncoder.encode("12345"), "barbara@library.pl", 42);
         Librarian libTomasz = new Librarian("lib.tomasz", passwordEncoder.encode("12345"), "tomasz@library.pl", 51);
+        libTomasz.setActive(true);
         userRepository.saveAll(List.of(libBarbara, libTomasz));
 
         Administrator admin = new Administrator("admin", passwordEncoder.encode("admin"), "admin@root.pl", 35);
+        admin.setActive(true);
         userRepository.save(admin);
 
         BookSet bookCoNas = new BookSet("Co nas nie zabije", "Wim Hof", 2017, 32);

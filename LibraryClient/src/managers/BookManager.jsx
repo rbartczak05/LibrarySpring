@@ -102,6 +102,7 @@ const BookManager = () => {
                     <label>Dodaj nową pozycję</label>
                     <form onSubmit={handleSubmit}>
                         <input
+                            type="text"
                             name="title"
                             placeholder="Tytuł"
                             value={form.title}
@@ -110,6 +111,7 @@ const BookManager = () => {
                             minLength="1"
                         />
                         <input
+                            type="text"
                             name="author"
                             placeholder="Autor"
                             value={form.author}

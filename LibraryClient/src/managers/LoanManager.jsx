@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
 import api from '../api';
 
-const LoanManager = () => {
+const LoanManager = ({ myLoansOnly = false }) => {
     const [loans, setLoans] = useState([]);
     const [newLoan, setNewLoan] = useState({ readerId: '', bookSetId: '' });
 
     useEffect(() => {
         loadLoans();
-    }, []);
+    }, [myLoansOnly]);
 
     const loadLoans = () => {
-        api.get('/loans')
+        const endpoint = myLoansOnly ? '/loans/me' : '/loans';
+        api.get(endpoint)
             .then(res => setLoans(res.data))
             .catch(() => alert("Błąd pobierania wypożyczeń"));
     };
@@ -49,56 +50,62 @@ const LoanManager = () => {
 
     return (
         <div>
-            <h2>Wypożyczenia</h2>
+            <h2>{myLoansOnly ? 'Moje Wypożyczenia' : 'Wszystkie Wypożyczenia'}</h2>
 
-            <div>
-                <label>Nowa Alokacja</label>
-                <form onSubmit={handleCreate}>
-                    <input
-                        placeholder="Podaj ID Czytelnika"
-                        value={newLoan.readerId}
-                        onChange={e => setNewLoan({...newLoan, readerId: e.target.value})}
-                        required
-                        minLength="1"
-                    />
-                    <input
-                        placeholder="Podaj ID Książki"
-                        value={newLoan.bookSetId}
-                        onChange={e => setNewLoan({...newLoan, bookSetId: e.target.value})}
-                        required
-                        minLength="1"
-                    />
-                    <button type="submit">WYPOŻYCZ</button>
-                </form>
-            </div>
+            {!myLoansOnly && (
+                <div>
+                    <label>Nowa Alokacja</label>
+                    <form onSubmit={handleCreate}>
+                        <input
+                            type="text"
+                            placeholder="Podaj ID Czytelnika"
+                            value={newLoan.readerId}
+                            onChange={e => setNewLoan({...newLoan, readerId: e.target.value})}
+                            required
+                            minLength="1"
+                        />
+                        <input
+                            type="text"
+                            placeholder="Podaj ID Książki"
+                            value={newLoan.bookSetId}
+                            onChange={e => setNewLoan({...newLoan, bookSetId: e.target.value})}
+                            required
+                            minLength="1"
+                        />
+                        <button type="submit">WYPOŻYCZ</button>
+                    </form>
+                </div>
+            )}
 
-            <h3>Aktywne i zakończone alokacje</h3>
+            <h3>{myLoansOnly ? 'Historia twoich wypożyczeń' : 'Aktywne i zakończone alokacje'}</h3>
             <table border="1" cellPadding="8">
                 <thead>
                 <tr>
                     <th>ID Wypożyczenia</th>
-                    <th>Czytelnik ID</th>
+                    {!myLoansOnly && <th>Czytelnik ID</th>}
                     <th>Książka ID</th>
                     <th>Data Wypożyczenia</th>
                     <th>Data Zwrotu</th>
-                    <th>Akcja</th>
+                    {!myLoansOnly && <th>Akcja</th>}
                 </tr>
                 </thead>
                 <tbody>
                 {loans.map(loan => (
                     <tr key={loan.id}>
                         <td><small>{loan.id}</small></td>
-                        <td><small>{loan.readerId}</small></td>
+                        {!myLoansOnly && <td><small>{loan.readerId}</small></td>}
                         <td><small>{loan.bookSetId}</small></td>
                         <td>{new Date(loan.startTime).toLocaleString()}</td>
                         <td>{loan.returnTime ? new Date(loan.returnTime).toLocaleString() : '-'}</td>
-                        <td>
-                            {loan.active && (
-                                <button onClick={() => handleEndLoan(loan.id)}>
-                                    Zakończ (Zwrot)
-                                </button>
-                            )}
-                        </td>
+                        {!myLoansOnly && (
+                            <td>
+                                {loan.active && (
+                                    <button onClick={() => handleEndLoan(loan.id)}>
+                                        Zakończ (Zwrot)
+                                    </button>
+                                )}
+                            </td>
+                        )}
                     </tr>
                 ))}
                 </tbody>

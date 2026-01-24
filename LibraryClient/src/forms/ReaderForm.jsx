@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8080';
+import api from '../api';
 
 const ReaderForm = () => {
     const { id } = useParams();
@@ -21,7 +19,7 @@ const ReaderForm = () => {
 
     useEffect(() => {
         if (id) {
-            axios.get(`${API_URL}/readers/${id}`)
+            api.get(`/readers/${id}`)
                 .then(res => {
                     setFormData(res.data);
                     setEtag(res.headers['if-match'] || res.headers['If-Match']); // Pobranie ETaga
@@ -63,10 +61,10 @@ const ReaderForm = () => {
         }
 
         const request = id
-            ? axios.post(`${API_URL}/readers/${id}`, payload, {
+            ? api.post(`/readers/${id}`, payload, {
                 headers: { 'If-Match': etag }
               })
-            : axios.post(`${API_URL}/readers`, payload);
+            : api.post(`/readers`, payload);
 
         request
             .then(() => {
@@ -83,23 +81,6 @@ const ReaderForm = () => {
             <h3>{id ? 'Edycja Czytelnika' : 'Nowy Czytelnik'}</h3>
 
             <form onSubmit={handleSubmit}>
-                <label>
-                    Login:
-                    <input
-                        name="login"
-                        value={formData.login}
-                        onChange={handleChange}
-                        required
-                        minLength="3"
-                        maxLength="20"
-                        title={id
-                            ? "Aby zmienić login, skontaktuj się z administracją biblioteki."
-                            : "Login musi mieć od 3 do 20 znaków."
-                        }
-                        disabled={!!id}
-                        className={id ? 'input-disabled' : ''}
-                    />
-                </label>
                 <label>
                     Email:
                     <input

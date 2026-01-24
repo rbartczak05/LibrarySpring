@@ -112,10 +112,12 @@ public class LoanController {
         return LoanConverter.toDTO(loanService.endLoan(id));
     }
 
-    ///  Jakbysmy jednak sie zdecydowali na usuwanie wypożyczeń
-//    @DeleteMapping("/{id}")
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    public void deleteLoan(@PathVariable String id) {
-//        loanService.deleteLoan(id);
-//    }
+    @GetMapping("/me")
+    public List<LoanDTO> getMyLoans() {
+        String currentLogin = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findUserByLogin(currentLogin);
+        return loanService.findLoansByReader(user.getId()).stream()
+                .map(LoanConverter::toDTO)
+                .collect(Collectors.toList());
+    }
 }
