@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8080';
+import api from '../api';
 
 const AdministratorForm = () => {
     const navigate = useNavigate();
@@ -45,7 +43,7 @@ const AdministratorForm = () => {
             type: 'admin'
         };
 
-        axios.post(`${API_URL}/admins`, payload)
+        api.post('/admins', payload)
             .then(() => {
                 alert("Administrator dodany!");
                 navigate('/admins');

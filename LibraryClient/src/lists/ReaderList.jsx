@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8080';
+import api from '../api';
 
 const ReaderList = () => {
     const [readers, setReaders] = useState([]);
@@ -13,7 +11,7 @@ const ReaderList = () => {
     }, []);
 
     const loadReaders = () => {
-        axios.get(`${API_URL}/readers`)
+        api.get('/readers')
             .then(res => setReaders(res.data))
             .catch(() => alert("Błąd pobierania listy czytelników"));
     };
@@ -24,7 +22,7 @@ const ReaderList = () => {
 
         if (!window.confirm(`Czy na pewno chcesz ${msg} tego użytkownika?`)) return;
 
-        axios.post(`${API_URL}/readers/${id}/${action}`)
+        api.post(`/readers/${id}/${action}`)
             .then(() => loadReaders())
             .catch(err => alert("Błąd: " + (err.response?.data?.message || err.message)));
     };

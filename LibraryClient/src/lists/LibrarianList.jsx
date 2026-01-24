@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8080';
+import api from '../api';
 
 const LibrarianList = () => {
     const [librarians, setLibrarians] = useState([]);
     const [filterId, setFilterId] = useState('');
 
     useEffect(() => {
-        axios.get(`${API_URL}/librarians`)
+        api.get('/librarians')
             .then(res => setLibrarians(res.data))
             .catch(() => alert("Błąd pobierania listy bibliotekarzy"));
     }, []);

@@ -17,10 +17,15 @@ const ReaderForm = () => {
         type: 'reader'
     });
 
+    const [etag, setEtag] = useState('');
+
     useEffect(() => {
         if (id) {
             axios.get(`${API_URL}/readers/${id}`)
-                .then(res => setFormData(res.data))
+                .then(res => {
+                    setFormData(res.data);
+                    setEtag(res.headers['if-match'] || res.headers['If-Match']); // Pobranie ETaga
+                })
                 .catch(err => alert("Błąd pobierania danych: " + (err.response?.data?.message || err.message)));
         }
     }, [id]);
@@ -58,7 +63,9 @@ const ReaderForm = () => {
         }
 
         const request = id
-            ? axios.post(`${API_URL}/readers/${id}`, payload)
+            ? axios.post(`${API_URL}/readers/${id}`, payload, {
+                headers: { 'If-Match': etag }
+              })
             : axios.post(`${API_URL}/readers`, payload);
 
         request

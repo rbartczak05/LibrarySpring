@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8080';
+import api from '../api';
 
 const LibrarianForm = () => {
     const navigate = useNavigate();
@@ -45,7 +43,7 @@ const LibrarianForm = () => {
             type: 'librarian'
         };
 
-        axios.post(`${API_URL}/librarians`, payload)
+        api.post('/librarians', payload)
             .then(() => {
                 alert("Bibliotekarz dodany!");
                 navigate('/librarians');

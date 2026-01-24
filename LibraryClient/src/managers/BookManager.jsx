@@ -1,18 +1,20 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8080';
+import api from '../api';
+import { useAuth } from '../context/AuthContext';
 
 const BookManager = () => {
+    const { user } = useAuth();
     const [books, setBooks] = useState([]);
     const [form, setForm] = useState({ title: '', author: '', releaseYear: '', quantity: '' });
+
+    const isReader = user?.role === 'ROLE_READER';
 
     useEffect(() => {
         loadBooks();
     }, []);
 
     const loadBooks = () => {
-        axios.get(`${API_URL}/book_set`)
+        api.get('/book_set')
             .then(res => setBooks(res.data))
             .catch(err => {
                 const msg = err.response?.data?.message || err.message;
@@ -55,7 +57,7 @@ const BookManager = () => {
             quantity: parseInt(form.quantity)
         };
 
-        axios.post(`${API_URL}/book_set`, payload)
+        api.post('/book_set', payload)
             .then(() => {
                 alert("Książka dodana!");
                 setForm({ title: '', author: '', releaseYear: '', quantity: '' });
@@ -69,57 +71,74 @@ const BookManager = () => {
     const handleDelete = (id) => {
         if (!window.confirm("Czy na pewno chcesz usunąć tę książkę?")) return;
 
-        axios.delete(`${API_URL}/book_set/${id}`)
+        api.delete(`/book_set/${id}`)
             .then(() => loadBooks())
             .catch(err => {
                 alert("Nie udało się usunąć książki:\n" + getErrorMessage(err));
             });
-    }
+    };
+
+    const handleRent = (bookId) => {
+        if (!window.confirm("Czy na pewno chcesz wypożyczyć tę książkę?")) return;
+
+        api.post('/loans/me', null, {
+            params: { bookSetId: bookId }
+        })
+            .then(() => {
+                alert("Książka została wypożyczona pomyślnie!");
+                loadBooks();
+            })
+            .catch(err => {
+                const msg = err.response?.data?.message || "Wystąpił błąd podczas wypożyczania.";
+                alert("Błąd: " + msg);
+            });
+    };
 
     return (
         <div>
             <h2>Książki</h2>
-
-            <div>
-                <label>Dodaj nową pozycję</label>
-                <form onSubmit={handleSubmit}>
-                    <input
-                        name="title"
-                        placeholder="Tytuł"
-                        value={form.title}
-                        onChange={handleChange}
-                        required
-                        minLength="1"
-                    />
-                    <input
-                        name="author"
-                        placeholder="Autor"
-                        value={form.author}
-                        onChange={handleChange}
-                        required
-                        minLength="1"
-                    />
-                    <input
-                        name="releaseYear"
-                        type="number"
-                        placeholder="Rok wydania"
-                        value={form.releaseYear}
-                        onChange={handleChange}
-                        required
-                        min="0"
-                    />
-                    <input
-                        name="quantity"
-                        type="number"
-                        placeholder="Ilość sztuk"
-                        value={form.quantity}
-                        onChange={handleChange}
-                        required
-                        min="0"
-                    />
-                    <button type="submit">Dodaj</button>
-                </form>
-            </div>
+            {!isReader && (
+                <div>
+                    <label>Dodaj nową pozycję</label>
+                    <form onSubmit={handleSubmit}>
+                        <input
+                            name="title"
+                            placeholder="Tytuł"
+                            value={form.title}
+                            onChange={handleChange}
+                            required
+                            minLength="1"
+                        />
+                        <input
+                            name="author"
+                            placeholder="Autor"
+                            value={form.author}
+                            onChange={handleChange}
+                            required
+                            minLength="1"
+                        />
+                        <input
+                            name="releaseYear"
+                            type="number"
+                            placeholder="Rok wydania"
+                            value={form.releaseYear}
+                            onChange={handleChange}
+                            required
+                            min="0"
+                        />
+                        <input
+                            name="quantity"
+                            type="number"
+                            placeholder="Ilość sztuk"
+                            value={form.quantity}
+                            onChange={handleChange}
+                            required
+                            min="0"
+                        />
+                        <button type="submit">Dodaj</button>
+                    </form>
+                </div>
+            )}
 
             <table border="1" cellPadding="10">
                 <thead>
@@ -141,7 +160,13 @@ const BookManager = () => {
                         <td>{b.quantity}</td>
                         <td>{b.id}</td>
                         <td>
-                            <button onClick={() => handleDelete(b.id)}>Usuń</button>
+                            {isReader ? (
+                                <button onClick={() => handleRent(b.id)} disabled={b.quantity <= 0}>
+                                    {b.quantity > 0 ? "Wypożycz" : "Niedostępna"}
+                                </button>
+                            ) : (
+                                <button onClick={() => handleDelete(b.id)}>Usuń</button>
+                            )}
                         </td>
                     </tr>
                 ))}

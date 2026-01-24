@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8080';
+import api from '../api';
 
 const LoanManager = () => {
     const [loans, setLoans] = useState([]);
@@ -12,7 +10,7 @@ const LoanManager = () => {
     }, []);
 
     const loadLoans = () => {
-        axios.get(`${API_URL}/loans`)
+        api.get('/loans')
             .then(res => setLoans(res.data))
             .catch(() => alert("Błąd pobierania wypożyczeń"));
     };
@@ -22,7 +20,7 @@ const LoanManager = () => {
 
         if (!window.confirm("Czy na pewno chcesz utworzyć to wypożyczenie?")) return;
 
-        axios.post(`${API_URL}/loans`, null, {
+        api.post('/loans', null, {
             params: {
                 readerId: newLoan.readerId,
                 bookSetId: newLoan.bookSetId
@@ -41,7 +39,7 @@ const LoanManager = () => {
     const handleEndLoan = (id) => {
         if (!window.confirm("Czy na pewno chcesz zakończyć to wypożyczenie?")) return;
 
-        axios.post(`${API_URL}/loans/${id}/end`)
+        api.post(`/loans/${id}/end`)
             .then(() => {
                 alert("Zwrot zaakceptowany.");
                 loadLoans();

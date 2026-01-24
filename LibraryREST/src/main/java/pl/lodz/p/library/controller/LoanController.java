@@ -90,7 +90,7 @@ public class LoanController {
         return LoanConverter.toDTO(loanService.createLoan(readerId, bookSetId, loanStartTime));
     }
 
-    @PostMapping
+    @PostMapping("/me")
     @ResponseStatus(HttpStatus.CREATED)
     public LoanDTO createMyLoan(@RequestParam String bookSetId) {
         String currentLogin = SecurityContextHolder.getContext().getAuthentication().getName();

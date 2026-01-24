@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from "./api.js";
 
 const API_URL = 'http://localhost:8080';
 
@@ -10,10 +10,10 @@ const ReaderDetails = () => {
     const [loans, setLoans] = useState([]);
 
     useEffect(() => {
-        axios.get(`${API_URL}/readers/${id}`)
+        api.get(`/readers/${id}`)
             .then(res => setReader(res.data));
 
-        axios.get(`${API_URL}/loans/reader_id/${id}`)
+        api.get(`/loans/reader_id/${id}`)
             .then(res => setLoans(res.data))
             .catch(() => console.log("Brak wypożyczeń"));
     }, [id]);
