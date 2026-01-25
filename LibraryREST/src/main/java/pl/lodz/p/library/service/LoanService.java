@@ -141,19 +141,19 @@ public class LoanService {
     }
 
     /// Zachowane, żeby w razie czego mieć taką funkcję i udostępniać całego CRU(D)-a w aplikacji dla wypożyczenia.
-//    @Transactional
-//    public void deleteLoan(String loanId) {
-//        if(loanRepository.findById(loanId).isEmpty()) {
-//            throw new LoanNotFoundException(HttpStatus.NOT_FOUND, "Loan with id: " + loanId + " not found.");
-//        }
-//
-//        Loan loan = findLoanById(loanId);
-//
-//        if (loan.isActive()) {
-//            throw new LoanAlreadyInactiveException(HttpStatus.BAD_REQUEST, "Cannot delete active Loan.");
-//        }
-//
-//        loanRepository.delete(loan);
-//    }
+    @Transactional
+    public void deleteLoan(String loanId) {
+        if(loanRepository.findById(loanId).isEmpty()) {
+            throw new LoanNotFoundException(HttpStatus.NOT_FOUND, "Loan with id: " + loanId + " not found.");
+        }
+
+        Loan loan = findLoanById(loanId);
+
+        if (loan.isActive()) {
+            throw new LoanAlreadyInactiveException(HttpStatus.BAD_REQUEST, "Cannot delete active Loan.");
+        }
+
+        loanRepository.delete(loan);
+    }
 }
 

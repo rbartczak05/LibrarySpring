@@ -2,6 +2,7 @@ package pl.lodz.p.library.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -15,6 +16,7 @@ import pl.lodz.p.library.model.User;
 import pl.lodz.p.library.repository.UserRepository;
 
 @Configuration
+@EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class ApplicationConfig {
 
     private final UserRepository userRepository;

@@ -14,8 +14,13 @@ const ReaderDetails = () => {
             .then(res => setReader(res.data));
 
         api.get(`/loans/reader_id/${id}`)
-            .then(res => setLoans(res.data))
-            .catch(() => console.log("Brak wypożyczeń"));
+            .then(res => {
+                const data = res.data._embedded ?
+                    (res.data._embedded.loans || res.data._embedded.loanDTOList) :
+                    res.data;
+                setLoans(Array.isArray(data) ? data : []);
+            })
+            .catch(() => setLoans([]));
     }, [id]);
 
     if (!reader) return <p>Ładowanie danych...</p>;

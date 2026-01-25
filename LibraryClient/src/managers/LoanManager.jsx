@@ -12,7 +12,10 @@ const LoanManager = ({ myLoansOnly = false }) => {
     const loadLoans = () => {
         const endpoint = myLoansOnly ? '/loans/me' : '/loans';
         api.get(endpoint)
-            .then(res => setLoans(res.data))
+            .then(res => {
+                const data = res.data._embedded.loans;
+                setLoans(Array.isArray(data) ? data : []);
+            })
             .catch(() => alert("Błąd pobierania wypożyczeń"));
     };
 
@@ -37,15 +40,29 @@ const LoanManager = ({ myLoansOnly = false }) => {
             });
     };
 
-    const handleEndLoan = (id) => {
+    const handleEndLoan = (url) => {
         if (!window.confirm("Czy na pewno chcesz zakończyć to wypożyczenie?")) return;
 
-        api.post(`/loans/${id}/end`)
+        api.post(url)
             .then(() => {
                 alert("Zwrot zaakceptowany.");
                 loadLoans();
             })
             .catch(err => alert("Błąd: " + (err.response?.data?.message || err.message)));
+    };
+
+    const handleDeleteLoan = (url) => {
+        if (!window.confirm("Czy na pewno chcesz USUNĄĆ tę alokację?")) return;
+        try {
+            api.delete(url)
+                .then(() => {
+                    alert("Alokacja usunięta.");
+                    loadLoans();
+                })
+                .catch(err => alert("Błąd: " + (err.response?.data?.message || err.message)));
+        } catch (e) {
+            alert("Wystąpił błąd podczas usuwania alokacji: " + e.message);
+        }
     };
 
     return (
@@ -100,9 +117,15 @@ const LoanManager = ({ myLoansOnly = false }) => {
                         {!myLoansOnly && (
                             <td>
                                 {loan.active && (
-                                    <button onClick={() => handleEndLoan(loan.id)}>
+                                    <button onClick={() => handleEndLoan(loan._links.end.href)}>
                                         Zakończ (Zwrot)
                                     </button>
+                                )}
+
+                                {loan._links?.delete && (
+                                    <button
+                                        onClick={() => handleDeleteLoan(loan._links.delete.href)}
+                                        style={{ backgroundColor: '#ef4444' }}>Usuń</button>
                                 )}
                             </td>
                         )}

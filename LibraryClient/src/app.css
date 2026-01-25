@@ -258,3 +258,7 @@ h2 + div p strong {
     display: inline-block;
     width: 180px; /* Wyrównanie etykiet */
 }
+
+span {
+    color: #ffffff;
+}

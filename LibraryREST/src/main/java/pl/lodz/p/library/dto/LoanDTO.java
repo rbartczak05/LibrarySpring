@@ -9,9 +9,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import pl.lodz.p.library.exception.BookSetTimeException;
 
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
+
 import java.time.LocalDateTime;
 
-public class LoanDTO {
+@Relation(collectionRelation = "loans", itemRelation = "loan")
+public class LoanDTO extends RepresentationModel<LoanDTO>{
     @Id
     private String id;
 
