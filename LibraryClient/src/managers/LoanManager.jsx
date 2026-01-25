@@ -16,7 +16,7 @@ const LoanManager = ({ myLoansOnly = false }) => {
                 const data = res.data._embedded.loans;
                 setLoans(Array.isArray(data) ? data : []);
             })
-            .catch(() => alert("Błąd pobierania wypożyczeń"));
+            .catch(() => alert("Błąd pobierania wypożyczeń / brak wypożyczeń."));
     };
 
     const handleCreate = (e) => {

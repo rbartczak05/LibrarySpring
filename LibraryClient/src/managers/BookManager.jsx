@@ -89,7 +89,7 @@ const BookManager = () => {
                 loadBooks();
             })
             .catch(err => {
-                const msg = err.response?.data?.message || "Wystąpił błąd podczas wypożyczania.";
+                const msg = err.response?.data?.message || "Nie możesz wypożyczyć książki. (sprawdź swój limit wypożyczeń lub poproś o aktywację konta)";
                 alert("Błąd: " + msg);
             });
     };
