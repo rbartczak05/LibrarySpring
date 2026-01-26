@@ -33,7 +33,7 @@ public class ApplicationConfig {
                         .password(user.getPassword())
                         .roles(mapRole(user))
                         .build())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
     }
 
     private String mapRole(User user) {

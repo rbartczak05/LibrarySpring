@@ -30,7 +30,7 @@ public class AuthController {
     private final JwtService jwtService;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-    private final UserDetailsService userDetailsService; // Potrzebne do odświeżania
+    private final UserDetailsService userDetailsService;
 
     @Autowired
     public AuthController(AuthenticationManager authenticationManager,
@@ -93,7 +93,7 @@ public class AuthController {
         String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findUserByLogin(currentUsername);
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Stare hasło jest nieprawidłowe.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Stare hasło jest nieprawidłowe.");
         }
         String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
         userService.changeUserPasswordInModel(user, encodedNewPassword);

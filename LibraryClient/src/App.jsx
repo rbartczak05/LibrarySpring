@@ -26,10 +26,6 @@ const getRoleName = (role) => {
 const Navigation = () => {
     const { user, logout, can } = useAuth();
     const navigate = useNavigate();
-    const role = user?.role;
-    const isAdmin = role === 'ROLE_ADMIN';
-    const isLibrarian = role === 'ROLE_LIBRARIAN';
-
     const handleLogout = () => {
         logout();
         navigate('/');
@@ -48,20 +44,15 @@ const Navigation = () => {
                 <Link to="/login">Zaloguj</Link>
             )}
 
-            {/* Admin widzi wszystko */}
             {can('manage_admins') && <Link to="/admins">Administratorzy</Link>}
-            
-            {/* Admin widzi bibliotekarzy */}
+
             {can('manage_librarians') && <Link to="/librarians">Bibliotekarze</Link>}
 
-            {/* Admin i Bibliotekarz widzą czytelników i wypożyczenia */}
             {can('manage_readers') && <Link to="/readers">Czytelnicy</Link>}
             {can('manage_loans') && <Link to="/loans">Wszystkie Wypożyczenia</Link>}
 
-            {/* Czytelnik widzi swoje wypożyczenia */}
             {can('view_my_loans') && <Link to="/my-loans">Moje Wypożyczenia</Link>}
 
-            {/* Wszyscy zalogowani widzą książki */}
             {can('view_books') && <Link to="/books">Książki</Link>}
         </div>
     );
