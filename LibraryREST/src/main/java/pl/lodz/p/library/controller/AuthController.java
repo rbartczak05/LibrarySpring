@@ -58,7 +58,7 @@ public class AuthController {
             UserDetails userDetails = (UserDetails) authenticate.getPrincipal();
 
             String accessToken = jwtService.generateAccessToken(userDetails);
-            String refreshToken = jwtService.generateRefreshToken(userDetails);
+            String refreshToken = jwtService. generateRefreshToken(userDetails);
 
             String role = userDetails.getAuthorities().iterator().next().getAuthority();
 
@@ -85,7 +85,7 @@ public class AuthController {
                 return ResponseEntity.ok(new AuthResponse(newAccessToken, refreshToken, role, userLogin));
             }
         }
-        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Nieprawidłowy lub wygasły token odświeżania");
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Nieprawidłowy lub wygasły token odświeżania");
     }
 
     @PostMapping("/change-password")
@@ -93,7 +93,7 @@ public class AuthController {
         String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findUserByLogin(currentUsername);
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Stare hasło jest nieprawidłowe.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Nie udało się zmienić hasła.");
         }
         String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
         userService.changeUserPasswordInModel(user, encodedNewPassword);

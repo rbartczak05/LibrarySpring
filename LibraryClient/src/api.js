@@ -17,7 +17,7 @@ api.interceptors.response.use(
         if (error.response && (error.response.status === 401 || error.response.status === 403) && !originalRequest._retry) {
             originalRequest._retry = true;
 
-            const refreshToken = localStorage.getItem('refreshToken');
+            const refreshToken = sessionStorage.getItem('refreshToken');
 
             if (refreshToken) {
                 try {
@@ -27,20 +27,19 @@ api.interceptors.response.use(
 
                     const { token } = response.data;
 
-                    localStorage.setItem('token', token);
+                    sessionStorage.setItem('token', token);
 
                     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                     originalRequest.headers['Authorization'] = `Bearer ${token}`;
 
                     return api(originalRequest);
                 } catch (refreshError) {
-                    console.error("Sesja wygasła. Wylogowywanie...", refreshError);
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('refreshToken');
+                    sessionStorage.removeItem('token');
+                    sessionStorage.removeItem('refreshToken');
                     window.location.href = '/login';
                 }
             } else {
-                localStorage.removeItem('token');
+                sessionStorage.removeItem('token');
                 window.location.href = '/login';
             }
         }
