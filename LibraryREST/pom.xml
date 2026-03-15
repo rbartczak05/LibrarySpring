@@ -11,7 +11,7 @@
     <groupId>pl.lodz.p</groupId>
     <artifactId>LibraryREST</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>pom</packaging>
     <name>LibraryREST</name>
     <description>LibraryREST</description>
     <url/>
@@ -26,6 +26,11 @@
             <name>Jan Kozłowski</name>
         </developer>
     </developers>
+    <modules>
+        <module>ApplicationCore</module>
+        <module>Adapters</module>
+        <module>Applications</module>
+    </modules>
     <scm>
         <connection/>
         <developerConnection/>
