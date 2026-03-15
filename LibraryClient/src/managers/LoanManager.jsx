@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import {useEffect, useState} from 'react';
 import api from '../api';
 
-const LoanManager = ({ myLoansOnly = false }) => {
+const LoanManager = ({myLoansOnly = false}) => {
     const [loans, setLoans] = useState([]);
-    const [newLoan, setNewLoan] = useState({ readerId: '', bookSetId: '' });
+    const [newLoan, setNewLoan] = useState({readerId: '', bookSetId: ''});
 
     useEffect(() => {
         loadLoans();
@@ -32,7 +32,7 @@ const LoanManager = ({ myLoansOnly = false }) => {
         })
             .then(() => {
                 alert("Wypożyczono pomyślnie!");
-                setNewLoan({ readerId: '', bookSetId: '' });
+                setNewLoan({readerId: '', bookSetId: ''});
                 loadLoans();
             })
             .catch(err => {
@@ -125,7 +125,7 @@ const LoanManager = ({ myLoansOnly = false }) => {
                                 {loan._links?.delete && (
                                     <button
                                         onClick={() => handleDeleteLoan(loan._links.delete.href)}
-                                        style={{ backgroundColor: '#ef4444' }}>Usuń</button>
+                                        style={{backgroundColor: '#ef4444'}}>Usuń</button>
                                 )}
                             </td>
                         )}

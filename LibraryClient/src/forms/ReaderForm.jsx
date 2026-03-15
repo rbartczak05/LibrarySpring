@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import {useEffect, useState} from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
 import api from '../api';
 
 const ReaderForm = () => {
-    const { id } = useParams();
+    const {id} = useParams();
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -28,7 +28,7 @@ const ReaderForm = () => {
         }
     }, [id]);
 
-    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleChange = (e) => setFormData({...formData, [e.target.name]: e.target.value});
 
     const getErrorMessage = (err) => {
         if (err.response && err.response.data) {
@@ -62,8 +62,8 @@ const ReaderForm = () => {
 
         const request = id
             ? api.post(`/readers/${id}`, payload, {
-                headers: { 'If-Match': etag }
-              })
+                headers: {'If-Match': etag}
+            })
             : api.post(`/readers`, payload);
 
         request

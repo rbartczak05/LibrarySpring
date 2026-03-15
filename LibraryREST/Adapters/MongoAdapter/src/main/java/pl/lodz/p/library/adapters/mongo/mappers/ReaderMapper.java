@@ -10,8 +10,10 @@ public class ReaderMapper {
     public Reader toDomain(ReaderDoc doc) {
         if (doc == null) return null;
 
-        Reader reader = new Reader(doc.getLogin(), doc.getPassword(), doc.getAge());
+        Reader reader = new Reader(doc.getLogin(), doc.getPassword(), doc.getEmail(), doc.getAge());
         reader.setId(doc.getId());
+        reader.setActive(doc.isActive());
+        reader.setCurrentLoansCount(doc.getCurrentLoansCount());
 
         return reader;
     }
@@ -19,8 +21,9 @@ public class ReaderMapper {
     public ReaderDoc toDocument(Reader reader) {
         if (reader == null) return null;
 
-        ReaderDoc doc = new ReaderDoc(reader.getLogin(), reader.getPassword(), reader.getAge());
+        ReaderDoc doc = new ReaderDoc(reader.getLogin(), reader.getPassword(), reader.getEmail(), reader.getAge());
         doc.setId(reader.getId());
+        doc.setActive(reader.isActive());
         doc.setCurrentLoansCount(reader.getCurrentLoansCount());
 
         return doc;

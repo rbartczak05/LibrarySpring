@@ -6,19 +6,20 @@ import pl.lodz.p.library.domain.model.Administrator;
 
 @Component
 public class AdministratorMapper {
+
     public Administrator toDomain(AdministratorDoc doc) {
         if (doc == null) return null;
-        Administrator administrator = new Administrator(doc.getLogin(), doc.getPassword(), doc.getEmail(), doc.getAge());
-        administrator.setId(doc.getId());
-        administrator.setActive(doc.isActive());
-        return administrator;
+        Administrator admin = new Administrator(doc.getLogin(), doc.getPassword(), doc.getEmail(), doc.getAge());
+        admin.setId(doc.getId());
+        admin.setActive(doc.isActive());
+        return admin;
     }
 
-    public AdministratorDoc toDocument(Administrator administrator) {
-        if (administrator == null) return null;
-        AdministratorDoc doc = new AdministratorDoc(administrator.getLogin(), administrator.getPassword(), administrator.getEmail(), administrator.getAge());
-        doc.setId(administrator.getId());
-        doc.setActive(administrator.isActive());
+    public AdministratorDoc toDocument(Administrator admin) {
+        if (admin == null) return null;
+        AdministratorDoc doc = new AdministratorDoc(admin.getLogin(), admin.getPassword(), admin.getEmail(), admin.getAge());
+        doc.setId(admin.getId());
+        doc.setActive(admin.isActive());
         return doc;
     }
 }

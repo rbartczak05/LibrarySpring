@@ -1,85 +1,77 @@
 package pl.lodz.p.library.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.lodz.p.library.domain.exceptions.BookSetNotAvailableException;
-import pl.lodz.p.library.domain.exceptions.BookSetNotFoundException;
+import pl.lodz.p.library.domain.exceptions.BookSetException;
 import pl.lodz.p.library.domain.model.BookSet;
-import pl.lodz.p.library.domain.model.Loan;
-import pl.lodz.p.library.ports.infrastructure.BookSetRepositoryPort;
-import pl.lodz.p.library.ports.infrastructure.LoanRepositoryPort;
+import pl.lodz.p.library.ports.inbound.BookSetUseCase;
+import pl.lodz.p.library.ports.outbound.DeleteBookSetPort;
+import pl.lodz.p.library.ports.outbound.GetBookSetPort;
+import pl.lodz.p.library.ports.outbound.SaveBookSetPort;
 
 import java.util.List;
 
 @Service
-public class BookSetService {
-    private final BookSetRepositoryPort bookSetRepositoryPort;
-    private final LoanRepositoryPort loanRepositoryPort;
+public class BookSetService implements BookSetUseCase {
+    private final GetBookSetPort getBookSetPort;
+    private final SaveBookSetPort saveBookSetPort;
+    private final DeleteBookSetPort deleteBookSetPort;
 
     @Autowired
-    public BookSetService(BookSetRepositoryPort bookSetRepositoryPort, LoanRepositoryPort loanRepositoryPort) {
-        this.bookSetRepositoryPort = bookSetRepositoryPort;
-        this.loanRepositoryPort = loanRepositoryPort;
+    public BookSetService(GetBookSetPort getBookSetPort, SaveBookSetPort saveBookSetPort, DeleteBookSetPort deleteBookSetPort) {
+        this.getBookSetPort = getBookSetPort;
+        this.saveBookSetPort = saveBookSetPort;
+        this.deleteBookSetPort = deleteBookSetPort;
     }
 
     public BookSet findBookSetById(String id) {
-        return bookSetRepositoryPort.findById(id)
-                .orElseThrow(() -> new BookSetNotFoundException("Książka o ID: " + id + " nie znaleziona."));
+        return getBookSetPort.findById(id)
+                .orElseThrow(() -> new BookSetException("Książka o ID: " + id + " nie znaleziona."));
     }
 
     public List<BookSet> findBookSetsByTitle(String title) {
-        return bookSetRepositoryPort.findBookSetsByTitle(title);
+        return getBookSetPort.findBookSetsByTitle(title);
     }
 
     public List<BookSet> findBookSetsByAuthor(String author) {
-        return bookSetRepositoryPort.findBookSetsByAuthor(author);
+        return getBookSetPort.findBookSetsByAuthor(author);
     }
 
     public List<BookSet> findBookSetsByReleaseYear(int releaseYear) {
-        return bookSetRepositoryPort.findBookSetsByReleaseYear(releaseYear);
+        return getBookSetPort.findBookSetsByReleaseYear(releaseYear);
     }
 
     public List<BookSet> findAllBookSetsByQuantity(int quantity) {
-        return bookSetRepositoryPort.findBookSetsByQuantity(quantity);
+        return getBookSetPort.findAllBookSetsByQuantity(quantity);
     }
 
     public List<BookSet> findBookSetsByAvailable(boolean available) {
         if (available) {
-            return bookSetRepositoryPort.findByQuantityGreaterThan(0);
+            return getBookSetPort.findByQuantityGreaterThan(0);
         } else {
-            return bookSetRepositoryPort.findBookSetsByQuantity(0);
+            return getBookSetPort.findBookSetsByQuantity(0);
         }
     }
 
     public List<BookSet> findAllBookSets() {
-        return bookSetRepositoryPort.findAll();
+        return getBookSetPort.findAllBookSets();
     }
 
     @Transactional
     public BookSet addBookSet(BookSet bookSet) {
-        return bookSetRepositoryPort.save(bookSet);
+        return saveBookSetPort.save(bookSet);
     }
 
     @Transactional
     public BookSet updateBookSet(String id, BookSet bookSetUpdates) {
         BookSet existingBookSet = findBookSetById(id);
-
         existingBookSet.setQuantity(bookSetUpdates.getQuantity());
-
-        return bookSetRepositoryPort.save(existingBookSet);
+        return saveBookSetPort.save(existingBookSet);
     }
 
     @Transactional
     public void deleteBookSet(String id) {
-        BookSet bookSet = findBookSetById(id);
-
-        List<Loan> activeLoans = loanRepositoryPort.findByBookSetIdAndActive(id, true);
-        if (!activeLoans.isEmpty()) {
-            throw new BookSetNotAvailableException(HttpStatus.CONFLICT, "Nie można usunąć książki o ID: " + id + ", ponieważ posiada aktywne wypożyczenia.");
-        }
-
-        bookSetRepositoryPort.delete(bookSet);
+        deleteBookSetPort.deleteBookSet(id);
     }
 }

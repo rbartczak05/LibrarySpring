@@ -1,10 +1,10 @@
-import { createContext, useState, useContext, useEffect } from 'react';
+import {createContext, useContext, useEffect, useState} from 'react';
 import api from '../api';
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 
 const AuthContext = createContext(null);
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(sessionStorage.getItem('token'));
     const [refreshToken, setRefreshToken] = useState(sessionStorage.getItem('refreshToken'));
@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
         if (token) {
             try {
                 const decoded = jwtDecode(token);
-                setUser({ login: decoded.sub, role: decoded.role });
+                setUser({login: decoded.sub, role: decoded.role});
                 api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             } catch (e) {
                 logout();
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, can }}>
+        <AuthContext.Provider value={{user, login, logout, can}}>
             {children}
         </AuthContext.Provider>
     );

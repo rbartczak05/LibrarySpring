@@ -8,7 +8,7 @@ import pl.lodz.p.library.domain.model.Loan;
 public class LoanMapper {
 
     public Loan toDomain(LoanDoc doc) {
-        if(doc == null) return null;
+        if (doc == null) return null;
 
         Loan loan = new Loan(doc.getReaderId(), doc.getBookSetId(), doc.getStartTime());
         loan.setId(doc.getId());
@@ -20,7 +20,7 @@ public class LoanMapper {
     }
 
     public LoanDoc toDocument(Loan loan) {
-        if(loan == null) return null;
+        if (loan == null) return null;
 
         LoanDoc doc = new LoanDoc(loan.getReaderId(), loan.getBookSetId(), loan.getStartTime());
         doc.setId(loan.getId());

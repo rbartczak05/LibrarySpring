@@ -6,16 +6,14 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import pl.lodz.p.library.exception.BookSetTimeException;
-
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
+import pl.lodz.p.library.domain.exceptions.BookSetException;
 
 import java.time.LocalDateTime;
 
 @Relation(collectionRelation = "loans", itemRelation = "loan")
-public class LoanDTO extends RepresentationModel<LoanDTO>{
+public class LoanDTO extends RepresentationModel<LoanDTO> {
     @Id
     private String id;
 
@@ -77,10 +75,10 @@ public class LoanDTO extends RepresentationModel<LoanDTO>{
 
     public void setStartTime(LocalDateTime startTime) {
         if (this.returnTime != null && this.returnTime.isBefore(startTime)) {
-            throw new BookSetTimeException(HttpStatus.CONFLICT, "Data zwrotu musi być późniejsza niż data rozpoczęcia.");
+            throw new BookSetException("Data zwrotu musi być późniejsza niż data rozpoczęcia.");
         }
         if (this.endTime != null && this.endTime.isBefore(startTime)) {
-            throw new BookSetTimeException(HttpStatus.CONFLICT, "Data zakończenia musi być późniejsza niż data rozpoczęcia.");
+            throw new BookSetException("Data zakończenia musi być późniejsza niż data rozpoczęcia.");
         }
         this.startTime = startTime;
     }
@@ -91,7 +89,7 @@ public class LoanDTO extends RepresentationModel<LoanDTO>{
 
     public void setReturnTime(LocalDateTime returnTime) {
         if (returnTime != null && this.startTime != null && returnTime.isBefore(this.startTime)) {
-            throw new BookSetTimeException(HttpStatus.CONFLICT, "Data zwrotu musi być późniejsza niż data rozpoczęcia.");
+            throw new BookSetException("Data zwrotu musi być późniejsza niż data rozpoczęcia.");
         }
         this.returnTime = returnTime;
     }
@@ -102,7 +100,7 @@ public class LoanDTO extends RepresentationModel<LoanDTO>{
 
     public void setEndTime(LocalDateTime endTime) {
         if (endTime != null && this.startTime != null && endTime.isBefore(this.startTime)) {
-            throw new BookSetTimeException(HttpStatus.CONFLICT, "Data zakończenia musi być późniejsza niż data rozpoczęcia.");
+            throw new BookSetException("Data zakończenia musi być późniejsza niż data rozpoczęcia.");
         }
         this.endTime = endTime;
     }

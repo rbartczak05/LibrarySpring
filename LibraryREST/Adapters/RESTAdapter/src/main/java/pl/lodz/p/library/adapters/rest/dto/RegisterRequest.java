@@ -1,6 +1,9 @@
 package pl.lodz.p.library.adapters.rest.dto;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public class RegisterRequest {
     @NotBlank(message = "Login nie może być pusty.")

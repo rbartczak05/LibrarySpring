@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import {useEffect, useState} from 'react';
+import {Link, useParams} from 'react-router-dom';
 import api from "./api.js";
 
 const API_URL = 'http://localhost:8080';
 
 const ReaderDetails = () => {
-    const { id } = useParams();
+    const {id} = useParams();
     const [reader, setReader] = useState(null);
     const [loans, setLoans] = useState([]);
 
@@ -34,7 +34,9 @@ const ReaderDetails = () => {
                 <p><strong>Wiek:</strong> {reader.age}</p>
                 <p><strong>Status:</strong> {reader.active ? 'Aktywny' : 'Zablokowany'}</p>
                 <p><strong>Aktualne wypożyczenia:</strong> {reader.currentLoansCount}</p>
-                <Link to="/readers"><button>Powrót do listy</button></Link>
+                <Link to="/readers">
+                    <button>Powrót do listy</button>
+                </Link>
             </div>
 
             <h3>Lista Alokacji (Wypożyczenia)</h3>
@@ -48,7 +50,9 @@ const ReaderDetails = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {loans.length === 0 && <tr><td colSpan="4">Brak wypożyczeń w historii.</td></tr>}
+                {loans.length === 0 && <tr>
+                    <td colSpan="4">Brak wypożyczeń w historii.</td>
+                </tr>}
                 {loans.map(loan => (
                     <tr key={loan.id}>
                         <td>{loan.bookSetId}</td>

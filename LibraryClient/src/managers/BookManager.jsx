@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+import {useEffect, useState} from 'react';
 import api from '../api';
-import { useAuth } from '../context/AuthContext';
+import {useAuth} from '../context/AuthContext';
 
 const BookManager = () => {
-    const { user } = useAuth();
+    const {user} = useAuth();
     const [books, setBooks] = useState([]);
-    const [form, setForm] = useState({ title: '', author: '', releaseYear: '', quantity: '' });
+    const [form, setForm] = useState({title: '', author: '', releaseYear: '', quantity: ''});
 
     const isReader = user?.role === 'ROLE_READER';
 
@@ -22,7 +22,7 @@ const BookManager = () => {
             });
     };
 
-    const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+    const handleChange = (e) => setForm({...form, [e.target.name]: e.target.value});
 
     const getErrorMessage = (err) => {
         if (err.response && err.response.data) {
@@ -60,7 +60,7 @@ const BookManager = () => {
         api.post('/book_set', payload)
             .then(() => {
                 alert("Książka dodana!");
-                setForm({ title: '', author: '', releaseYear: '', quantity: '' });
+                setForm({title: '', author: '', releaseYear: '', quantity: ''});
                 loadBooks();
             })
             .catch(err => {
@@ -82,7 +82,7 @@ const BookManager = () => {
         if (!window.confirm("Czy na pewno chcesz wypożyczyć tę książkę?")) return;
 
         api.post('/loans/me', null, {
-            params: { bookSetId: bookId }
+            params: {bookSetId: bookId}
         })
             .then(() => {
                 alert("Książka została wypożyczona pomyślnie!");

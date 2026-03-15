@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import api from '../api';
 
 const AdministratorForm = () => {
@@ -12,7 +12,7 @@ const AdministratorForm = () => {
         type: 'admin'
     });
 
-    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleChange = (e) => setFormData({...formData, [e.target.name]: e.target.value});
 
     const getErrorMessage = (err) => {
         if (err.response && err.response.data) {

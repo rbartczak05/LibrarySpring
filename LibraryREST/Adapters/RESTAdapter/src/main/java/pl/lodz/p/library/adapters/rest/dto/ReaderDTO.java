@@ -3,9 +3,7 @@ package pl.lodz.p.library.adapters.rest.dto;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.http.HttpStatus;
-import pl.lodz.p.library.exception.ReaderIsInactiveException;
-import pl.lodz.p.library.exception.ReaderLimitsException;
+import pl.lodz.p.library.domain.exceptions.UserException;
 
 public class ReaderDTO extends UserDTO {
     private final static int maxLoans = 5;
@@ -34,17 +32,17 @@ public class ReaderDTO extends UserDTO {
 
     public void setCurrentLoansCount(int currentLoansCount) {
         if (currentLoansCount >= maxLoans || currentLoansCount < 0) {
-            throw new ReaderLimitsException(HttpStatus.CONFLICT, "Reader with id: " + getId() + " cannot have more than " + maxLoans + " or less than 0 loans.");
+            throw new UserException("Reader with id: " + getId() + " cannot have more than " + maxLoans + " or less than 0 loans.");
         }
         this.currentLoansCount = currentLoansCount;
     }
 
     public boolean canBorrowBook() {
         if (!isActive()) {
-            throw new ReaderIsInactiveException(HttpStatus.CONFLICT, "Reader with id: " + getId() + " is not active");
+            throw new UserException("Reader with id: " + getId() + " is not active");
         }
         if (currentLoansCount >= maxLoans) {
-            throw new ReaderLimitsException(HttpStatus.CONFLICT, "Reader with id: " + getId() + " reached the maximum number of loans.");
+            throw new UserException("Reader with id: " + getId() + " reached the maximum number of loans.");
         }
         return true;
     }

@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>pl.lodz.p</groupId>
-            <artifactId>ApplicationCore</artifactId>
+            <artifactId>ApplicationServices</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -47,5 +47,14 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

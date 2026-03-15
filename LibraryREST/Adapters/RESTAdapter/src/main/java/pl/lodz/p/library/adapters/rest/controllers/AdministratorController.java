@@ -1,17 +1,15 @@
 package pl.lodz.p.library.adapters.rest.controllers;
 
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import pl.lodz.p.library.converter.UserConverter;
-import pl.lodz.p.library.dto.AdministratorDTO;
-import pl.lodz.p.library.model.Administrator;
-import pl.lodz.p.library.model.User;
-import pl.lodz.p.library.security.JwtService;
-import pl.lodz.p.library.service.UserService;
+import pl.lodz.p.library.adapters.rest.converters.UserConverter;
+import pl.lodz.p.library.adapters.rest.dto.AdministratorDTO;
+import pl.lodz.p.library.adapters.rest.security.JwtService;
+import pl.lodz.p.library.domain.model.Administrator;
+import pl.lodz.p.library.domain.model.User;
+import pl.lodz.p.library.ports.inbound.UserUseCase;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,19 +17,17 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/admins")
 public class AdministratorController {
-
-    private final UserService userService;
+    private final UserUseCase userUseCase;
     private final JwtService jwtService;
 
-    @Autowired
-    public AdministratorController(UserService userService, JwtService jwtService) {
-        this.userService = userService;
+    public AdministratorController(UserUseCase userUseCase, JwtService jwtService) {
+        this.userUseCase = userUseCase;
         this.jwtService = jwtService;
     }
 
     @GetMapping
     public List<AdministratorDTO> getAllAdmins() {
-        return userService.findAllUsers().stream()
+        return userUseCase.findAllUsers().stream()
                 .filter(Administrator.class::isInstance)
                 .map(Administrator.class::cast)
                 .map(UserConverter::toAdministratorDTO)
@@ -40,11 +36,9 @@ public class AdministratorController {
 
     @GetMapping("/{id}")
     public AdministratorDTO getAdminById(@PathVariable String id) {
-        User user = userService.findUserById(id);
+        User user = userUseCase.findUserById(id);
         AdministratorDTO administratorDTO = UserConverter.toAdministratorDTO((Administrator) user);
-
         String signature = jwtService.generateSignatureForId(id);
-
         return ResponseEntity.ok()
                 .header("If-Match", signature)
                 .body(administratorDTO).getBody();
@@ -54,6 +48,6 @@ public class AdministratorController {
     @ResponseStatus(HttpStatus.CREATED)
     public AdministratorDTO addAdmin(@Valid @RequestBody AdministratorDTO adminDTO) {
         Administrator toSave = UserConverter.fromAdministratorDTO(adminDTO);
-        return UserConverter.toAdministratorDTO((Administrator) userService.addUser(toSave));
+        return UserConverter.toAdministratorDTO((Administrator) userUseCase.addUser(toSave));
     }
 }

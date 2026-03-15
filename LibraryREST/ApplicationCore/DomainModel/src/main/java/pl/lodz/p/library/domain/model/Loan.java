@@ -1,6 +1,6 @@
 package pl.lodz.p.library.domain.model;
 
-import pl.lodz.p.library.domain.exceptions.BookSetTimeException;
+import pl.lodz.p.library.domain.exceptions.BookSetException;
 
 import java.time.LocalDateTime;
 
@@ -52,10 +52,10 @@ public class Loan {
 
     public void setStartTime(LocalDateTime startTime) {
         if (this.returnTime != null && this.returnTime.isBefore(startTime)) {
-            throw new BookSetTimeException("Data zwrotu musi być późniejsza niż data rozpoczęcia.");
+            throw new BookSetException("Data zwrotu musi być późniejsza niż data rozpoczęcia.");
         }
         if (this.endTime != null && this.endTime.isBefore(startTime)) {
-            throw new BookSetTimeException("Data zakończenia musi być późniejsza niż data rozpoczęcia.");
+            throw new BookSetException("Data zakończenia musi być późniejsza niż data rozpoczęcia.");
         }
         this.startTime = startTime;
     }
@@ -66,7 +66,7 @@ public class Loan {
 
     public void setReturnTime(LocalDateTime returnTime) {
         if (returnTime != null && this.startTime != null && returnTime.isBefore(this.startTime)) {
-            throw new BookSetTimeException("Data zwrotu musi być późniejsza niż data rozpoczęcia.");
+            throw new BookSetException("Data zwrotu musi być późniejsza niż data rozpoczęcia.");
         }
         this.returnTime = returnTime;
     }
@@ -77,7 +77,7 @@ public class Loan {
 
     public void setEndTime(LocalDateTime endTime) {
         if (endTime != null && this.startTime != null && endTime.isBefore(this.startTime)) {
-            throw new BookSetTimeException("Data zakończenia musi być późniejsza niż data rozpoczęcia.");
+            throw new BookSetException("Data zakończenia musi być późniejsza niż data rozpoczęcia.");
         }
         this.endTime = endTime;
     }

@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate, Navigate } from 'react-router-dom';
+import {BrowserRouter as Router, Link, Navigate, Route, Routes, useNavigate} from 'react-router-dom';
 import Home from './Home';
 import ReaderList from './lists/ReaderList.jsx';
 import ReaderForm from './forms/ReaderForm.jsx';
@@ -12,33 +12,37 @@ import LoanManager from './managers/LoanManager.jsx';
 import LoginForm from './forms/LoginForm.jsx'
 import RegisterForm from './forms/RegisterForm.jsx'
 import ChangePasswordForm from './forms/ChangePasswordForm.jsx'
-import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
+import {AuthProvider, useAuth} from "./context/AuthContext.jsx";
 
 const getRoleName = (role) => {
     switch (role) {
-        case 'ROLE_ADMIN': return 'Administrator';
-        case 'ROLE_LIBRARIAN': return 'Bibliotekarz';
-        case 'ROLE_READER': return 'Czytelnik';
-        default: return role;
+        case 'ROLE_ADMIN':
+            return 'Administrator';
+        case 'ROLE_LIBRARIAN':
+            return 'Bibliotekarz';
+        case 'ROLE_READER':
+            return 'Czytelnik';
+        default:
+            return role;
     }
 };
 
-const ProtectedRoute = ({ children, permission }) => {
-    const { user, can } = useAuth();
+const ProtectedRoute = ({children, permission}) => {
+    const {user, can} = useAuth();
 
     if (!user) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/login" replace/>;
     }
 
     if (permission && !can(permission)) {
-        return <Navigate to="/" replace />;
+        return <Navigate to="/" replace/>;
     }
 
     return children;
 };
 
 const Navigation = () => {
-    const { user, logout, can } = useAuth();
+    const {user, logout, can} = useAuth();
     const navigate = useNavigate();
     const handleLogout = () => {
         logout();
@@ -73,55 +77,56 @@ function App() {
         <AuthProvider>
             <Router>
                 <div>
-                    <Navigation />
+                    <Navigation/>
 
                     <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/login" element={<LoginForm />} />
-                        <Route path="/register" element={<RegisterForm />} />
+                        <Route path="/" element={<Home/>}/>
+                        <Route path="/login" element={<LoginForm/>}/>
+                        <Route path="/register" element={<RegisterForm/>}/>
 
                         <Route path="/change-password" element={
-                            <ProtectedRoute><ChangePasswordForm /></ProtectedRoute>
-                        } />
+                            <ProtectedRoute><ChangePasswordForm/></ProtectedRoute>
+                        }/>
 
                         <Route path="/admins" element={
-                            <ProtectedRoute permission="manage_admins"><AdministratorList /></ProtectedRoute>
-                        } />
+                            <ProtectedRoute permission="manage_admins"><AdministratorList/></ProtectedRoute>
+                        }/>
                         <Route path="/admins/add" element={
-                            <ProtectedRoute permission="manage_admins"><AdministratorForm /></ProtectedRoute>
-                        } />
+                            <ProtectedRoute permission="manage_admins"><AdministratorForm/></ProtectedRoute>
+                        }/>
 
                         <Route path="/librarians" element={
-                            <ProtectedRoute permission="manage_librarians"><LibrarianList /></ProtectedRoute>
-                        } />
+                            <ProtectedRoute permission="manage_librarians"><LibrarianList/></ProtectedRoute>
+                        }/>
                         <Route path="/librarians/add" element={
-                            <ProtectedRoute permission="manage_librarians"><LibrarianForm /></ProtectedRoute>
-                        } />
+                            <ProtectedRoute permission="manage_librarians"><LibrarianForm/></ProtectedRoute>
+                        }/>
 
                         <Route path="/readers" element={
-                            <ProtectedRoute permission="manage_readers"><ReaderList /></ProtectedRoute>
-                        } />
+                            <ProtectedRoute permission="manage_readers"><ReaderList/></ProtectedRoute>
+                        }/>
                         <Route path="/readers/add" element={
-                            <ProtectedRoute permission="manage_readers"><ReaderForm /></ProtectedRoute>
-                        } />
+                            <ProtectedRoute permission="manage_readers"><ReaderForm/></ProtectedRoute>
+                        }/>
                         <Route path="/readers/edit/:id" element={
-                            <ProtectedRoute permission="manage_readers"><ReaderForm /></ProtectedRoute>
-                        } />
+                            <ProtectedRoute permission="manage_readers"><ReaderForm/></ProtectedRoute>
+                        }/>
                         <Route path="/readers/:id" element={
-                            <ProtectedRoute permission="manage_readers"><ReaderDetails /></ProtectedRoute>
-                        } />
+                            <ProtectedRoute permission="manage_readers"><ReaderDetails/></ProtectedRoute>
+                        }/>
 
                         <Route path="/books" element={
-                            <ProtectedRoute permission="view_books"><BookManager /></ProtectedRoute>
-                        } />
+                            <ProtectedRoute permission="view_books"><BookManager/></ProtectedRoute>
+                        }/>
 
                         <Route path="/loans" element={
-                            <ProtectedRoute permission="manage_loans"><LoanManager /></ProtectedRoute>
-                        } />
+                            <ProtectedRoute permission="manage_loans"><LoanManager/></ProtectedRoute>
+                        }/>
 
                         <Route path="/my-loans" element={
-                            <ProtectedRoute permission="view_my_loans"><LoanManager myLoansOnly={true} /></ProtectedRoute>
-                        } />
+                            <ProtectedRoute permission="view_my_loans"><LoanManager
+                                myLoansOnly={true}/></ProtectedRoute>
+                        }/>
                     </Routes>
                 </div>
             </Router>

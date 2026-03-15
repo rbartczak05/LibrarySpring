@@ -25,7 +25,7 @@ api.interceptors.response.use(
                         refreshToken: refreshToken
                     });
 
-                    const { token } = response.data;
+                    const {token} = response.data;
 
                     sessionStorage.setItem('token', token);
 

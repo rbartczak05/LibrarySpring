@@ -10,24 +10,23 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pl.lodz.p.library.model.Administrator;
-import pl.lodz.p.library.model.Librarian;
-import pl.lodz.p.library.model.User;
-import pl.lodz.p.library.repository.UserRepository;
+import pl.lodz.p.library.domain.model.Administrator;
+import pl.lodz.p.library.domain.model.Librarian;
+import pl.lodz.p.library.domain.model.User;
+import pl.lodz.p.library.ports.outbound.GetUserPort;
 
 @Configuration
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class ApplicationConfig {
+    private final GetUserPort getUserPort;
 
-    private final UserRepository userRepository;
-
-    public ApplicationConfig(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public ApplicationConfig(GetUserPort getUserPort) {
+        this.getUserPort = getUserPort;
     }
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findUserByLogin(username)
+        return username -> getUserPort.findUserByLogin(username)
                 .map(user -> org.springframework.security.core.userdetails.User.builder()
                         .username(user.getLogin())
                         .password(user.getPassword())

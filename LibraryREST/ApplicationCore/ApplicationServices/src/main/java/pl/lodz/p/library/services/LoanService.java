@@ -1,121 +1,117 @@
 package pl.lodz.p.library.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.lodz.p.library.exception.*;
-import pl.lodz.p.library.model.BookSet;
-import pl.lodz.p.library.model.Loan;
-import pl.lodz.p.library.model.Reader;
-import pl.lodz.p.library.repository.BookSetRepository;
-import pl.lodz.p.library.repository.LoanRepository;
-import pl.lodz.p.library.repository.UserRepository;
+import pl.lodz.p.library.domain.exceptions.BookSetException;
+import pl.lodz.p.library.domain.exceptions.LoanException;
+import pl.lodz.p.library.domain.exceptions.UserException;
+import pl.lodz.p.library.domain.model.BookSet;
+import pl.lodz.p.library.domain.model.Loan;
+import pl.lodz.p.library.domain.model.Reader;
+import pl.lodz.p.library.ports.inbound.LoanUseCase;
+import pl.lodz.p.library.ports.outbound.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class LoanService {
+public class LoanService implements LoanUseCase {
 
-    private final LoanRepository loanRepository;
-    private final BookSetRepository bookSetRepository;
-    private final UserRepository userRepository;
-    private final UserService userService;
-    private final BookSetService bookSetService;
+    private final GetLoanPort getLoanPort;
+    private final SaveLoanPort saveLoanPort;
+    private final DeleteLoanPort deleteLoanPort;
+    private final GetBookSetPort getBookSetPort;
+    private final SaveBookSetPort saveBookSetPort;
+    private final GetUserPort getUserPort;
+    private final SaveUserPort saveUserPort;
 
     @Autowired
-    public LoanService(LoanRepository loanRepository, BookSetRepository bookSetRepository, UserRepository userRepository, UserService userService, BookSetService bookSetService) {
-        this.loanRepository = loanRepository;
-        this.bookSetRepository = bookSetRepository;
-        this.userRepository = userRepository;
-        this.userService = userService;
-        this.bookSetService = bookSetService;
+    public LoanService(GetLoanPort getLoanPort, SaveLoanPort saveLoanPort, DeleteLoanPort deleteLoanPort,
+                       GetBookSetPort getBookSetPort, SaveBookSetPort saveBookSetPort,
+                       GetUserPort getUserPort, SaveUserPort saveUserPort) {
+        this.getLoanPort = getLoanPort;
+        this.saveLoanPort = saveLoanPort;
+        this.deleteLoanPort = deleteLoanPort;
+        this.getBookSetPort = getBookSetPort;
+        this.saveBookSetPort = saveBookSetPort;
+        this.getUserPort = getUserPort;
+        this.saveUserPort = saveUserPort;
     }
 
     public Loan findLoanById(String id) {
-        return loanRepository.findById(id)
-                .orElseThrow(() -> new LoanNotFoundException(HttpStatus.NOT_FOUND, "Wypożyczenie o ID: " + id + " nie zostało odnalezione."));
+        return getLoanPort.findById(id)
+                .orElseThrow(() -> new LoanException("Wypożyczenie o ID: " + id + " nie zostało odnalezione."));
     }
 
     public List<Loan> findLoansByReader(String readerId) {
-        return loanRepository.findByReaderId(readerId);
+        return getLoanPort.findByReaderId(readerId);
     }
 
     public List<Loan> findLoansByBookSet(String bookSetId) {
-        return loanRepository.findByBookSetId(bookSetId);
+        return getLoanPort.findByBookSetId(bookSetId);
     }
 
     public List<Loan> findLoansByReaderIdAndBookSetId(String readerId, String bookSetId) {
-        return loanRepository.findByReaderIdAndBookSetId(readerId, bookSetId);
+        return getLoanPort.findByReaderIdAndBookSetId(readerId, bookSetId);
     }
 
     public List<Loan> findByActiveLoans(boolean active) {
-        return loanRepository.findByActive(active);
+        return getLoanPort.findByActive(active);
     }
 
     public List<Loan> findByReaderIdAndActive(String readerId, boolean active) {
-        return loanRepository.findByReaderIdAndActive(readerId, active);
+        return getLoanPort.findByReaderIdAndActive(readerId, active);
     }
 
     public List<Loan> findByBookSetIdAndActive(String bookSetId, boolean active) {
-        return loanRepository.findByBookSetIdAndActive(bookSetId, active);
+        return getLoanPort.findByBookSetIdAndActive(bookSetId, active);
     }
 
     public List<Loan> findAllLoans() {
-        return loanRepository.findAll();
+        return getLoanPort.findAll();
     }
 
-    // Gdy czas początkowy nie jest określany wcale
     @Transactional
     public Loan createLoan(String readerId, String bookSetId) {
         return createLoan(readerId, bookSetId, null);
     }
 
-    // Do ustalania tego czasu początkowego wypożyczenia
     @Transactional
     public Loan createLoan(String readerId, String bookSetId, LocalDateTime loanStartTime) {
-        Reader reader = (Reader) userService.findUserById(readerId);
-        BookSet bookSet = bookSetService.findBookSetById(bookSetId);
+        Reader reader = (Reader) getUserPort.findUserById(readerId).orElseThrow(() -> new UserException("User not found"));
+        BookSet bookSet = getBookSetPort.findById(bookSetId).orElseThrow(() -> new BookSetException("BookSet not found"));
 
         if (!reader.canBorrowBook()) {
-            throw new ReaderLimitsException(HttpStatus.CONFLICT, "Reader with id: " + readerId + " cannot borrow loan.");
+            throw new UserException("Reader with id: " + readerId + " cannot borrow loan.");
         }
         if (!bookSet.isAvailable()) {
-            throw new BookSetNotAvailableException(HttpStatus.CONFLICT, "BookSet with id " + bookSetId + " is not available for loan.");
+            throw new BookSetException("BookSet with id " + bookSetId + " is not available for loan.");
         }
 
         bookSet.setQuantity(bookSet.getQuantity() - 1);
-        bookSetRepository.save(bookSet);
+        saveBookSetPort.save(bookSet);
 
         reader.setCurrentLoansCount(reader.getCurrentLoansCount() + 1);
-        userRepository.save(reader);
+        saveUserPort.addUser(reader);
 
-        // Gdyby loanStartTime był null to jest ustawiany na LocalDateTime.now()
-        LocalDateTime actualStartTime = (loanStartTime != null) ? loanStartTime : LocalDateTime.now();
-        Loan loan = new Loan(readerId, bookSetId, actualStartTime);
-
-        return loanRepository.save(loan);
+        return saveLoanPort.createLoan(readerId, bookSetId, loanStartTime)
+                .orElseThrow(() -> new LoanException("Nie udało się utworzyć wypożyczenia."));
     }
 
     @Transactional
     public Loan updateLoan(String loanId, Loan loanUpdates) {
         if (loanUpdates == null) {
-            throw new LoanNotFoundException(HttpStatus.NOT_FOUND, "Zmiany wypożyczenia nie zostały odnalezione.");
+            throw new LoanException("Zmiany wypożyczenia nie zostały odnalezione.");
         }
-
         Loan existingLoan = findLoanById(loanId);
 
         if (!existingLoan.isActive()) {
-            throw new LoanAlreadyInactiveException(HttpStatus.CONFLICT, "Wypożyczenie zostało już zakończone.");
+            throw new LoanException("Wypożyczenie zostało już zakończone.");
         }
 
-        // Zmiana czasu początkowego i końcowego wypożyczenia wydaje się mieć jakiś seks skoro mamy konstruktor,
-        // który ustala początek czasu przykładowo z przyszłości. Też do skrócenia czasu oddania książki (?)
-        existingLoan.setStartTime(loanUpdates.getStartTime());
-        existingLoan.setEndTime(loanUpdates.getEndTime());
-
-        return loanRepository.save(existingLoan);
+        return saveLoanPort.updateLoan(loanId, loanUpdates)
+                .orElseThrow(() -> new LoanException("Nie udało się zaktualizować wypożyczenia."));
     }
 
     @Transactional
@@ -123,37 +119,27 @@ public class LoanService {
         Loan loan = findLoanById(loanId);
 
         if (!loan.isActive()) {
-            throw new LoanAlreadyInactiveException(HttpStatus.CONFLICT, "Wypożyczenie zostało już zakończone.");
+            throw new LoanException("Wypożyczenie zostało już zakończone.");
         }
 
-        loan.setActive(false);
-        loan.setReturnTime(LocalDateTime.now());
-
-        BookSet bookSet = bookSetService.findBookSetById(loan.getBookSetId());
+        BookSet bookSet = getBookSetPort.findById(loan.getBookSetId()).orElseThrow(() -> new BookSetException("BookSet not found"));
         bookSet.setQuantity(bookSet.getQuantity() + 1);
-        bookSetRepository.save(bookSet);
+        saveBookSetPort.save(bookSet);
 
-        Reader reader = (Reader) userService.findUserById(loan.getReaderId());
+        Reader reader = (Reader) getUserPort.findUserById(loan.getReaderId()).orElseThrow(() -> new UserException("User not found"));
         reader.setCurrentLoansCount(reader.getCurrentLoansCount() - 1);
-        userRepository.save(reader);
+        saveUserPort.addUser(reader);
 
-        return loanRepository.save(loan);
+        return saveLoanPort.endLoan(loanId)
+                .orElseThrow(() -> new LoanException("Nie udało się zakończyć wypożyczenia."));
     }
 
-    /// Zachowane, żeby w razie czego mieć taką funkcję i udostępniać całego CRU(D)-a w aplikacji dla wypożyczenia.
     @Transactional
     public void deleteLoan(String loanId) {
-        if(loanRepository.findById(loanId).isEmpty()) {
-            throw new LoanNotFoundException(HttpStatus.NOT_FOUND, "Loan with id: " + loanId + " not found.");
-        }
-
         Loan loan = findLoanById(loanId);
-
         if (loan.isActive()) {
-            throw new LoanAlreadyInactiveException(HttpStatus.BAD_REQUEST, "Cannot delete active Loan.");
+            throw new LoanException("Nie można usunąć aktywnego wypożyczenia.");
         }
-
-        loanRepository.delete(loan);
+        deleteLoanPort.deleteLoan(loanId);
     }
 }
-

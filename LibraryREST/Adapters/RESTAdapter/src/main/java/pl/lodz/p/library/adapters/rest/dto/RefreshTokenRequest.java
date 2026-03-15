@@ -3,7 +3,8 @@ package pl.lodz.p.library.adapters.rest.dto;
 public class RefreshTokenRequest {
     private String refreshToken;
 
-    public RefreshTokenRequest() {}
+    public RefreshTokenRequest() {
+    }
 
     public RefreshTokenRequest(String refreshToken) {
         this.refreshToken = refreshToken;
