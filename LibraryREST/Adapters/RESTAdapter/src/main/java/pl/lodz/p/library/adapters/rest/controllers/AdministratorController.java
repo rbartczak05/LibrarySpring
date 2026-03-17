@@ -35,13 +35,13 @@ public class AdministratorController {
     }
 
     @GetMapping("/{id}")
-    public AdministratorDTO getAdminById(@PathVariable String id) {
+    public ResponseEntity<AdministratorDTO> getAdminById(@PathVariable String id) {
         User user = userUseCase.findUserById(id);
         AdministratorDTO administratorDTO = UserConverter.toAdministratorDTO((Administrator) user);
         String signature = jwtService.generateSignatureForId(id);
         return ResponseEntity.ok()
                 .header("If-Match", signature)
-                .body(administratorDTO).getBody();
+                .body(administratorDTO);
     }
 
     @PostMapping

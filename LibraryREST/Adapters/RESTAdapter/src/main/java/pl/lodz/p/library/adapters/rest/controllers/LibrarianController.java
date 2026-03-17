@@ -35,13 +35,13 @@ public class LibrarianController {
     }
 
     @GetMapping("/{id}")
-    public LibrarianDTO getLibrarianById(@PathVariable String id) {
+    public ResponseEntity<LibrarianDTO> getLibrarianById(@PathVariable String id) {
         User user = userUseCase.findUserById(id);
         LibrarianDTO librarianDTO = UserConverter.toLibrarianDTO((Librarian) user);
         String signature = jwtService.generateSignatureForId(id);
         return ResponseEntity.ok()
                 .header("If-Match", signature)
-                .body(librarianDTO).getBody();
+                .body(librarianDTO);
     }
 
     @PostMapping

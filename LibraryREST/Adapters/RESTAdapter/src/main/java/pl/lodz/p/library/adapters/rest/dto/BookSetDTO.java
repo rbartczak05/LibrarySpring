@@ -1,5 +1,6 @@
 package pl.lodz.p.library.adapters.rest.dto;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,6 +9,7 @@ import org.springframework.data.annotation.Id;
 public class BookSetDTO {
 
     @Id
+    @Nullable
     private String id;
 
     @NotBlank(message = "Tytuł książki nie może być pusty.")

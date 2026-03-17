@@ -1,5 +1,6 @@
 package pl.lodz.p.library.adapters.rest.security;
 
+import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -28,6 +29,7 @@ public class SecurityConfig {
                 .cors(cors -> {
                 })
                 .authorizeHttpRequests(auth -> auth
+                        .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/book_set/**").hasAnyRole("ADMIN", "LIBRARIAN", "READER")
                         .requestMatchers("/admins/**").hasRole("ADMIN")

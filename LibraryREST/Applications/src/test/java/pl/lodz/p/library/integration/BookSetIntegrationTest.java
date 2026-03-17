@@ -2,8 +2,8 @@ package pl.lodz.p.library.integration;
 
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
-import pl.lodz.p.library.dto.BookSetDTO;
-import pl.lodz.p.library.dto.ReaderDTO;
+import pl.lodz.p.library.adapters.rest.dto.ReaderDTO;
+import pl.lodz.p.library.adapters.rest.dto.BookSetDTO;
 
 import java.util.UUID;
 

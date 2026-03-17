@@ -36,13 +36,13 @@ public class ReaderController {
     }
 
     @GetMapping("/{id}")
-    public ReaderDTO getReaderById(@PathVariable String id) {
+    public ResponseEntity<ReaderDTO> getReaderById(@PathVariable String id) {
         User user = userUseCase.findUserById(id);
         ReaderDTO readerDto = UserConverter.toReaderDTO((Reader) user);
         String signature = jwtService.generateSignatureForId(id);
         return ResponseEntity.ok()
                 .header("If-Match", signature)
-                .body(readerDto).getBody();
+                .body(readerDto);
     }
 
     @PostMapping
@@ -58,7 +58,8 @@ public class ReaderController {
         if (ifMatch == null || ifMatch.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Niepoprawny nagłówek.");
         }
-        if (!jwtService.verifySignature(id, ifMatch)) {
+        String cleanIfMatch = ifMatch.replace("\"", "");
+        if (!jwtService.verifySignature(id, cleanIfMatch)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Niepoprawne dane.");
         }
         Reader updates = UserConverter.fromReaderDTO(readerDTO);

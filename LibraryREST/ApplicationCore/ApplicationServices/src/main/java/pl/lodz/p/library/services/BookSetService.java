@@ -9,6 +9,7 @@ import pl.lodz.p.library.ports.inbound.BookSetUseCase;
 import pl.lodz.p.library.ports.outbound.DeleteBookSetPort;
 import pl.lodz.p.library.ports.outbound.GetBookSetPort;
 import pl.lodz.p.library.ports.outbound.SaveBookSetPort;
+import pl.lodz.p.library.ports.outbound.GetLoanPort;
 
 import java.util.List;
 
@@ -17,12 +18,15 @@ public class BookSetService implements BookSetUseCase {
     private final GetBookSetPort getBookSetPort;
     private final SaveBookSetPort saveBookSetPort;
     private final DeleteBookSetPort deleteBookSetPort;
+    private final GetLoanPort getLoanPort;
 
     @Autowired
-    public BookSetService(GetBookSetPort getBookSetPort, SaveBookSetPort saveBookSetPort, DeleteBookSetPort deleteBookSetPort) {
+    public BookSetService(GetBookSetPort getBookSetPort, SaveBookSetPort saveBookSetPort,
+                          DeleteBookSetPort deleteBookSetPort, GetLoanPort getLoanPort) {
         this.getBookSetPort = getBookSetPort;
         this.saveBookSetPort = saveBookSetPort;
         this.deleteBookSetPort = deleteBookSetPort;
+        this.getLoanPort = getLoanPort;
     }
 
     public BookSet findBookSetById(String id) {
@@ -72,6 +76,8 @@ public class BookSetService implements BookSetUseCase {
 
     @Transactional
     public void deleteBookSet(String id) {
+        if(!getLoanPort.findByBookSetIdAndActive(id, true).isEmpty())
+            throw new BookSetException("Nie można usunąć książki, która jest obecnie wypożyczona.");
         deleteBookSetPort.deleteBookSet(id);
     }
 }

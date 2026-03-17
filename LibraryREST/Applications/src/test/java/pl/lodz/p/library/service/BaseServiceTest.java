@@ -8,11 +8,11 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
-import pl.lodz.p.library.repository.BookSetRepository;
-import pl.lodz.p.library.repository.LoanRepository;
-import pl.lodz.p.library.repository.UserRepository;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import pl.lodz.p.library.ports.outbound.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Testcontainers
 public abstract class BaseServiceTest {
 
     static final MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest");
@@ -23,12 +23,17 @@ public abstract class BaseServiceTest {
 
     @LocalServerPort
     protected int port;
-    @Autowired
-    protected UserRepository userRepository;
-    @Autowired
-    protected BookSetRepository bookSetRepository;
-    @Autowired
-    protected LoanRepository loanRepository;
+    @Autowired protected GetUserPort getUserPort;
+    @Autowired protected SaveUserPort saveUserPort;
+    @Autowired protected DeleteUserPort deleteUserPort;
+
+    @Autowired protected GetBookSetPort getBookSetPort;
+    @Autowired protected SaveBookSetPort saveBookSetPort;
+    @Autowired protected DeleteBookSetPort deleteBookSetPort;
+
+    @Autowired protected GetLoanPort getLoanPort;
+    @Autowired protected SaveLoanPort saveLoanPort;
+    @Autowired protected DeleteLoanPort deleteLoanPort;
 
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry registry) {
@@ -37,11 +42,8 @@ public abstract class BaseServiceTest {
 
     @BeforeEach
     void cleanUp() {
-        RestAssured.port = port;
-        RestAssured.baseURI = "http://localhost";
-
-        loanRepository.deleteAll();
-        userRepository.deleteAll();
-        bookSetRepository.deleteAll();
+        getLoanPort.findAll().forEach(loan -> deleteLoanPort.deleteLoan(loan.getId()));
+        getUserPort.findAllUsers().forEach(user -> deleteUserPort.deleteUser(user.getId()));
+        getBookSetPort.findAllBookSets().forEach(bookSet -> deleteBookSetPort.deleteBookSet(bookSet.getId()));
     }
 }

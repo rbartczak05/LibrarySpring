@@ -2,7 +2,7 @@ package pl.lodz.p.library.integration;
 
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
-import pl.lodz.p.library.dto.ReaderDTO;
+import pl.lodz.p.library.adapters.rest.dto.ReaderDTO;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
@@ -56,8 +56,16 @@ public class ReaderIntegrationTest extends BaseIntegrationTest {
     void updateReaderTest() {
         String id = createReader("oldData", "old@mail.com");
         ReaderDTO update = new ReaderDTO(null, "newData", "new@mail.com", 30, false, "reader", 0);
+        
+        String eTag = given()
+                .when()
+                .get("/readers/{id}", id)
+                .then()
+                .statusCode(200)
+                .extract().header("If-Match");
 
         given()
+                .header("If-Match", eTag)
                 .contentType(ContentType.JSON)
                 .body(update)
                 .when()

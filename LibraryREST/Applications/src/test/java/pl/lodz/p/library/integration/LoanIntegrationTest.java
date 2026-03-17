@@ -2,8 +2,8 @@ package pl.lodz.p.library.integration;
 
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
-import pl.lodz.p.library.dto.BookSetDTO;
-import pl.lodz.p.library.dto.ReaderDTO;
+import pl.lodz.p.library.adapters.rest.dto.BookSetDTO;
+import pl.lodz.p.library.adapters.rest.dto.ReaderDTO;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -57,7 +57,7 @@ public class LoanIntegrationTest extends BaseIntegrationTest {
                 .get("/loans/reader_id/{id}", userId)
                 .then()
                 .statusCode(200)
-                .body("$", hasSize(1));
+                .body("_embedded.loans", hasSize(1));
     }
 
     @Test

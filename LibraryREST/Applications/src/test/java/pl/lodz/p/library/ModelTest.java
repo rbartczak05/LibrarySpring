@@ -2,9 +2,8 @@ package pl.lodz.p.library;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import pl.lodz.p.library.exception.*;
-import pl.lodz.p.library.model.*;
+import pl.lodz.p.library.domain.exceptions.*;
+import pl.lodz.p.library.domain.model.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -31,11 +30,11 @@ class ModelTest {
         Assertions.assertTrue(reader.canBorrowBook());
 
         reader.setCurrentLoansCount(5);
-        Assertions.assertThrows(ReaderLimitsException.class, reader::canBorrowBook);
+        Assertions.assertThrows(UserException.class, reader::canBorrowBook);
 
         reader.setActive(false);
         reader.setCurrentLoansCount(2);
-        Assertions.assertThrows(ReaderIsInactiveException.class, reader::canBorrowBook);
+        Assertions.assertThrows(UserException.class, reader::canBorrowBook);
     }
 
     @Test
@@ -107,7 +106,7 @@ class ModelTest {
         LocalDateTime startTime = loan.getStartTime();
         LocalDateTime beforeStart = startTime.minusDays(1);
 
-        Assertions.assertThrows(BookSetTimeException.class, () -> loan.setReturnTime(beforeStart));
+        Assertions.assertThrows(BookSetException.class, () -> loan.setReturnTime(beforeStart));
     }
 
     @Test
@@ -116,6 +115,6 @@ class ModelTest {
         LocalDateTime startTime = loan.getStartTime();
         LocalDateTime beforeStart = startTime.minusDays(1);
 
-        Assertions.assertThrows(BookSetTimeException.class, () -> loan.setEndTime(beforeStart));
+        Assertions.assertThrows(BookSetException.class, () -> loan.setEndTime(beforeStart));
     }
 }

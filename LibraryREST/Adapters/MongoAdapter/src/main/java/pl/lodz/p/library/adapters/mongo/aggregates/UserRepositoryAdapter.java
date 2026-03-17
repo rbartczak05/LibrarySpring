@@ -99,6 +99,7 @@ public class UserRepositoryAdapter implements GetUserPort, SaveUserPort, DeleteU
     @Override
     public Optional<User> updateUser(String id, User userUpdates) {
         return repository.findById(id).map(existing -> {
+            existing.setLogin(userUpdates.getLogin());
             existing.setEmail(userUpdates.getEmail());
             existing.setAge(userUpdates.getAge());
             existing.setActive(userUpdates.isActive());

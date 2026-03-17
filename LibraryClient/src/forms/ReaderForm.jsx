@@ -22,7 +22,8 @@ const ReaderForm = () => {
             api.get(`/readers/${id}`)
                 .then(res => {
                     setFormData(res.data);
-                    setEtag(res.headers['if-match'] || res.headers['If-Match']); // Pobranie ETaga
+                    const etagHeader = res.headers.get ? res.headers.get('if-match') : res.headers['if-match'];
+                    setEtag(etagHeader);
                 })
                 .catch(err => alert("Błąd pobierania danych: " + (err.response?.data?.message || err.message)));
         }
@@ -62,7 +63,7 @@ const ReaderForm = () => {
 
         const request = id
             ? api.post(`/readers/${id}`, payload, {
-                headers: {'If-Match': etag}
+                headers: etag ? {'If-Match': etag} : {}
             })
             : api.post(`/readers`, payload);
 
