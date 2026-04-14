@@ -1,6 +1,7 @@
 package pl.lodz.p.library.adapters.soap.converters;
 
 import pl.lodz.p.library.adapters.soap.dto.user.UserDTO;
+import pl.lodz.p.library.domain.exceptions.UserException;
 import pl.lodz.p.library.domain.model.Administrator;
 import pl.lodz.p.library.domain.model.Librarian;
 import pl.lodz.p.library.domain.model.Reader;
@@ -22,7 +23,7 @@ public class UserSoapConverter {
             }
             case Librarian librarian -> type = "librarian";
             case Administrator administrator -> type = "admin";
-            default -> type = "unknown";
+            default -> throw new UserException("User type is not supported.");
         }
 
         return new UserDTO(user.getId(), user.getLogin(), user.getEmail(), user.getAge(), user.isActive(),
@@ -56,7 +57,7 @@ public class UserSoapConverter {
                 return a;
             }
             default -> {
-                return null;
+                throw new UserException("User type is not supported.");
             }
         }
     }

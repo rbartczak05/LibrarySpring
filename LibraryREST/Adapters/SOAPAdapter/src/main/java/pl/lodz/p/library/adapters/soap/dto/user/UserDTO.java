@@ -33,7 +33,7 @@ public class UserDTO {
     private boolean active;
     @XmlElement(name = "type", required = true)
     private String type;
-    @XmlElement(name = "currentLoansCount", required = false) //tylko da readera
+    @XmlElement(name = "currentLoansCount", required = false) //tylko dla readera
     private int currentLoansCount;
 
     public UserDTO() {
