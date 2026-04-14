@@ -1,12 +1,11 @@
 package pl.lodz.p.library.adapters.rest.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -17,11 +16,11 @@ import pl.lodz.p.library.ports.inbound.UserUseCase;
 
 import java.util.Collections;
 
-import static org.mockito.ArgumentMatchers.*;
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AdministratorController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -36,14 +35,12 @@ public class AdministratorControllerTest {
     @MockitoBean
     private JwtService jwtService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     private Administrator admin;
     private AdministratorDTO adminDTO;
 
     @BeforeEach
     void setUp() {
+        RestAssuredMockMvc.mockMvc(mockMvc);
         admin = new Administrator("admin", "password", "admin@example.com", 30);
         admin.setId("admin1");
         admin.setActive(true);
@@ -53,36 +50,45 @@ public class AdministratorControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    void getAllAdmins_ShouldReturnList() throws Exception {
+    void getAllAdmins_ShouldReturnList() {
         when(userUseCase.findAllUsers()).thenReturn(Collections.singletonList(admin));
 
-        mockMvc.perform(get("/admins"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].login").value("admin"));
+        given()
+        .when()
+                .get("/admins")
+        .then()
+                .status(org.springframework.http.HttpStatus.OK)
+                .body("$", hasSize(1))
+                .body("[0].login", equalTo("admin"));
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    void getAdminById_ShouldReturnAdmin() throws Exception {
+    void getAdminById_ShouldReturnAdmin() {
         when(userUseCase.findUserById("admin1")).thenReturn(admin);
         when(jwtService.generateSignatureForId("admin1")).thenReturn("mock-signature");
 
-        mockMvc.perform(get("/admins/admin1"))
-                .andExpect(status().isOk())
-                .andExpect(header().string("If-Match", "mock-signature"))
-                .andExpect(jsonPath("$.login").value("admin"));
+        given()
+        .when()
+                .get("/admins/admin1")
+        .then()
+                .status(org.springframework.http.HttpStatus.OK)
+                .header("If-Match", "mock-signature")
+                .body("login", equalTo("admin"));
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    void addAdmin_ShouldCreateAdmin() throws Exception {
+    void addAdmin_ShouldCreateAdmin() {
         when(userUseCase.addUser(any(Administrator.class))).thenReturn(admin);
 
-        mockMvc.perform(post("/admins")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(adminDTO)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.login").value("admin"));
+        given()
+                .contentType("application/json")
+                .body(adminDTO)
+        .when()
+                .post("/admins")
+        .then()
+                .status(org.springframework.http.HttpStatus.CREATED)
+                .body("login", equalTo("admin"));
     }
 }

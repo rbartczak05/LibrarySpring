@@ -1,6 +1,6 @@
 package pl.lodz.p.library.adapters.rest.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,22 +9,22 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-
 import org.springframework.test.web.servlet.MockMvc;
 import pl.lodz.p.library.adapters.rest.dto.LoanDTO;
 import pl.lodz.p.library.adapters.rest.security.JwtService;
 import pl.lodz.p.library.domain.model.Loan;
 import pl.lodz.p.library.ports.inbound.LoanUseCase;
 import pl.lodz.p.library.ports.inbound.UserUseCase;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+
 import java.time.LocalDateTime;
 import java.util.Collections;
 
-import static org.mockito.ArgumentMatchers.*;
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(LoanController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -45,14 +45,12 @@ public class LoanControllerTest {
     @MockitoBean
     private UserDetailsService userDetailsService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     private Loan loan;
     private LoanDTO loanDTO;
 
     @BeforeEach
     void setUp() {
+        RestAssuredMockMvc.mockMvc(mockMvc);
         LocalDateTime now = LocalDateTime.of(2023, 10, 27, 10, 0);
         loan = new Loan("reader1", "book1", now);
         loan.setId("loan1");
@@ -62,45 +60,56 @@ public class LoanControllerTest {
 
     @Test
     @WithMockUser(roles = "LIBRARIAN")
-    void getAllLoans_ShouldReturnList() throws Exception {
+    void getAllLoans_ShouldReturnList() {
         when(loanUseCase.findAllLoans()).thenReturn(Collections.singletonList(loan));
 
-        mockMvc.perform(get("/loans"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$._embedded.loans.length()").value(1));
+        given()
+        .when()
+                .get("/loans")
+        .then()
+                .status(org.springframework.http.HttpStatus.OK)
+                .body("_embedded.loans", hasSize(1));
     }
 
     @Test
     @WithMockUser(roles = "LIBRARIAN")
-    void getLoanById_ShouldReturnLoan() throws Exception {
+    void getLoanById_ShouldReturnLoan() {
         when(loanUseCase.findLoanById("loan1")).thenReturn(loan);
 
-        mockMvc.perform(get("/loans/loan1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("loan1"));
+        given()
+        .when()
+                .get("/loans/loan1")
+        .then()
+                .status(org.springframework.http.HttpStatus.OK)
+                .body("id", equalTo("loan1"));
     }
 
     @Test
     @WithMockUser(roles = "LIBRARIAN")
-    void createLoan_ShouldCreateLoan() throws Exception {
+    void createLoan_ShouldCreateLoan() {
         when(loanUseCase.createLoan(anyString(), anyString(), any())).thenReturn(loan);
 
-        mockMvc.perform(post("/loans")
-                        .param("readerId", "reader1")
-                        .param("bookSetId", "book1"))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value("loan1"));
+        given()
+                .queryParam("readerId", "reader1")
+                .queryParam("bookSetId", "book1")
+        .when()
+                .post("/loans")
+        .then()
+                .status(org.springframework.http.HttpStatus.CREATED)
+                .body("id", equalTo("loan1"));
     }
 
     @Test
     @WithMockUser(roles = "LIBRARIAN")
-    void endLoan_ShouldEndLoan() throws Exception {
+    void endLoan_ShouldEndLoan() {
         loan.setActive(false);
         when(loanUseCase.endLoan("loan1")).thenReturn(loan);
 
-        mockMvc.perform(post("/loans/loan1/end"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.active").value(false));
+        given()
+        .when()
+                .post("/loans/loan1/end")
+        .then()
+                .status(org.springframework.http.HttpStatus.OK)
+                .body("active", equalTo(false));
     }
 }
