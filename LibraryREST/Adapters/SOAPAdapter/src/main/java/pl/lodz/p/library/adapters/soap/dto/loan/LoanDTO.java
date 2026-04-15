@@ -43,7 +43,7 @@ public class LoanDTO {
     public LoanDTO() {
     }
 
-    public LoanDTO(String id, boolean active, XMLGregorianCalendar startTime, XMLGregorianCalendar endTime, XMLGregorianCalendar returnTime, String bookSetId, String readerId) {
+    public LoanDTO(String id, boolean active, XMLGregorianCalendar startTime, XMLGregorianCalendar endTime, XMLGregorianCalendar returnTime, String readerId, String bookSetId) {
         this.id = id;
         this.active = active;
         this.startTime = startTime;

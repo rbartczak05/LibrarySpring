@@ -1,7 +1,16 @@
-package pl.lodz.p.library.adapters.soap.dto;
+package pl.lodz.p.library.adapters.soap.dto.auth;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "AuthRequest")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class AuthRequest {
+    @XmlElement(required = true)
     private String login;
+    @XmlElement(required = true)
     private String password;
 
     public AuthRequest() {

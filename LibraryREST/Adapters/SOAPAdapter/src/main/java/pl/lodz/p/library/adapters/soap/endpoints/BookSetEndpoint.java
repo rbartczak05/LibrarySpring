@@ -1,7 +1,6 @@
 package pl.lodz.p.library.adapters.soap.endpoints;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -28,7 +27,7 @@ public class BookSetEndpoint {
 
     @PayloadRoot(namespace = namespace, localPart = "GetAllBookSetsRequest")
     @ResponsePayload
-    public GetAllBookSetsResponse getAllBookSetsResponse(@RequestBody GetAllBookSetsRequest request) {
+    public GetAllBookSetsResponse getAllBookSetsResponse(@RequestPayload GetAllBookSetsRequest request) {
         List<BookSet> bookSets = bookSetUseCase.findAllBookSets();
         GetAllBookSetsResponse response = new GetAllBookSetsResponse();
         response.setBookSets(bookSets.stream().map(BookSetSoapConverter::toDTO).collect(Collectors.toList()));
@@ -37,7 +36,7 @@ public class BookSetEndpoint {
 
     @PayloadRoot(namespace = namespace, localPart = "GetBookSetByIdRequest")
     @ResponsePayload
-    public GetBookSetByIdResponse getBookSetByIdResponse(@RequestBody GetBookSetByIdRequest request) {
+    public GetBookSetByIdResponse getBookSetByIdResponse(@RequestPayload GetBookSetByIdRequest request) {
         BookSet bookSet = bookSetUseCase.findBookSetById(request.getId());
         GetBookSetByIdResponse response = new GetBookSetByIdResponse();
         response.setBookSetDTO(BookSetSoapConverter.toDTO(bookSet));

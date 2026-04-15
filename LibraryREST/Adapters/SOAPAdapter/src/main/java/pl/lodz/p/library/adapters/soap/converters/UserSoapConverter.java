@@ -50,7 +50,7 @@ public class UserSoapConverter {
                 l.setActive(dto.isActive());
                 return l;
             }
-            case "administator" -> {
+            case "admin" -> {
                 Administrator a = new Administrator(dto.getLogin(), dto.getEmail(), dto.getAge());
                 a.setId(dto.getId());
                 a.setActive(dto.isActive());
