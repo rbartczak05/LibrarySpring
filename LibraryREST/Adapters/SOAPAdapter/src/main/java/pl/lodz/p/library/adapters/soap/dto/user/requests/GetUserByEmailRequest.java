@@ -5,11 +5,11 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "GetUsersByTypeRequest")
+@XmlRootElement(name = "GetUserByEmailRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class GetUsersByTypeRequest {
+public class GetUserByEmailRequest {
     @XmlElement(required = true)
-    private String type;
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
+    private String email;
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 }

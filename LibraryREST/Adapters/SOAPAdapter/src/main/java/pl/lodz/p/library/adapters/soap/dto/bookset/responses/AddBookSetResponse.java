@@ -6,9 +6,9 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import pl.lodz.p.library.adapters.soap.dto.bookset.BookSetDTO;
 
-@XmlRootElement(name = "AddBookSetRequest")
+@XmlRootElement(name = "AddBookSetResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AddBookSetRequest {
+public class AddBookSetResponse {
     @XmlElement(required = true)
     private BookSetDTO bookSet;
     public BookSetDTO getBookSetDTO() { return bookSet; }

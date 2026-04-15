@@ -6,13 +6,11 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import pl.lodz.p.library.adapters.soap.dto.user.UserDTO;
 
-import java.util.List;
-
-@XmlRootElement(name = "GetUsersByTypeResponse")
+@XmlRootElement(name = "GetUserByEmailResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class GetUsersByTypeResponse {
-    @XmlElement(name = "user", required = true)
-    private List<UserDTO> user;
-    public List<UserDTO> getUser() { return user; }
-    public void setUser(List<UserDTO> user) { this.user = user; }
+public class GetUserByEmailResponse {
+    @XmlElement(required = true)
+    private UserDTO user;
+    public UserDTO getUserDTO() { return user; }
+    public void setUserDTO(UserDTO userDTO) { this.user = userDTO; }
 }
