@@ -61,11 +61,26 @@
                 <artifactId>jaxb2-maven-plugin</artifactId>
                 <configuration>
                     <sources>
-                        <source>${project.basedir}/src/main/resources/schema/book_sets.xsd</source>
-                        <source>${project.basedir}/src/main/resources/schema/administrators.xsd</source>
-                        <source>${project.basedir}/src/main/resources/schema/users.xsd</source>
+                        <source>src/main/java/pl/lodz/p/library/adapters/soap/dto</source>
                     </sources>
-                    <clearOutputDir>true</clearOutputDir>
+
+                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                    <clearOutputDir>false</clearOutputDir>
+
+                    <transformSchemas>
+                        <transformSchema>
+                            <uri>http://pl.lodz.p.library.adapters.soap.dto.bookset/</uri>
+                            <toFile>book_sets.xsd</toFile>
+                        </transformSchema>
+                        <transformSchema>
+                            <uri>http://pl.lodz.p.library.adapters.soap.dto.user/</uri>
+                            <toFile>users.xsd</toFile>
+                        </transformSchema>
+                        <transformSchema>
+                            <uri>http://pl.lodz.p.library.adapters.soap.dto.loan/</uri>
+                            <toFile>loans.xsd</toFile>
+                        </transformSchema>
+                    </transformSchemas>
                 </configuration>
             </plugin>
         </plugins>
