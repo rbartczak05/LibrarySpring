@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.webservices.server.WebServiceServerTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -14,6 +13,7 @@ import pl.lodz.p.library.adapters.soap.converters.UserSoapConverter;
 import pl.lodz.p.library.domain.model.Reader;
 import pl.lodz.p.library.domain.model.User;
 import pl.lodz.p.library.ports.inbound.UserUseCase;
+import pl.lodz.p.library.domain.model.Loan;
 
 import java.util.List;
 import java.util.Map;

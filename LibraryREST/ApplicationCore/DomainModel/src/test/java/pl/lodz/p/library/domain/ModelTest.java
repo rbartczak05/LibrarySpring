@@ -1,8 +1,9 @@
-package pl.lodz.p.library;
+package pl.lodz.p.library.domain;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pl.lodz.p.library.domain.exceptions.*;
+import pl.lodz.p.library.domain.exceptions.BookSetException;
+import pl.lodz.p.library.domain.exceptions.UserException;
 import pl.lodz.p.library.domain.model.*;
 
 import java.time.LocalDateTime;

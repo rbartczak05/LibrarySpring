@@ -1,4 +1,4 @@
-package pl.lodz.p.library.service;
+package pl.lodz.p.library.services;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,7 +9,6 @@ import pl.lodz.p.library.domain.exceptions.UserException;
 import pl.lodz.p.library.domain.model.BookSet;
 import pl.lodz.p.library.domain.model.Loan;
 import pl.lodz.p.library.domain.model.Reader;
-import pl.lodz.p.library.services.LoanService;
 
 class LoanServiceTest extends BaseServiceTest {
 

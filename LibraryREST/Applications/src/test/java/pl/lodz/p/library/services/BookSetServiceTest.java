@@ -1,11 +1,10 @@
-package pl.lodz.p.library.service;
+package pl.lodz.p.library.services;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.lodz.p.library.domain.exceptions.BookSetException;
 import pl.lodz.p.library.domain.model.BookSet;
-import pl.lodz.p.library.services.BookSetService;
 
 import java.util.List;
 import java.util.UUID;
