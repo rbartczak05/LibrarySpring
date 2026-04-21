@@ -1,4 +1,4 @@
-package pl.lodz.p.library.adapters.rest.security;
+package pl.lodz.p.library.adapters.soap.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -17,24 +17,27 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class JwtService implements JwtPort {
+public class JwtSoapService implements JwtPort {
+
     @Value("${jwt.secret}")
-    private String SECRET_KEY;
+    private String secretKey;
 
-    private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 15; // 15 minut
+    private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 15;
+    private static final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 7;
 
-    private static final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 7; // 7 dni
-
+    @Override
     public String generateAccessToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", userDetails.getAuthorities().iterator().next().getAuthority());
         return createToken(claims, userDetails.getUsername(), ACCESS_TOKEN_EXPIRATION);
     }
 
+    @Override
     public String generateRefreshToken(UserDetails userDetails) {
         return createToken(new HashMap<>(), userDetails.getUsername(), REFRESH_TOKEN_EXPIRATION);
     }
 
+    @Override
     public String generateSignatureForId(String id) {
         return Jwts.builder()
                 .setSubject(id)
@@ -42,26 +45,35 @@ public class JwtService implements JwtPort {
                 .compact();
     }
 
+    @Override
     public boolean verifySignature(String id, String token) {
         try {
-            String extractedId = extractUsername(token);
-            return extractedId.equals(id);
+            return extractUsername(token).equals(id);
         } catch (Exception e) {
             return false;
         }
     }
 
+    @Override
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
+    @Override
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        return extractUsername(token).equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
+        return claimsResolver.apply(extractAllClaims(token));
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
+        return Jwts.parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     private String createToken(Map<String, Object> claims, String subject, long expiration) {
@@ -74,21 +86,11 @@ public class JwtService implements JwtPort {
                 .compact();
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
-
     private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+        return extractClaim(token, Claims::getExpiration).before(new Date());
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
-        return Keys.hmacShaKeyFor(keyBytes);
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
     }
 }

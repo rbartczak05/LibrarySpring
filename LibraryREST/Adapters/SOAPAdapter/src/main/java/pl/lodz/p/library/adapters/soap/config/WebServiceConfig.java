@@ -32,7 +32,7 @@ public class WebServiceConfig {
         DefaultWsdl11Definition def = new DefaultWsdl11Definition();
         def.setPortTypeName("BookSetsPort");
         def.setLocationUri("/ws");
-        def.setTargetNamespace("https://pl.lodz.p.library.adapters.soap.dto.bookset/");
+        def.setTargetNamespace("http://pl.lodz.p.library.adapters.soap.dto.bookset/");
         def.setSchema(bookSetsSchema);
         return def;
     }
@@ -47,7 +47,7 @@ public class WebServiceConfig {
         DefaultWsdl11Definition def = new DefaultWsdl11Definition();
         def.setPortTypeName("LoansPort");
         def.setLocationUri("/ws");
-        def.setTargetNamespace("https://pl.lodz.p.library.adapters.soap.dto.loan/");
+        def.setTargetNamespace("http://pl.lodz.p.library.adapters.soap.dto.loan/");
         def.setSchema(loanSchema);
         return def;
     }
@@ -62,8 +62,21 @@ public class WebServiceConfig {
         DefaultWsdl11Definition def = new DefaultWsdl11Definition();
         def.setPortTypeName("UsersPort");
         def.setLocationUri("/ws");
-        def.setTargetNamespace("https://pl.lodz.p.library.adapters.soap.dto.user/");
+        def.setTargetNamespace("http://pl.lodz.p.library.adapters.soap.dto.user/");
         def.setSchema(userSchema);
+        return def;
+    }
+
+    @Bean
+    public XsdSchema authSchema() {return new SimpleXsdSchema(new ClassPathResource("auth.xsd"));}
+
+    @Bean(name = "auth")
+    public DefaultWsdl11Definition authWsdl(XsdSchema authSchema) {
+        DefaultWsdl11Definition def = new DefaultWsdl11Definition();
+        def.setPortTypeName("AuthPort");
+        def.setLocationUri("/ws");
+        def.setTargetNamespace("http://pl.lodz.p.library.adapters.soap.dto.auth/");
+        def.setSchema(authSchema);
         return def;
     }
 }

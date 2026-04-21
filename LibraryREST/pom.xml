@@ -82,6 +82,13 @@
             </dependency>
 
             <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-security</artifactId>
+                <version>3.5.7</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
                 <version>4.0.3</version>

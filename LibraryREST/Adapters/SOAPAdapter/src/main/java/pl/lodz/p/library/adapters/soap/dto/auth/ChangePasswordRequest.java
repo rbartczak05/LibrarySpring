@@ -9,9 +9,19 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ChangePasswordRequest {
     @XmlElement(required = true)
+    private String login;
+    @XmlElement(required = true)
     private String oldPassword;
     @XmlElement(required = true)
     private String newPassword;
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
     public String getOldPassword() {
         return oldPassword;

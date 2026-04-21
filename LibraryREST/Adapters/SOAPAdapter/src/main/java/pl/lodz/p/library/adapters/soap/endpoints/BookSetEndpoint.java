@@ -1,6 +1,7 @@
 package pl.lodz.p.library.adapters.soap.endpoints;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -27,6 +28,7 @@ public class BookSetEndpoint {
 
     @PayloadRoot(namespace = namespace, localPart = "GetAllBookSetsRequest")
     @ResponsePayload
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN', 'READER')")
     public GetAllBookSetsResponse getAllBookSetsResponse(@RequestPayload GetAllBookSetsRequest request) {
         List<BookSet> bookSets = bookSetUseCase.findAllBookSets();
         GetAllBookSetsResponse response = new GetAllBookSetsResponse();
@@ -36,6 +38,7 @@ public class BookSetEndpoint {
 
     @PayloadRoot(namespace = namespace, localPart = "GetBookSetByIdRequest")
     @ResponsePayload
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN', 'READER')")
     public GetBookSetByIdResponse getBookSetByIdResponse(@RequestPayload GetBookSetByIdRequest request) {
         BookSet bookSet = bookSetUseCase.findBookSetById(request.getId());
         GetBookSetByIdResponse response = new GetBookSetByIdResponse();
@@ -45,6 +48,7 @@ public class BookSetEndpoint {
 
     @PayloadRoot(namespace = namespace, localPart = "GetBookSetsByTitleRequest")
     @ResponsePayload
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN', 'READER')")
     public GetBookSetsByTitleResponse getBookSetsByTitle(@RequestPayload GetBookSetsByTitleRequest request) {
         GetBookSetsByTitleResponse response = new GetBookSetsByTitleResponse();
         response.setBookSets(bookSetUseCase.findBookSetsByTitle(request.getTitle()).stream()
@@ -54,6 +58,7 @@ public class BookSetEndpoint {
 
     @PayloadRoot(namespace = namespace, localPart = "AddBookSetRequest")
     @ResponsePayload
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public AddBookSetResponse addBookSet(@RequestPayload AddBookSetRequest request) {
         BookSet saved = bookSetUseCase.addBookSet(BookSetSoapConverter.toDomain(request.getBookSetDTO()));
         AddBookSetResponse response = new AddBookSetResponse();
@@ -63,6 +68,7 @@ public class BookSetEndpoint {
 
     @PayloadRoot(namespace = namespace, localPart = "UpdateBookSetRequest")
     @ResponsePayload
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public UpdateBookSetResponse updateBookSet(@RequestPayload UpdateBookSetRequest request) {
         BookSet updated = bookSetUseCase.updateBookSet(
                 request.getId(), BookSetSoapConverter.toDomain(request.getBookSetDTO()));
@@ -73,6 +79,7 @@ public class BookSetEndpoint {
 
     @PayloadRoot(namespace = namespace, localPart = "DeleteBookSetRequest")
     @ResponsePayload
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public DeleteBookSetResponse deleteBookSet(@RequestPayload DeleteBookSetRequest request) {
         bookSetUseCase.deleteBookSet(request.getId());
         DeleteBookSetResponse response = new DeleteBookSetResponse();

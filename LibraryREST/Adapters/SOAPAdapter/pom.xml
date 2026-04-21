@@ -53,9 +53,27 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.ws</groupId>
             <artifactId>spring-ws-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
         </dependency>
     </dependencies>
 
@@ -86,7 +104,7 @@
                             <toFile>loans.xsd</toFile>
                         </transformSchema>
                         <transformSchema>
-                            <uri>http://pl.lodz.p.library.adapters.soap.dto.auth</uri>
+                            <uri>http://pl.lodz.p.library.adapters.soap.dto.auth/</uri>
                             <toFile>auth.xsd</toFile>
                         </transformSchema>
                     </transformSchemas>

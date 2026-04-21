@@ -1,5 +1,6 @@
 package pl.lodz.p.library.adapters.soap.endpoints;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -26,6 +27,7 @@ public class LoanEndpoint {
 
     @PayloadRoot(namespace = namespace, localPart = "GetAllLoansRequest")
     @ResponsePayload
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public GetAllLoansResponse getAllLoans(@RequestPayload GetAllLoansRequest request) {
         GetAllLoansResponse response = new GetAllLoansResponse();
         response.setLoans(loanUseCase.findAllLoans().stream()
@@ -35,6 +37,7 @@ public class LoanEndpoint {
 
     @PayloadRoot(namespace = namespace, localPart = "GetLoanByIdRequest")
     @ResponsePayload
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public GetLoanByIdResponse getLoanById(@RequestPayload GetLoanByIdRequest request) {
         GetLoanByIdResponse response = new GetLoanByIdResponse();
         response.setLoanDTO(LoanSoapConverter.toDTO(loanUseCase.findLoanById(request.getId())));
@@ -43,6 +46,7 @@ public class LoanEndpoint {
 
     @PayloadRoot(namespace = namespace, localPart = "GetLoansByReaderRequest")
     @ResponsePayload
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public GetLoansByReaderResponse getLoansByReader(@RequestPayload GetLoansByReaderRequest request) {
         List<Loan> loans = loanUseCase.findLoansByReader(request.getReaderId());
         GetLoansByReaderResponse response = new GetLoansByReaderResponse();
@@ -52,6 +56,7 @@ public class LoanEndpoint {
 
     @PayloadRoot(namespace = namespace, localPart = "CreateLoanRequest")
     @ResponsePayload
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public CreateLoanResponse createLoan(@RequestPayload CreateLoanRequest request) {
         Loan loan = loanUseCase.createLoan(request.getReaderId(), request.getBookSetId());
         CreateLoanResponse response = new CreateLoanResponse();
@@ -61,6 +66,7 @@ public class LoanEndpoint {
 
     @PayloadRoot(namespace = namespace, localPart = "EndLoanRequest")
     @ResponsePayload
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public EndLoanResponse endLoan(@RequestPayload EndLoanRequest request) {
         Loan loan = loanUseCase.endLoan(request.getId());
         EndLoanResponse response = new EndLoanResponse();
@@ -70,6 +76,7 @@ public class LoanEndpoint {
 
     @PayloadRoot(namespace = namespace, localPart = "DeleteLoanRequest")
     @ResponsePayload
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public DeleteLoanResponse deleteLoan(@RequestPayload DeleteLoanRequest request) {
         loanUseCase.deleteLoan(request.getId());
         DeleteLoanResponse response = new DeleteLoanResponse();
