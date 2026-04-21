@@ -14,16 +14,14 @@ import pl.lodz.p.library.domain.model.Administrator;
 import pl.lodz.p.library.domain.model.Librarian;
 import pl.lodz.p.library.domain.model.Reader;
 import pl.lodz.p.library.domain.model.User;
-import pl.lodz.p.library.ports.outbound.DeleteUserPort;
-import pl.lodz.p.library.ports.outbound.GetUserPort;
-import pl.lodz.p.library.ports.outbound.SaveUserPort;
+import pl.lodz.p.library.ports.outbound.UserPort;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class UserRepositoryAdapter implements GetUserPort, SaveUserPort, DeleteUserPort {
+public class UserRepositoryAdapter implements UserPort {
 
     private final UserRepository repository;
     private final AdministratorMapper adminMapper;

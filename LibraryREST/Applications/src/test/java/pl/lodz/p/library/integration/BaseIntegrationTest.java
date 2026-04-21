@@ -17,7 +17,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.library.adapters.rest.security.JwtService;
 import pl.lodz.p.library.domain.model.Administrator;
 import pl.lodz.p.library.ports.inbound.UserUseCase;
-import pl.lodz.p.library.ports.outbound.*;
+import pl.lodz.p.library.ports.outbound.BookSetPort;
+import pl.lodz.p.library.ports.outbound.LoanPort;
+import pl.lodz.p.library.ports.outbound.UserPort;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
@@ -31,15 +33,10 @@ public abstract class BaseIntegrationTest {
 
     @LocalServerPort
     protected int port;
-    @Autowired protected GetUserPort getUserPort;
-    @Autowired protected SaveUserPort saveUserPort;
-    @Autowired protected DeleteUserPort deleteUserPort;
 
-    @Autowired protected GetBookSetPort getBookSetPort;
-    @Autowired protected DeleteBookSetPort deleteBookSetPort;
-
-    @Autowired protected GetLoanPort getLoanPort;
-    @Autowired protected DeleteLoanPort deleteLoanPort;
+    @Autowired protected UserPort userPort;
+    @Autowired protected BookSetPort bookSetPort;
+    @Autowired protected LoanPort loanPort;
 
     @Autowired protected UserUseCase userUseCase;
     @Autowired protected PasswordEncoder passwordEncoder;
@@ -58,13 +55,13 @@ public abstract class BaseIntegrationTest {
         RestAssured.baseURI = "http://localhost";
         RestAssured.authentication = RestAssured.DEFAULT_AUTH;
 
-        getLoanPort.findAll().forEach(loan -> deleteLoanPort.deleteLoan(loan.getId()));
-        getUserPort.findAllUsers().forEach(user -> deleteUserPort.deleteUser(user.getId()));
-        getBookSetPort.findAllBookSets().forEach(bookSet -> deleteBookSetPort.deleteBookSet(bookSet.getId()));
+        loanPort.findAll().forEach(loan -> loanPort.deleteLoan(loan.getId()));
+        userPort.findAllUsers().forEach(user -> userPort.deleteUser(user.getId()));
+        bookSetPort.findAllBookSets().forEach(bookSet -> bookSetPort.deleteBookSet(bookSet.getId()));
 
         Administrator admin = new Administrator("admin_test", "admin@test.pl", 30);
         userUseCase.changeUserPasswordInModel(admin, passwordEncoder.encode("admin123"));
-        saveUserPort.addUser(admin);
+        userPort.addUser(admin);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername("admin_test");
         String token = jwtService.generateAccessToken(userDetails);

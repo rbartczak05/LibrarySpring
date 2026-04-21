@@ -26,8 +26,8 @@ class BookSetServiceTest extends BaseServiceTest {
 
     @Test
     void findAllBookSetsTest() {
-        saveBookSetPort.save(new BookSet("Diuna", "Frank Herbert", 1965, 5));
-        saveBookSetPort.save(new BookSet("Lalka", "Bolesław Prus", 1890, 2));
+        bookSetPort.save(new BookSet("Diuna", "Frank Herbert", 1965, 5));
+        bookSetPort.save(new BookSet("Lalka", "Bolesław Prus", 1890, 2));
 
         List<BookSet> books = bookSetService.findAllBookSets();
         Assertions.assertEquals(2, books.size());
@@ -36,7 +36,7 @@ class BookSetServiceTest extends BaseServiceTest {
     @Test
     void findBookSetByIdTest() {
         BookSet book = new BookSet("Diuna", "Frank Herbert", 1965, 5);
-        BookSet savedBook = saveBookSetPort.save(book);
+        BookSet savedBook = bookSetPort.save(book);
 
         BookSet foundBook = bookSetService.findBookSetById(savedBook.getId());
 
@@ -51,20 +51,19 @@ class BookSetServiceTest extends BaseServiceTest {
 
     @Test
     void updateBookSetTest() {
-        BookSet book = saveBookSetPort.save(new BookSet("Diuna", "Frank Herbert", 1965, 5));
+        BookSet book = bookSetPort.save(new BookSet("Diuna", "Frank Herbert", 1965, 5));
         BookSet updates = new BookSet("NOWY TYTUŁ", "NOWY AUTOR", 2000, 100);
 
         BookSet updated = bookSetService.updateBookSet(book.getId(), updates);
 
         Assertions.assertEquals(100, updated.getQuantity());
-        // Serwis aktualizuje tylko ilość, więc tytuł pozostaje stary
         Assertions.assertEquals("Diuna", updated.getTitle());
     }
 
     @Test
     void deleteBookSetTest() {
         BookSet book = new BookSet("Diuna", "Frank Herbert", 1965, 5);
-        BookSet savedBook = saveBookSetPort.save(book);
+        BookSet savedBook = bookSetPort.save(book);
         Assertions.assertEquals(1, bookSetService.findAllBookSets().size());
 
         bookSetService.deleteBookSet(savedBook.getId());

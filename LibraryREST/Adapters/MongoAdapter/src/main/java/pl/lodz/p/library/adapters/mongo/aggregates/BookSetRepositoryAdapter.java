@@ -6,16 +6,14 @@ import pl.lodz.p.library.adapters.mongo.documents.BookSetDoc;
 import pl.lodz.p.library.adapters.mongo.mappers.BookSetMapper;
 import pl.lodz.p.library.adapters.mongo.repositories.BookSetRepository;
 import pl.lodz.p.library.domain.model.BookSet;
-import pl.lodz.p.library.ports.outbound.DeleteBookSetPort;
-import pl.lodz.p.library.ports.outbound.GetBookSetPort;
-import pl.lodz.p.library.ports.outbound.SaveBookSetPort;
+import pl.lodz.p.library.ports.outbound.BookSetPort;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class BookSetRepositoryAdapter implements GetBookSetPort, SaveBookSetPort, DeleteBookSetPort {
+public class BookSetRepositoryAdapter implements BookSetPort {
 
     private final BookSetRepository repository;
     private final BookSetMapper mapper;

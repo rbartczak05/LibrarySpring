@@ -6,9 +6,7 @@ import pl.lodz.p.library.adapters.mongo.documents.LoanDoc;
 import pl.lodz.p.library.adapters.mongo.mappers.LoanMapper;
 import pl.lodz.p.library.adapters.mongo.repositories.LoanRepository;
 import pl.lodz.p.library.domain.model.Loan;
-import pl.lodz.p.library.ports.outbound.DeleteLoanPort;
-import pl.lodz.p.library.ports.outbound.GetLoanPort;
-import pl.lodz.p.library.ports.outbound.SaveLoanPort;
+import pl.lodz.p.library.ports.outbound.LoanPort;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,7 +14,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class LoanRepositoryAdapter implements GetLoanPort, SaveLoanPort, DeleteLoanPort {
+public class LoanRepositoryAdapter implements LoanPort{
 
     private final LoanRepository repository;
     private final LoanMapper mapper;

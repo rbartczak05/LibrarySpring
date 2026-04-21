@@ -5,7 +5,7 @@ import pl.lodz.p.library.domain.model.BookSet;
 import java.util.List;
 import java.util.Optional;
 
-public interface GetBookSetPort {
+public interface BookSetPort {
     List<BookSet> findAll();
 
     Optional<BookSet> findById(String id);
@@ -27,4 +27,12 @@ public interface GetBookSetPort {
     List<BookSet> findBookSetsByAvailable(boolean available);
 
     List<BookSet> findAllBookSets();
+
+    Optional<BookSet> addBookSet(BookSet bookSet);
+
+    Optional<BookSet> updateBookSet(String id, BookSet bookSetUpdates);
+
+    BookSet save(BookSet bookSet);
+
+    void deleteBookSet(String id);
 }

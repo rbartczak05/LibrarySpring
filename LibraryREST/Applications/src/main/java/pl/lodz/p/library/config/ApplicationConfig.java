@@ -13,26 +13,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.lodz.p.library.domain.model.Administrator;
 import pl.lodz.p.library.domain.model.Librarian;
 import pl.lodz.p.library.domain.model.User;
-import pl.lodz.p.library.ports.outbound.GetUserPort;
+import pl.lodz.p.library.ports.outbound.UserPort;
 
 @Configuration
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class ApplicationConfig {
-    private final GetUserPort getUserPort;
+    private final UserPort userPort;
 
-    public ApplicationConfig(GetUserPort getUserPort) {
-        this.getUserPort = getUserPort;
+    public ApplicationConfig(UserPort userPort) {
+        this.userPort = userPort;
     }
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> getUserPort.findUserByLogin(username)
-                .map(user -> org.springframework.security.core.userdetails.User.builder()
-                        .username(user.getLogin())
-                        .password(user.getPassword())
-                        .roles(mapRole(user))
-                        .build())
-                .orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
+        return username -> userPort.findUserByLogin(username).map(user -> org.springframework.security.core.userdetails.User.builder().username(user.getLogin()).password(user.getPassword()).roles(mapRole(user)).build()).orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
     }
 
     private String mapRole(User user) {

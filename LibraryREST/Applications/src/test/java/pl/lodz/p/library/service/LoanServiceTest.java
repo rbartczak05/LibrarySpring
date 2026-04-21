@@ -23,10 +23,10 @@ class LoanServiceTest extends BaseServiceTest {
     void setUp() {
         reader1 = new Reader("reader", "reader@mail.com", 20);
         reader1.setActive(true);
-        reader1 = (Reader) saveUserPort.addUser(reader1).orElseThrow();
+        reader1 = (Reader) userPort.addUser(reader1).orElseThrow();
 
         book1 = new BookSet("book", "author", 2000, 1);
-        book1 = saveBookSetPort.save(book1);
+        book1 = bookSetPort.save(book1);
     }
 
     @Test
@@ -37,8 +37,8 @@ class LoanServiceTest extends BaseServiceTest {
         Assertions.assertTrue(loan.isActive());
         Assertions.assertEquals(reader1.getId(), loan.getReaderId());
 
-        Reader updatedReader = (Reader) getUserPort.findUserById(reader1.getId()).orElseThrow();
-        BookSet updatedBook = getBookSetPort.findById(book1.getId()).orElseThrow();
+        Reader updatedReader = (Reader) userPort.findUserById(reader1.getId()).orElseThrow();
+        BookSet updatedBook = bookSetPort.findById(book1.getId()).orElseThrow();
 
         Assertions.assertEquals(1, updatedReader.getCurrentLoansCount());
         Assertions.assertEquals(0, updatedBook.getQuantity());
@@ -48,7 +48,7 @@ class LoanServiceTest extends BaseServiceTest {
     void createLoanFailReaderInactiveTest() {
         Reader readerInactive = new Reader("readerInactive", "readerInactive@mail.com", 20);
         readerInactive.setActive(false);
-        readerInactive = (Reader) saveUserPort.addUser(readerInactive).orElseThrow();
+        readerInactive = (Reader) userPort.addUser(readerInactive).orElseThrow();
 
         Reader finalReader = readerInactive;
         Assertions.assertThrows(UserException.class, () -> loanService.createLoan(finalReader.getId(), book1.getId()));
@@ -57,7 +57,7 @@ class LoanServiceTest extends BaseServiceTest {
     @Test
     void createLoanFailBookUnavailableTest() {
         BookSet bookUnavailable = new BookSet("bookUnavailable", "author", 2000, 0);
-        bookUnavailable = saveBookSetPort.save(bookUnavailable);
+        bookUnavailable = bookSetPort.save(bookUnavailable);
 
         BookSet finalBook = bookUnavailable;
         Assertions.assertThrows(BookSetException.class, () -> loanService.createLoan(reader1.getId(), finalBook.getId()));
@@ -69,8 +69,8 @@ class LoanServiceTest extends BaseServiceTest {
 
         loanService.endLoan(savedLoan.getId());
 
-        Reader updatedReader = (Reader) getUserPort.findUserById(reader1.getId()).orElseThrow();
-        BookSet updatedBook = getBookSetPort.findById(book1.getId()).orElseThrow();
+        Reader updatedReader = (Reader) userPort.findUserById(reader1.getId()).orElseThrow();
+        BookSet updatedBook = bookSetPort.findById(book1.getId()).orElseThrow();
 
         Assertions.assertEquals(0, updatedReader.getCurrentLoansCount());
         Assertions.assertEquals(1, updatedBook.getQuantity());

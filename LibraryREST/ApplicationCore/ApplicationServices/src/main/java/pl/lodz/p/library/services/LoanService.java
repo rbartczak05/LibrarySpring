@@ -10,7 +10,9 @@ import pl.lodz.p.library.domain.model.BookSet;
 import pl.lodz.p.library.domain.model.Loan;
 import pl.lodz.p.library.domain.model.Reader;
 import pl.lodz.p.library.ports.inbound.LoanUseCase;
-import pl.lodz.p.library.ports.outbound.*;
+import pl.lodz.p.library.ports.outbound.BookSetPort;
+import pl.lodz.p.library.ports.outbound.LoanPort;
+import pl.lodz.p.library.ports.outbound.UserPort;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,58 +20,48 @@ import java.util.List;
 @Service
 public class LoanService implements LoanUseCase {
 
-    private final GetLoanPort getLoanPort;
-    private final SaveLoanPort saveLoanPort;
-    private final DeleteLoanPort deleteLoanPort;
-    private final GetBookSetPort getBookSetPort;
-    private final SaveBookSetPort saveBookSetPort;
-    private final GetUserPort getUserPort;
-    private final SaveUserPort saveUserPort;
+    private final LoanPort loanPort;
+    private final BookSetPort bookSetPort;
+    private final UserPort userPort;
 
     @Autowired
-    public LoanService(GetLoanPort getLoanPort, SaveLoanPort saveLoanPort, DeleteLoanPort deleteLoanPort,
-                       GetBookSetPort getBookSetPort, SaveBookSetPort saveBookSetPort,
-                       GetUserPort getUserPort, SaveUserPort saveUserPort) {
-        this.getLoanPort = getLoanPort;
-        this.saveLoanPort = saveLoanPort;
-        this.deleteLoanPort = deleteLoanPort;
-        this.getBookSetPort = getBookSetPort;
-        this.saveBookSetPort = saveBookSetPort;
-        this.getUserPort = getUserPort;
-        this.saveUserPort = saveUserPort;
+    public LoanService(LoanPort loanPort, BookSetPort bookSetPort, UserPort userPort) {
+
+        this.loanPort = loanPort;
+        this.bookSetPort = bookSetPort;
+        this.userPort = userPort;
     }
 
     public Loan findLoanById(String id) {
-        return getLoanPort.findById(id)
-                .orElseThrow(() -> new LoanException("Wypożyczenie o ID: " + id + " nie zostało odnalezione."));
+        return loanPort.findById(id).orElseThrow(() -> new LoanException("Wypożyczenie o ID: " + id + " nie zostało odnalezione."));
     }
 
     public List<Loan> findLoansByReader(String readerId) {
-        return getLoanPort.findByReaderId(readerId);
+        return loanPort.findByReaderId(readerId);
     }
 
     public List<Loan> findLoansByBookSet(String bookSetId) {
-        return getLoanPort.findByBookSetId(bookSetId);
+        return loanPort.findByBookSetId(bookSetId);
     }
 
     public List<Loan> findLoansByReaderIdAndBookSetId(String readerId, String bookSetId) {
-        return getLoanPort.findByReaderIdAndBookSetId(readerId, bookSetId);
+        return loanPort.findByReaderIdAndBookSetId(readerId, bookSetId);
     }
 
     public List<Loan> findByActiveLoans(boolean active) {
-        return getLoanPort.findByActive(active);
+        return loanPort.findByActive(active);
     }
 
     public List<Loan> findByReaderIdAndActive(String readerId, boolean active) {
-        return getLoanPort.findByReaderIdAndActive(readerId, active);
+        return loanPort.findByReaderIdAndActive(readerId, active);
     }
 
     public List<Loan> findByBookSetIdAndActive(String bookSetId, boolean active) {
-        return getLoanPort.findByBookSetIdAndActive(bookSetId, active);
+        return loanPort.findByBookSetIdAndActive(bookSetId, active);
     }
 
     public List<Loan> findAllLoans() {
-        return getLoanPort.findAll();
+        return loanPort.findAll();
     }
 
     @Transactional
@@ -79,8 +71,8 @@ public class LoanService implements LoanUseCase {
 
     @Transactional
     public Loan createLoan(String readerId, String bookSetId, LocalDateTime loanStartTime) {
-        Reader reader = (Reader) getUserPort.findUserById(readerId).orElseThrow(() -> new UserException("User not found"));
-        BookSet bookSet = getBookSetPort.findById(bookSetId).orElseThrow(() -> new BookSetException("BookSet not found"));
+        Reader reader = (Reader) userPort.findUserById(readerId).orElseThrow(() -> new UserException("User not found"));
+        BookSet bookSet = bookSetPort.findById(bookSetId).orElseThrow(() -> new BookSetException("BookSet not found"));
 
         if (!reader.canBorrowBook()) {
             throw new UserException("Reader with id: " + readerId + " cannot borrow loan.");
@@ -90,13 +82,12 @@ public class LoanService implements LoanUseCase {
         }
 
         bookSet.setQuantity(bookSet.getQuantity() - 1);
-        saveBookSetPort.save(bookSet);
+        bookSetPort.save(bookSet);
 
         reader.setCurrentLoansCount(reader.getCurrentLoansCount() + 1);
-        saveUserPort.addUser(reader);
+        userPort.addUser(reader);
 
-        return saveLoanPort.createLoan(readerId, bookSetId, loanStartTime)
-                .orElseThrow(() -> new LoanException("Nie udało się utworzyć wypożyczenia."));
+        return loanPort.createLoan(readerId, bookSetId, loanStartTime).orElseThrow(() -> new LoanException("Nie udało się utworzyć wypożyczenia."));
     }
 
     @Transactional
@@ -110,8 +101,7 @@ public class LoanService implements LoanUseCase {
             throw new LoanException("Wypożyczenie zostało już zakończone.");
         }
 
-        return saveLoanPort.updateLoan(loanId, loanUpdates)
-                .orElseThrow(() -> new LoanException("Nie udało się zaktualizować wypożyczenia."));
+        return loanPort.updateLoan(loanId, loanUpdates).orElseThrow(() -> new LoanException("Nie udało się zaktualizować wypożyczenia."));
     }
 
     @Transactional
@@ -122,16 +112,15 @@ public class LoanService implements LoanUseCase {
             throw new LoanException("Wypożyczenie zostało już zakończone.");
         }
 
-        BookSet bookSet = getBookSetPort.findById(loan.getBookSetId()).orElseThrow(() -> new BookSetException("BookSet not found"));
+        BookSet bookSet = bookSetPort.findById(loan.getBookSetId()).orElseThrow(() -> new BookSetException("BookSet not found"));
         bookSet.setQuantity(bookSet.getQuantity() + 1);
-        saveBookSetPort.save(bookSet);
+        bookSetPort.save(bookSet);
 
-        Reader reader = (Reader) getUserPort.findUserById(loan.getReaderId()).orElseThrow(() -> new UserException("User not found"));
+        Reader reader = (Reader) userPort.findUserById(loan.getReaderId()).orElseThrow(() -> new UserException("User not found"));
         reader.setCurrentLoansCount(reader.getCurrentLoansCount() - 1);
-        saveUserPort.addUser(reader);
+        userPort.addUser(reader);
 
-        return saveLoanPort.endLoan(loanId)
-                .orElseThrow(() -> new LoanException("Nie udało się zakończyć wypożyczenia."));
+        return loanPort.endLoan(loanId).orElseThrow(() -> new LoanException("Nie udało się zakończyć wypożyczenia."));
     }
 
     @Transactional
@@ -140,6 +129,6 @@ public class LoanService implements LoanUseCase {
         if (loan.isActive()) {
             throw new LoanException("Nie można usunąć aktywnego wypożyczenia.");
         }
-        deleteLoanPort.deleteLoan(loanId);
+        loanPort.deleteLoan(loanId);
     }
 }

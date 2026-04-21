@@ -1,6 +1,5 @@
 package pl.lodz.p.library.service;
 
-import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,7 +8,9 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import pl.lodz.p.library.ports.outbound.*;
+import pl.lodz.p.library.ports.outbound.BookSetPort;
+import pl.lodz.p.library.ports.outbound.LoanPort;
+import pl.lodz.p.library.ports.outbound.UserPort;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
@@ -23,17 +24,10 @@ public abstract class BaseServiceTest {
 
     @LocalServerPort
     protected int port;
-    @Autowired protected GetUserPort getUserPort;
-    @Autowired protected SaveUserPort saveUserPort;
-    @Autowired protected DeleteUserPort deleteUserPort;
 
-    @Autowired protected GetBookSetPort getBookSetPort;
-    @Autowired protected SaveBookSetPort saveBookSetPort;
-    @Autowired protected DeleteBookSetPort deleteBookSetPort;
-
-    @Autowired protected GetLoanPort getLoanPort;
-    @Autowired protected SaveLoanPort saveLoanPort;
-    @Autowired protected DeleteLoanPort deleteLoanPort;
+    @Autowired protected UserPort userPort;
+    @Autowired protected BookSetPort bookSetPort;
+    @Autowired protected LoanPort loanPort;
 
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry registry) {
@@ -42,8 +36,10 @@ public abstract class BaseServiceTest {
 
     @BeforeEach
     void cleanUp() {
-        getLoanPort.findAll().forEach(loan -> deleteLoanPort.deleteLoan(loan.getId()));
-        getUserPort.findAllUsers().forEach(user -> deleteUserPort.deleteUser(user.getId()));
-        getBookSetPort.findAllBookSets().forEach(bookSet -> deleteBookSetPort.deleteBookSet(bookSet.getId()));
+        loanPort.findAll().forEach(loan -> loanPort.deleteLoan(loan.getId()));
+
+        userPort.findAllUsers().forEach(user -> userPort.deleteUser(user.getId()));
+
+        bookSetPort.findAllBookSets().forEach(bookSet -> bookSetPort.deleteBookSet(bookSet.getId()));
     }
 }
