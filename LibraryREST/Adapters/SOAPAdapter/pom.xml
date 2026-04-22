@@ -109,6 +109,16 @@
                         </transformSchema>
                     </transformSchemas>
                 </configuration>
+                <version>4.1.0</version>
+                <executions>
+                    <execution>
+                        <id>schemagen</id>
+                        <goals>
+                            <goal>schemagen</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
