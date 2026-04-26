@@ -1,64 +1,52 @@
 package pl.lodz.p.library.adapters.soap.converters;
 
 import pl.lodz.p.library.adapters.soap.dto.user.UserDTO;
-import pl.lodz.p.library.domain.exceptions.UserException;
 import pl.lodz.p.library.domain.model.Administrator;
 import pl.lodz.p.library.domain.model.Librarian;
 import pl.lodz.p.library.domain.model.Reader;
 import pl.lodz.p.library.domain.model.User;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class UserSoapConverter {
-    private UserSoapConverter() {}
+    private UserSoapConverter() {
+    }
 
     public static UserDTO toDTO(User user) {
         if (user == null) return null;
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setLogin(user.getLogin());
+        dto.setEmail(user.getEmail());
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
+        dto.setAge(user.getAge());
+        dto.setActive(user.isActive());
 
-        String type;
-        int currentLoansCount = 0;
+        if (user instanceof Administrator) dto.setAccessLevel("ADMINISTRATOR");
+        else if (user instanceof Librarian) dto.setAccessLevel("LIBRARIAN");
+        else dto.setAccessLevel("READER");
 
-        switch (user) {
-            case Reader reader -> {
-                type = "reader";
-                currentLoansCount = reader.getCurrentLoansCount();
-            }
-            case Librarian librarian -> type = "librarian";
-            case Administrator administrator -> type = "admin";
-            default -> throw new UserException("User type is not supported.");
-        }
+        return dto;
+    }
 
-        return new UserDTO(user.getId(), user.getLogin(), user.getEmail(), user.getAge(), user.isActive(),
-                type, currentLoansCount
-        );
+    public static List<UserDTO> toUserDTOList(List<User> users) {
+        return users.stream().map(UserSoapConverter::toDTO).collect(Collectors.toList());
     }
 
     public static User fromDTO(UserDTO dto) {
         if (dto == null) return null;
-
-        String type = dto.getType();
-
-        switch (type) {
-            case "reader" -> {
-                Reader r = new Reader(dto.getLogin(), dto.getEmail(), dto.getAge());
-                r.setId(dto.getId());
-                r.setActive(dto.isActive());
-                r.setCurrentLoansCount(dto.getCurrentLoansCount());
-                return r;
-            }
-            case "librarian" -> {
-                Librarian l = new Librarian(dto.getLogin(), dto.getEmail(), dto.getAge());
-                l.setId(dto.getId());
-                l.setActive(dto.isActive());
-                return l;
-            }
-            case "admin" -> {
-                Administrator a = new Administrator(dto.getLogin(), dto.getEmail(), dto.getAge());
-                a.setId(dto.getId());
-                a.setActive(dto.isActive());
-                return a;
-            }
-            default -> {
-                throw new UserException("User type is not supported.");
-            }
+        User user;
+        if ("ADMINISTRATOR".equalsIgnoreCase(dto.getAccessLevel())) {
+            user = new Administrator(dto.getLogin(), dto.getEmail(), dto.getFirstName(), dto.getLastName(), dto.getAge());
+        } else if ("LIBRARIAN".equalsIgnoreCase(dto.getAccessLevel())) {
+            user = new Librarian(dto.getLogin(), dto.getEmail(), dto.getFirstName(), dto.getLastName(), dto.getAge());
+        } else {
+            user = new Reader(dto.getLogin(), dto.getEmail(), dto.getFirstName(), dto.getLastName(), dto.getAge());
         }
+        user.setId(dto.getId());
+        user.setActive(dto.isActive());
+        return user;
     }
 }

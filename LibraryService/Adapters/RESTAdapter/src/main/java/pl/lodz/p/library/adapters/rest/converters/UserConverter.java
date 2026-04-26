@@ -3,8 +3,6 @@ package pl.lodz.p.library.adapters.rest.converters;
 import pl.lodz.p.library.adapters.rest.dto.AdministratorDTO;
 import pl.lodz.p.library.adapters.rest.dto.LibrarianDTO;
 import pl.lodz.p.library.adapters.rest.dto.ReaderDTO;
-import pl.lodz.p.library.domain.model.Administrator;
-import pl.lodz.p.library.domain.model.Librarian;
 import pl.lodz.p.library.domain.model.Reader;
 
 public class UserConverter {

@@ -15,11 +15,8 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.library.adapters.rest.security.JwtService;
-import pl.lodz.p.library.domain.model.Administrator;
-import pl.lodz.p.library.ports.inbound.UserUseCase;
 import pl.lodz.p.library.ports.outbound.BookSetPort;
 import pl.lodz.p.library.ports.outbound.LoanPort;
-import pl.lodz.p.library.ports.outbound.UserPort;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers

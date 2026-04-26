@@ -31,12 +31,10 @@ class UserRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        ReaderDoc user1 = new ReaderDoc("login1", "pass", "email1@test.pl", 20);
-        user1.setActive(true);
+        ReaderDoc user1 = new ReaderDoc("login1", "pass", "email1@test.pl", "Jan", "Kowalski", 20, true);
         userRepository.save(user1);
 
-        ReaderDoc user2 = new ReaderDoc("log_other", "pass", "email2@test.pl", 30);
-        user2.setActive(false);
+        ReaderDoc user2 = new ReaderDoc("log_other", "pass", "email2@test.pl", "Piotr", "Nowak", 30, false);
         userRepository.save(user2);
     }
 
@@ -67,13 +65,27 @@ class UserRepositoryTest {
 
     @Test
     void findUsersByActive() {
-        List<UserDoc> activeUsers = userRepository.findUsersByActive(true);
-        assertEquals(1, activeUsers.size());
+        List<UserDoc> users = userRepository.findUsersByActive(true);
+        assertEquals(1, users.size());
     }
 
     @Test
     void findUsersByLoginFragment() {
         List<UserDoc> users = userRepository.findUsersByLoginFragment("log");
         assertEquals(2, users.size());
+    }
+
+    @Test
+    void findUserByFirstName() {
+        List<UserDoc> users = userRepository.findUserByFirstName("Jan");
+        assertEquals(1, users.size());
+        assertEquals("Jan", users.get(0).getFirstName());
+    }
+
+    @Test
+    void findUserByLastName() {
+        List<UserDoc> users = userRepository.findUserByLastName("Nowak");
+        assertEquals(1, users.size());
+        assertEquals("Nowak", users.get(0).getLastName());
     }
 }

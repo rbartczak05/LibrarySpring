@@ -23,36 +23,6 @@ public class WebServiceConfig {
     }
 
     @Bean
-    public XsdSchema bookSetsSchema() {
-        return new SimpleXsdSchema(new ClassPathResource("book_sets.xsd"));
-    }
-
-    @Bean(name = "bookSets")
-    public DefaultWsdl11Definition bookSetsWsdl(XsdSchema bookSetsSchema) {
-        DefaultWsdl11Definition def = new DefaultWsdl11Definition();
-        def.setPortTypeName("BookSetsPort");
-        def.setLocationUri("/ws");
-        def.setTargetNamespace("http://pl.lodz.p.library.adapters.soap.dto.bookset/");
-        def.setSchema(bookSetsSchema);
-        return def;
-    }
-
-    @Bean
-    public XsdSchema loanSchema() {
-        return new SimpleXsdSchema(new ClassPathResource("loans.xsd"));
-    }
-
-    @Bean(name = "loans")
-    public DefaultWsdl11Definition loansWsdl(XsdSchema loanSchema) {
-        DefaultWsdl11Definition def = new DefaultWsdl11Definition();
-        def.setPortTypeName("LoansPort");
-        def.setLocationUri("/ws");
-        def.setTargetNamespace("http://pl.lodz.p.library.adapters.soap.dto.loan/");
-        def.setSchema(loanSchema);
-        return def;
-    }
-
-    @Bean
     public XsdSchema userSchema() {
         return new SimpleXsdSchema(new ClassPathResource("users.xsd"));
     }

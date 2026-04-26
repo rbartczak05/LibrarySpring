@@ -41,11 +41,13 @@ public class ReaderControllerTest {
     @BeforeEach
     void setUp() {
         RestAssuredMockMvc.mockMvc(mockMvc);
-        reader = new Reader("testuser", "password", "test@example.com", 25);
+
+        reader = new Reader("testuser", "pass", "test@example.com", "Tomasz", "Zieliński", 25);
         reader.setId("1");
         reader.setActive(true);
 
-        readerDTO = new ReaderDTO("1", "testuser", "test@example.com", 25, true, "READER", 0);
+        readerDTO = new ReaderDTO("testuser", "test@example.com", "Tomasz", "Zieliński", 25, true);
+        readerDTO.setId("1");
     }
 
     @Test
@@ -54,9 +56,9 @@ public class ReaderControllerTest {
         when(userUseCase.findAllUsers()).thenReturn(Collections.singletonList(reader));
 
         given()
-        .when()
+                .when()
                 .get("/readers")
-        .then()
+                .then()
                 .status(org.springframework.http.HttpStatus.OK)
                 .body("$", hasSize(1))
                 .body("[0].login", equalTo("testuser"));
@@ -69,9 +71,9 @@ public class ReaderControllerTest {
         when(jwtService.generateSignatureForId("1")).thenReturn("mock-signature");
 
         given()
-        .when()
+                .when()
                 .get("/readers/1")
-        .then()
+                .then()
                 .status(org.springframework.http.HttpStatus.OK)
                 .header("If-Match", "mock-signature")
                 .body("login", equalTo("testuser"));
@@ -85,9 +87,9 @@ public class ReaderControllerTest {
         given()
                 .contentType("application/json")
                 .body(readerDTO)
-        .when()
+                .when()
                 .post("/readers")
-        .then()
+                .then()
                 .status(org.springframework.http.HttpStatus.CREATED)
                 .body("login", equalTo("testuser"));
     }
@@ -102,9 +104,9 @@ public class ReaderControllerTest {
                 .header("If-Match", "mock-signature")
                 .contentType("application/json")
                 .body(readerDTO)
-        .when()
+                .when()
                 .post("/readers/1")
-        .then()
+                .then()
                 .status(org.springframework.http.HttpStatus.OK)
                 .body("login", equalTo("testuser"));
     }
@@ -116,9 +118,9 @@ public class ReaderControllerTest {
         when(userUseCase.activateUser("1")).thenReturn(reader);
 
         given()
-        .when()
+                .when()
                 .post("/readers/1/activate")
-        .then()
+                .then()
                 .status(org.springframework.http.HttpStatus.OK)
                 .body("login", equalTo("testuser"));
     }
@@ -130,9 +132,9 @@ public class ReaderControllerTest {
         when(userUseCase.deactivateUser("1")).thenReturn(reader);
 
         given()
-        .when()
+                .when()
                 .post("/readers/1/deactivate")
-        .then()
+                .then()
                 .status(org.springframework.http.HttpStatus.OK)
                 .body("login", equalTo("testuser"));
     }

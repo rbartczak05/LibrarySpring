@@ -8,37 +8,45 @@ import jakarta.validation.constraints.Size;
 public abstract class User {
     private String id;
 
-    @NotBlank(message = "Login nie może być pusty.")
-    @Size(min = 3, max = 20, message = "Login musi mieć od 3 do 20 znaków.")
+    @NotBlank
+    @Size(min = 3, max = 20)
     private String login;
 
     @NotBlank
-    @Size(min = 5, message = "Hasło musi mieć co najmniej 5 znaków.")
+    @Size(min = 5)
     private String password;
 
-    @NotBlank(message = "Email nie może być pusty.")
-    @Email(message = "Podany ciąg nie jest poprawnym adresem email.")
-    @Size(min = 3, max = 100, message = "Email musi mieć od 3 do 100 znaków.")
+    @NotBlank
+    @Email
+    @Size(min = 3, max = 100)
     private String email;
 
-    @Min(value = 1, message = "Nie wolno rejestrować nienarodzonych!")
+    @NotBlank
+    private String firstName;
+
+    @NotBlank
+    private String lastName;
+
+    @Min(1)
     private int age;
+
     private boolean active;
 
-    public User(String login, String password, String email, int age) {
-        this(login, email, age);
+    public User(String login, String password, String email, String firstName, String lastName, int age) {
+        this(login, email, firstName, lastName, age);
         this.password = password;
     }
 
-    public User(String login, String email, int age) {
+    public User(String login, String email, String firstName, String lastName, int age) {
         this.login = login;
         this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.age = age;
         this.active = false;
     }
 
     public User() {
-
     }
 
     public String getId() {
@@ -73,6 +81,22 @@ public abstract class User {
         this.email = email;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     public int getAge() {
         return age;
     }
@@ -91,12 +115,12 @@ public abstract class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", login='" + login + '\'' +
-                ", email='" + email + '\'' +
-                ", age=" + age +
-                ", active=" + active +
-                '}';
+        return "User" +
+                "{id=" + id +
+                ", login='" + login +
+                "', email='" + email +
+                "', firstName='" + firstName +
+                "', lastName='" + lastName +
+                "', active=" + active + '}';
     }
 }

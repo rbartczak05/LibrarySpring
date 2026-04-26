@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.lodz.p.library.domain.exceptions.UserException;
 import pl.lodz.p.library.domain.model.Reader;
-import pl.lodz.p.library.domain.model.User;
 
 import java.util.UUID;
 

@@ -86,7 +86,7 @@ class AuthEndpointTest {
 
     @Test
     void register_shouldReturnTokens() {
-        Reader reader = new Reader("nowak", "encoded", "nowak@test.pl", 25);
+        Reader reader = new Reader("testuser", "pass", "test@example.com", "Tomasz", "Zieliński", 25);
         when(jwtSoapService.generateAccessToken(any())).thenReturn("access-token");
         when(jwtSoapService.generateRefreshToken(any())).thenReturn("refresh-token");
         when(passwordEncoder.encode(anyString())).thenReturn("encoded");
@@ -122,7 +122,7 @@ class AuthEndpointTest {
 
     @Test
     void changePassword_correctOldPassword_shouldReturnTokens() {
-        Reader user = new Reader("jankowalski", "encoded_old", "jan@test.pl", 30);
+        Reader user = new Reader("jankowalski", "stare123", "test@example.com", "Tomasz", "Zieliński", 25);
         when(userUseCase.findUserByLogin("jankowalski")).thenReturn(user);
         when(passwordEncoder.matches("stare123", "encoded_old")).thenReturn(true);
         when(passwordEncoder.encode("nowe123")).thenReturn("encoded_new");

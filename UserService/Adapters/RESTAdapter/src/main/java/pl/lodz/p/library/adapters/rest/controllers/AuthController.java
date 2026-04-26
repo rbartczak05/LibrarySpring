@@ -27,26 +27,30 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final UserUseCase userUseCase;
-    private final PasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtService jwtService, UserUseCase userUseCase, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService) {
+    public AuthController(AuthenticationManager authenticationManager, JwtService jwtService, UserUseCase userUseCase, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.userUseCase = userUseCase;
-        this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
         try {
-            Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword()));
-            UserDetails userDetails = (UserDetails) authenticate.getPrincipal();
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             String accessToken = jwtService.generateAccessToken(userDetails);
             String refreshToken = jwtService.generateRefreshToken(userDetails);
+
             String role = userDetails.getAuthorities().iterator().next().getAuthority();
-            return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken, role, userDetails.getUsername()));
+            return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken, role, request.getLogin()));
+
         } catch (AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Nieprawidłowy login lub hasło");
         }
@@ -56,14 +60,14 @@ public class AuthController {
     public ResponseEntity<AuthResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
         String refreshToken = request.getRefreshToken();
         String userLogin = jwtService.extractUsername(refreshToken);
-        if (userLogin != null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userLogin);
-            if (jwtService.isTokenValid(refreshToken, userDetails)) {
-                String newAccessToken = jwtService.generateAccessToken(userDetails);
-                String role = userDetails.getAuthorities().iterator().next().getAuthority();
-                return ResponseEntity.ok(new AuthResponse(newAccessToken, refreshToken, role, userLogin));
-            }
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userLogin);
+
+        if (userDetails != null) {
+            String newAccessToken = jwtService.generateAccessToken(userDetails);
+            String role = userDetails.getAuthorities().iterator().next().getAuthority();
+            return ResponseEntity.ok(new AuthResponse(newAccessToken, refreshToken, role, userLogin));
         }
+
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Nieprawidłowy lub wygasły token odświeżania");
     }
 
@@ -82,7 +86,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Void> register(@RequestBody RegisterRequest request) {
-        Reader reader = new Reader(request.getLogin(), passwordEncoder.encode(request.getPassword()), request.getEmail(), request.getAge());
+        Reader reader = new Reader(request.getLogin(), passwordEncoder.encode(request.getPassword()), request.getEmail(), request.getFirstName(), request.getLastName(), request.getAge());
         userUseCase.addUser(reader);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

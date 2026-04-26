@@ -10,7 +10,6 @@ import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.library.ports.outbound.BookSetPort;
 import pl.lodz.p.library.ports.outbound.LoanPort;
-import pl.lodz.p.library.ports.outbound.UserPort;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers

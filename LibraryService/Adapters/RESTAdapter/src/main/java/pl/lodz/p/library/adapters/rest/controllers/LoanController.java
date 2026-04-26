@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.library.adapters.rest.converters.LoanConverter;
 import pl.lodz.p.library.adapters.rest.dto.LoanDTO;
 import pl.lodz.p.library.domain.model.Loan;
-import pl.lodz.p.library.domain.model.User;
 import pl.lodz.p.library.ports.inbound.LoanUseCase;
-import pl.lodz.p.library.ports.inbound.UserUseCase;
 
 import java.time.LocalDateTime;
 import java.util.List;

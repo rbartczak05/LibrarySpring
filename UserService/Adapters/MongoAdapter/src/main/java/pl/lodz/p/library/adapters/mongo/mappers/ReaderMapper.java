@@ -6,26 +6,37 @@ import pl.lodz.p.library.domain.model.Reader;
 
 @Component
 public class ReaderMapper {
-
-    public Reader toDomain(ReaderDoc doc) {
-        if (doc == null) return null;
-
-        Reader reader = new Reader(doc.getLogin(), doc.getPassword(), doc.getEmail(), doc.getAge());
-        reader.setId(doc.getId());
-        reader.setActive(doc.isActive());
-        reader.setCurrentLoansCount(doc.getCurrentLoansCount());
-
+    public Reader toDomain(ReaderDoc readerDoc) {
+        if (readerDoc == null) {
+            return null;
+        }
+        Reader reader = new Reader(
+                readerDoc.getLogin(),
+                readerDoc.getPassword(),
+                readerDoc.getEmail(),
+                readerDoc.getFirstName(),
+                readerDoc.getLastName(),
+                readerDoc.getAge()
+        );
+        reader.setId(readerDoc.getId());
+        reader.setActive(readerDoc.isActive());
         return reader;
     }
 
     public ReaderDoc toDocument(Reader reader) {
-        if (reader == null) return null;
-
-        ReaderDoc doc = new ReaderDoc(reader.getLogin(), reader.getPassword(), reader.getEmail(), reader.getAge());
-        doc.setId(reader.getId());
-        doc.setActive(reader.isActive());
-        doc.setCurrentLoansCount(reader.getCurrentLoansCount());
-
-        return doc;
+        if (reader == null) {
+            return null;
+        }
+        ReaderDoc readerDoc = new ReaderDoc(
+                reader.getLogin(),
+                reader.getPassword(),
+                reader.getEmail(),
+                reader.getFirstName(),
+                reader.getLastName(),
+                reader.getAge(),
+                reader.isActive()
+        );
+        readerDoc.setId(reader.getId());
+        return readerDoc;
     }
 }

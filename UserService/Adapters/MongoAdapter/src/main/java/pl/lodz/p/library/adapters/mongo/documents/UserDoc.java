@@ -1,52 +1,33 @@
 package pl.lodz.p.library.adapters.mongo.documents;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "users")
 public abstract class UserDoc {
-
     @Id
     private String id;
-
-    @NotBlank(message = "Login nie może być pusty.")
-    @Length(min = 3, max = 20, message = "Login musi mieć od 3 do 20 znaków.")
-    @Indexed(unique = true)
     private String login;
-
-    @NotBlank
-    @Length(min = 5, message = "Hasło musi mieć co najmniej 5 znaków.")
     private String password;
-
-    @NotBlank(message = "Email nie może być pusty.")
-    @Email(message = "Podany ciąg nie jest poprawnym adresem email.")
-    @Length(min = 3, max = 100, message = "Email musi mieć od 3 do 100 znaków.")
-    @Indexed(unique = true)
     private String email;
-
-    @Min(value = 1, message = "Nie wolno rejestrować nienarodzonych!")
+    private String firstName;
+    private String lastName;
     private int age;
     private boolean active;
+    private String accessLevel;
 
-    public UserDoc(String login, String password, String email, int age) {
-        this(login, email, age);
-        this.password = password;
-    }
-
-    public UserDoc(String login, String email, int age) {
+    public UserDoc(String login, String password, String email, String firstName, String lastName, int age, boolean active, String accessLevel) {
         this.login = login;
+        this.password = password;
         this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.age = age;
-        this.active = false;
+        this.active = active;
+        this.accessLevel = accessLevel;
     }
 
     public UserDoc() {
-
     }
 
     public String getId() {
@@ -81,6 +62,22 @@ public abstract class UserDoc {
         this.email = email;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     public int getAge() {
         return age;
     }
@@ -97,14 +94,11 @@ public abstract class UserDoc {
         this.active = active;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", login='" + login + '\'' +
-                ", email='" + email + '\'' +
-                ", age=" + age +
-                ", active=" + active +
-                '}';
+    public String getAccessLevel() {
+        return accessLevel;
+    }
+
+    public void setAccessLevel(String accessLevel) {
+        this.accessLevel = accessLevel;
     }
 }

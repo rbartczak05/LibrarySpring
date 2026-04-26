@@ -1,8 +1,6 @@
 package pl.lodz.p.library.adapters.mongo.mappers;
 
 import org.junit.jupiter.api.Test;
-import pl.lodz.p.library.adapters.mongo.documents.LibrarianDoc;
-import pl.lodz.p.library.domain.model.Librarian;
 
 import static org.junit.jupiter.api.Assertions.*;
 

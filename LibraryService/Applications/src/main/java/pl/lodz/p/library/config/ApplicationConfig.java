@@ -10,10 +10,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pl.lodz.p.library.domain.model.Administrator;
-import pl.lodz.p.library.domain.model.Librarian;
-import pl.lodz.p.library.domain.model.User;
-import pl.lodz.p.library.ports.outbound.UserPort;
 
 @Configuration
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)

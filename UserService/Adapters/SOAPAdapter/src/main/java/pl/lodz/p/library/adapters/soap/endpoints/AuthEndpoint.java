@@ -90,6 +90,8 @@ public class AuthEndpoint {
                 request.getLogin(),
                 passwordEncoder.encode(request.getPassword()),
                 request.getEmail(),
+                request.getFirstName(),
+                request.getLastName(),
                 request.getAge()
         );
         userUseCase.addUser(reader);

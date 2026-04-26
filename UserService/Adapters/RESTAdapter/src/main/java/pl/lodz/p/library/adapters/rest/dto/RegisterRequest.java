@@ -6,29 +6,42 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class RegisterRequest {
-    @NotBlank(message = "Login nie może być pusty.")
-    @Size(min = 3, max = 20, message = "Login musi mieć od 3 do 20 znaków.")
+    @NotBlank
+    @Size(min = 3, max = 20)
     private String login;
 
-    @NotBlank(message = "Hasło nie może być puste.")
-    @Size(min = 5, message = "Hasło musi mieć co najmniej 5 znaków.")
+    @NotBlank
+    @Size(min = 5)
     private String password;
 
-    @NotBlank(message = "Email nie może być pusty.")
-    @Email(message = "Podaj poprawny adres email.")
+    @NotBlank
+    @Email
+    @Size(min = 3, max = 100)
     private String email;
 
-    @Min(value = 1, message = "Wiek musi być liczbą dodatnią.")
+    @NotBlank
+    private String firstName;
+
+    @NotBlank
+    private String lastName;
+
+    @Min(1)
     private int age;
 
-    public RegisterRequest() {
-    }
+    @NotBlank
+    private String accessLevel;
 
-    public RegisterRequest(String login, String password, String email, int age) {
+    public RegisterRequest(String login, String password, String email, String firstName, String lastName, int age, String accessLevel) {
         this.login = login;
         this.password = password;
         this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.age = age;
+        this.accessLevel = accessLevel;
+    }
+
+    public RegisterRequest() {
     }
 
     public String getLogin() {
@@ -55,11 +68,35 @@ public class RegisterRequest {
         this.email = email;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     public int getAge() {
         return age;
     }
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public String getAccessLevel() {
+        return accessLevel;
+    }
+
+    public void setAccessLevel(String accessLevel) {
+        this.accessLevel = accessLevel;
     }
 }

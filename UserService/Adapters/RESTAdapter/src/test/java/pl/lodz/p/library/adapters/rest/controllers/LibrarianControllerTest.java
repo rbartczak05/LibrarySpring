@@ -41,11 +41,13 @@ public class LibrarianControllerTest {
     @BeforeEach
     void setUp() {
         RestAssuredMockMvc.mockMvc(mockMvc);
-        librarian = new Librarian("librarian", "password", "lib@example.com", 35);
+
+        librarian = new Librarian("librarian", "pass", "lib@example.com", "Anna", "Nowak", 30);
         librarian.setId("lib1");
         librarian.setActive(true);
 
-        librarianDTO = new LibrarianDTO("lib1", "librarian", "lib@example.com", 35, true, "LIBRARIAN");
+        librarianDTO = new LibrarianDTO("librarian", "lib@example.com", "Anna", "Nowak", 30, true);
+        librarianDTO.setId("lib1");
     }
 
     @Test
@@ -54,9 +56,9 @@ public class LibrarianControllerTest {
         when(userUseCase.findAllUsers()).thenReturn(Collections.singletonList(librarian));
 
         given()
-        .when()
+                .when()
                 .get("/librarians")
-        .then()
+                .then()
                 .status(org.springframework.http.HttpStatus.OK)
                 .body("$", hasSize(1))
                 .body("[0].login", equalTo("librarian"));
@@ -69,9 +71,9 @@ public class LibrarianControllerTest {
         when(jwtService.generateSignatureForId("lib1")).thenReturn("mock-signature");
 
         given()
-        .when()
+                .when()
                 .get("/librarians/lib1")
-        .then()
+                .then()
                 .status(org.springframework.http.HttpStatus.OK)
                 .header("If-Match", "mock-signature")
                 .body("login", equalTo("librarian"));
@@ -85,9 +87,9 @@ public class LibrarianControllerTest {
         given()
                 .contentType("application/json")
                 .body(librarianDTO)
-        .when()
+                .when()
                 .post("/librarians")
-        .then()
+                .then()
                 .status(org.springframework.http.HttpStatus.CREATED)
                 .body("login", equalTo("librarian"));
     }

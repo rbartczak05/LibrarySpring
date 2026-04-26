@@ -12,7 +12,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import pl.lodz.p.library.adapters.rest.dto.ReaderDTO;
 import pl.lodz.p.library.adapters.rest.security.JwtService;
 import pl.lodz.p.library.domain.model.Reader;
-import pl.lodz.p.library.ports.inbound.UserUseCase;
 
 import java.util.Collections;
 

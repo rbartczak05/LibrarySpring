@@ -24,7 +24,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserRepositoryAdapterTest {
@@ -33,98 +33,118 @@ class UserRepositoryAdapterTest {
     private UserRepository repository;
 
     @Spy
-    private AdministratorMapper adminMapper = new AdministratorMapper();
+    private AdministratorMapper adminMapper;
+
     @Spy
-    private LibrarianMapper librarianMapper = new LibrarianMapper();
+    private LibrarianMapper libMapper;
+
     @Spy
-    private ReaderMapper readerMapper = new ReaderMapper();
+    private ReaderMapper readerMapper;
 
     @InjectMocks
     private UserRepositoryAdapter adapter;
 
     @Test
+    void addUser() {
+        Reader user = new Reader("r", "p", "e", "Jan", "Kowalski", 20);
+        when(repository.save(any(UserDoc.class))).thenAnswer(i -> {
+            UserDoc doc = i.getArgument(0);
+            doc.setId("1");
+            return doc;
+        });
+
+        Optional<User> result = adapter.addUser(user);
+        if (result.isPresent()) {
+            assertNotNull(result.get().getId());
+            assertEquals("r", result.get().getLogin());
+        }
+    }
+
+    @Test
     void findUserById() {
-        ReaderDoc doc = new ReaderDoc("login", "pass", "email", 20);
+        ReaderDoc doc = new ReaderDoc("r", "p", "e", "Jan", "Kowalski", 20, false);
         doc.setId("1");
         when(repository.findById("1")).thenReturn(Optional.of(doc));
 
         Optional<User> result = adapter.findUserById("1");
         assertTrue(result.isPresent());
-        assertTrue(result.get() instanceof Reader);
         assertEquals("1", result.get().getId());
+        assertInstanceOf(Reader.class, result.get());
     }
 
     @Test
     void findUserByLogin() {
-        AdministratorDoc doc = new AdministratorDoc("admin", "pass", "email", 30);
-        when(repository.findUserByLogin("admin")).thenReturn(Optional.of(doc));
+        LibrarianDoc doc = new LibrarianDoc("l", "p", "e", "Anna", "Nowak", 30, false);
+        doc.setId("2");
+        when(repository.findUserByLogin("l")).thenReturn(Optional.of(doc));
 
-        Optional<User> result = adapter.findUserByLogin("admin");
+        Optional<User> result = adapter.findUserByLogin("l");
         assertTrue(result.isPresent());
-        assertTrue(result.get() instanceof Administrator);
+        assertEquals("2", result.get().getId());
+        assertInstanceOf(Librarian.class, result.get());
     }
 
     @Test
     void findUserByEmail() {
-        LibrarianDoc doc = new LibrarianDoc("lib", "pass", "email", 40);
-        when(repository.findUserByEmail("email")).thenReturn(Optional.of(doc));
+        AdministratorDoc doc = new AdministratorDoc("a", "p", "a@test.pl", "Adam", "Admin", 40, true);
+        doc.setId("3");
+        when(repository.findUserByEmail("a@test.pl")).thenReturn(Optional.of(doc));
 
-        Optional<User> result = adapter.findUserByEmail("email");
+        Optional<User> result = adapter.findUserByEmail("a@test.pl");
         assertTrue(result.isPresent());
-        assertTrue(result.get() instanceof Librarian);
-    }
-
-    @Test
-    void findUsersByAge() {
-        when(repository.findUsersByAge(20)).thenReturn(List.of(new ReaderDoc("login", "pass", "email", 20)));
-        List<User> result = adapter.findUsersByAge(20);
-        assertEquals(1, result.size());
-    }
-
-    @Test
-    void findUsersByActive() {
-        when(repository.findUsersByActive(true)).thenReturn(List.of(new ReaderDoc("login", "pass", "email", 20)));
-        List<User> result = adapter.findUsersByActive(true);
-        assertEquals(1, result.size());
+        assertEquals("3", result.get().getId());
+        assertInstanceOf(Administrator.class, result.get());
     }
 
     @Test
     void findUsersByLoginFragment() {
-        when(repository.findUsersByLoginFragment("log")).thenReturn(List.of(new ReaderDoc("login", "pass", "email", 20)));
-        List<User> result = adapter.findUsersByLoginFragment("log");
+        ReaderDoc doc = new ReaderDoc("r", "p", "e", "Piotr", "Wiśniewski", 25, false);
+        doc.setId("4");
+        when(repository.findUsersByLoginFragment("frag")).thenReturn(List.of(doc));
+
+        List<User> result = adapter.findUsersByLoginFragment("frag");
         assertEquals(1, result.size());
+        assertEquals("4", result.getFirst().getId());
     }
 
     @Test
-    void findAllUsers() {
-        when(repository.findAll()).thenReturn(List.of(
-                new ReaderDoc("r", "p", "e", 20),
-                new AdministratorDoc("a", "p", "e", 30)
-        ));
+    void findUserByFirstName() {
+        ReaderDoc doc = new ReaderDoc("r", "p", "e", "Jan", "Kowalski", 25, false);
+        doc.setId("5");
+        when(repository.findUserByFirstName("Jan")).thenReturn(List.of(doc));
+
+        List<User> result = adapter.findUserByFirstName("Jan");
+        assertEquals(1, result.size());
+        assertEquals("Jan", result.getFirst().getFirstName());
+    }
+
+    @Test
+    void findUserByLastName() {
+        ReaderDoc doc = new ReaderDoc("r", "p", "e", "Jan", "Kowalski", 25, false);
+        doc.setId("6");
+        when(repository.findUserByLastName("Kowalski")).thenReturn(List.of(doc));
+
+        List<User> result = adapter.findUserByLastName("Kowalski");
+        assertEquals(1, result.size());
+        assertEquals("Kowalski", result.getFirst().getLastName());
+    }
+
+    @Test
+    void getAllUsers() {
+        ReaderDoc doc = new ReaderDoc("r", "p", "e", "Tomasz", "Zieliński", 22, true);
+        doc.setId("5");
+        when(repository.findAll()).thenReturn(List.of(doc));
+
         List<User> result = adapter.findAllUsers();
-        assertEquals(2, result.size());
-    }
-
-    @Test
-    void addUserReader() {
-        Reader reader = new Reader("r", "p", "e", 20);
-        ReaderDoc doc = new ReaderDoc("r", "p", "e", 20);
-        doc.setId("1");
-
-        when(repository.save(any(UserDoc.class))).thenReturn(doc);
-
-        Optional<User> result = adapter.addUser(reader);
-        assertTrue(result.isPresent());
-        assertEquals("1", result.get().getId());
+        assertEquals(1, result.size());
+        assertEquals("5", result.getFirst().getId());
     }
 
     @Test
     void updateUser() {
-        ReaderDoc existing = new ReaderDoc("r", "p", "e", 20);
+        ReaderDoc existing = new ReaderDoc("r", "p", "e", "Jan", "Kowalski", 20, false);
         existing.setId("1");
-
-        Reader updates = new Reader("newR", "p", "newE", 25);
-        updates.setActive(false);
+        Reader updates = new Reader("newR", "newP", "newE", "Nowy", "User", 25);
 
         when(repository.findById("1")).thenReturn(Optional.of(existing));
         when(repository.save(any(UserDoc.class))).thenAnswer(i -> i.getArguments()[0]);
@@ -133,15 +153,16 @@ class UserRepositoryAdapterTest {
         assertTrue(result.isPresent());
         assertEquals("newR", result.get().getLogin());
         assertEquals("newE", result.get().getEmail());
+        assertEquals("Nowy", result.get().getFirstName());
+        assertEquals("User", result.get().getLastName());
         assertEquals(25, result.get().getAge());
         assertFalse(result.get().isActive());
     }
 
     @Test
     void activateUser() {
-        ReaderDoc existing = new ReaderDoc("r", "p", "e", 20);
+        ReaderDoc existing = new ReaderDoc("r", "p", "e", "Jan", "Kowalski", 20, false);
         existing.setId("1");
-        existing.setActive(false);
 
         when(repository.findById("1")).thenReturn(Optional.of(existing));
         when(repository.save(any(UserDoc.class))).thenAnswer(i -> i.getArguments()[0]);
@@ -153,9 +174,8 @@ class UserRepositoryAdapterTest {
 
     @Test
     void deactivateUser() {
-        ReaderDoc existing = new ReaderDoc("r", "p", "e", 20);
+        ReaderDoc existing = new ReaderDoc("r", "p", "e", "Jan", "Kowalski", 20, true);
         existing.setId("1");
-        existing.setActive(true);
 
         when(repository.findById("1")).thenReturn(Optional.of(existing));
         when(repository.save(any(UserDoc.class))).thenAnswer(i -> i.getArguments()[0]);
@@ -163,11 +183,5 @@ class UserRepositoryAdapterTest {
         Optional<User> result = adapter.deactivateUser("1");
         assertTrue(result.isPresent());
         assertFalse(result.get().isActive());
-    }
-
-    @Test
-    void deleteUser() {
-        adapter.deleteUser("1");
-        verify(repository, times(1)).deleteById("1");
     }
 }

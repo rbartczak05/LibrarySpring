@@ -11,8 +11,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.lodz.p.library.adapters.rest.dto.LibrarianDTO;
 import pl.lodz.p.library.adapters.rest.security.JwtService;
-import pl.lodz.p.library.domain.model.Librarian;
-import pl.lodz.p.library.ports.inbound.UserUseCase;
 
 import java.util.Collections;
 

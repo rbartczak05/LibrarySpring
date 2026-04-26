@@ -12,10 +12,8 @@ class ReaderMapperTest {
 
     @Test
     void toDomain() {
-        ReaderDoc doc = new ReaderDoc("reader1", "pass", "read@test.pl", 25);
+        ReaderDoc doc = new ReaderDoc("reader1", "pass", "read@test.pl", "Piotr", "Wiśniewski", 25, true);
         doc.setId("1");
-        doc.setActive(true);
-        doc.setCurrentLoansCount(2);
 
         Reader reader = mapper.toDomain(doc);
 
@@ -24,9 +22,10 @@ class ReaderMapperTest {
         assertEquals("reader1", reader.getLogin());
         assertEquals("pass", reader.getPassword());
         assertEquals("read@test.pl", reader.getEmail());
+        assertEquals("Piotr", reader.getFirstName());
+        assertEquals("Wiśniewski", reader.getLastName());
         assertEquals(25, reader.getAge());
         assertTrue(reader.isActive());
-        assertEquals(2, reader.getCurrentLoansCount());
     }
 
     @Test
@@ -36,10 +35,9 @@ class ReaderMapperTest {
 
     @Test
     void toDocument() {
-        Reader reader = new Reader("reader1", "pass", "read@test.pl", 25);
+        Reader reader = new Reader("reader1", "pass", "read@test.pl", "Piotr", "Wiśniewski", 25);
         reader.setId("1");
         reader.setActive(true);
-        reader.setCurrentLoansCount(2);
 
         ReaderDoc doc = mapper.toDocument(reader);
 
@@ -48,13 +46,10 @@ class ReaderMapperTest {
         assertEquals("reader1", doc.getLogin());
         assertEquals("pass", doc.getPassword());
         assertEquals("read@test.pl", doc.getEmail());
+        assertEquals("Piotr", doc.getFirstName());
+        assertEquals("Wiśniewski", doc.getLastName());
         assertEquals(25, doc.getAge());
         assertTrue(doc.isActive());
-        assertEquals(2, doc.getCurrentLoansCount());
-    }
-
-    @Test
-    void toDocumentNull() {
-        assertNull(mapper.toDocument(null));
+        assertEquals("READER", doc.getAccessLevel());
     }
 }

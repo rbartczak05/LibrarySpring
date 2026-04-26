@@ -1,45 +1,22 @@
 package pl.lodz.p.library.adapters.soap.dto.auth;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.*;
 
-@XmlRootElement(name = "registerRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {"login", "password", "email", "firstName", "lastName", "age"})
+@XmlRootElement(name = "registerRequest")
 public class RegisterRequest {
-    @NotBlank(message = "Login nie może być pusty.")
-    @Size(min = 3, max = 20, message = "Login musi mieć od 3 do 20 znaków.")
-    @XmlElement(name = "login", required = true)
+    @XmlElement(required = true)
     private String login;
-
-    @NotBlank(message = "Hasło nie może być puste.")
-    @Size(min = 5, message = "Hasło musi mieć co najmniej 5 znaków.")
-    @XmlElement(name = "password", required = true)
+    @XmlElement(required = true)
     private String password;
-
-    @NotBlank(message = "Email nie może być pusty.")
-    @Email(message = "Podaj poprawny adres email.")
-    @XmlElement(name = "email", required = true)
+    @XmlElement(required = true)
     private String email;
-
-    @Min(value = 1, message = "Wiek musi być liczbą dodatnią.")
-    @XmlElement(name = "age", required = true)
+    @XmlElement(required = true)
+    private String firstName;
+    @XmlElement(required = true)
+    private String lastName;
     private int age;
-
-    public RegisterRequest() {
-    }
-
-    public RegisterRequest(String login, String password, String email, int age) {
-        this.login = login;
-        this.password = password;
-        this.email = email;
-        this.age = age;
-    }
 
     public String getLogin() {
         return login;
@@ -63,6 +40,22 @@ public class RegisterRequest {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public int getAge() {

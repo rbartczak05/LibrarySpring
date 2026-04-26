@@ -17,8 +17,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.library.adapters.rest.security.JwtService;
 import pl.lodz.p.library.domain.model.Administrator;
 import pl.lodz.p.library.ports.inbound.UserUseCase;
-import pl.lodz.p.library.ports.outbound.BookSetPort;
-import pl.lodz.p.library.ports.outbound.LoanPort;
 import pl.lodz.p.library.ports.outbound.UserPort;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -35,8 +33,6 @@ public abstract class BaseIntegrationTest {
     protected int port;
 
     @Autowired protected UserPort userPort;
-    @Autowired protected BookSetPort bookSetPort;
-    @Autowired protected LoanPort loanPort;
 
     @Autowired protected UserUseCase userUseCase;
     @Autowired protected PasswordEncoder passwordEncoder;
@@ -55,9 +51,7 @@ public abstract class BaseIntegrationTest {
         RestAssured.baseURI = "http://localhost";
         RestAssured.authentication = RestAssured.DEFAULT_AUTH;
 
-        loanPort.findAll().forEach(loan -> loanPort.deleteLoan(loan.getId()));
         userPort.findAllUsers().forEach(user -> userPort.deleteUser(user.getId()));
-        bookSetPort.findAllBookSets().forEach(bookSet -> bookSetPort.deleteBookSet(bookSet.getId()));
 
         Administrator admin = new Administrator("admin_test", "admin@test.pl", 30);
         userUseCase.changeUserPasswordInModel(admin, passwordEncoder.encode("admin123"));

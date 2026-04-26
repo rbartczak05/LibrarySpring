@@ -12,9 +12,9 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
         "pl.lodz.p.library.services"
 })
 @EnableMongoRepositories(basePackages = "pl.lodz.p.library.adapters.mongo.repositories")
-public class LibraryApplication {
+public class LibraryApplicationUser {
 
     static void main(String[] args) {
-        SpringApplication.run(LibraryApplication.class, args);
+        SpringApplication.run(LibraryApplicationUser.class, args);
     }
 }

@@ -1,20 +1,85 @@
 package pl.lodz.p.library.adapters.soap.dto.user.requests;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import pl.lodz.p.library.adapters.soap.dto.user.UserDTO;
+import jakarta.xml.bind.annotation.*;
 
-@XmlRootElement(name = "AddUserRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {"login", "password", "email", "firstName", "lastName", "age", "accessLevel"})
+@XmlRootElement(name = "addUserRequest")
 public class AddUserRequest {
+
     @XmlElement(required = true)
-    private UserDTO userDTO;
+    protected String login;
+
     @XmlElement(required = true)
-    private String password;
-    public UserDTO getUserDTO() { return userDTO; }
-    public void setUserDTO(UserDTO userDTO) { this.userDTO = userDTO; }
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    protected String password;
+
+    @XmlElement(required = true)
+    protected String email;
+
+    @XmlElement(required = true)
+    protected String firstName;
+
+    @XmlElement(required = true)
+    protected String lastName;
+
+    protected int age;
+
+    @XmlElement(required = true)
+    protected String accessLevel;
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String value) {
+        this.login = value;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String value) {
+        this.password = value;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String value) {
+        this.email = value;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String value) {
+        this.firstName = value;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String value) {
+        this.lastName = value;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int value) {
+        this.age = value;
+    }
+
+    public String getAccessLevel() {
+        return accessLevel;
+    }
+
+    public void setAccessLevel(String value) {
+        this.accessLevel = value;
+    }
 }

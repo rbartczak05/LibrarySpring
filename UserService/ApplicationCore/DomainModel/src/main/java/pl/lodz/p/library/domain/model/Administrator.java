@@ -1,13 +1,12 @@
 package pl.lodz.p.library.domain.model;
 
 public class Administrator extends User {
-    public Administrator(String login, String password, String email, int age) {
-        super(login, password, email, age);
+    public Administrator(String login, String password, String email, String firstName, String lastName, int age) {
+        super(login, password, email, firstName, lastName, age);
     }
 
-    public Administrator(String login, String email, int age) {
-        super(login, email, age);
-        setActive(true);
+    public Administrator(String login, String email, String firstName, String lastName, int age) {
+        super(login, email, firstName, lastName, age);
     }
 
     public Administrator() {

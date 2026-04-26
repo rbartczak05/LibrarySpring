@@ -14,7 +14,6 @@ import pl.lodz.p.library.adapters.rest.dto.LoanDTO;
 import pl.lodz.p.library.adapters.rest.security.JwtService;
 import pl.lodz.p.library.domain.model.Loan;
 import pl.lodz.p.library.ports.inbound.LoanUseCase;
-import pl.lodz.p.library.ports.inbound.UserUseCase;
 
 import java.time.LocalDateTime;
 import java.util.Collections;

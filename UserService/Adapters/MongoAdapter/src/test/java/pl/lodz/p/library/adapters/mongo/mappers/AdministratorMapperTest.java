@@ -12,9 +12,8 @@ class AdministratorMapperTest {
 
     @Test
     void toDomain() {
-        AdministratorDoc doc = new AdministratorDoc("admin1", "pass", "admin@test.pl", 30);
+        AdministratorDoc doc = new AdministratorDoc("admin1", "pass", "admin@test.pl", "Jan", "Kowalski", 30, true);
         doc.setId("1");
-        doc.setActive(true);
 
         Administrator admin = mapper.toDomain(doc);
 
@@ -23,6 +22,8 @@ class AdministratorMapperTest {
         assertEquals("admin1", admin.getLogin());
         assertEquals("pass", admin.getPassword());
         assertEquals("admin@test.pl", admin.getEmail());
+        assertEquals("Jan", admin.getFirstName());
+        assertEquals("Kowalski", admin.getLastName());
         assertEquals(30, admin.getAge());
         assertTrue(admin.isActive());
     }
@@ -34,7 +35,7 @@ class AdministratorMapperTest {
 
     @Test
     void toDocument() {
-        Administrator admin = new Administrator("admin1", "pass", "admin@test.pl", 30);
+        Administrator admin = new Administrator("admin1", "pass", "admin@test.pl", "Jan", "Kowalski", 30);
         admin.setId("1");
         admin.setActive(true);
 
@@ -45,12 +46,10 @@ class AdministratorMapperTest {
         assertEquals("admin1", doc.getLogin());
         assertEquals("pass", doc.getPassword());
         assertEquals("admin@test.pl", doc.getEmail());
+        assertEquals("Jan", doc.getFirstName());
+        assertEquals("Kowalski", doc.getLastName());
         assertEquals(30, doc.getAge());
         assertTrue(doc.isActive());
-    }
-
-    @Test
-    void toDocumentNull() {
-        assertNull(mapper.toDocument(null));
+        assertEquals("ADMINISTRATOR", doc.getAccessLevel());
     }
 }

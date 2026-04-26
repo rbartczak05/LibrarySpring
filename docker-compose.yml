@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   mongo1:
-    image: mongo:latest
+    image: mongo:8.2.7
     container_name: mongo1
     ports:
       - "27017:27017"

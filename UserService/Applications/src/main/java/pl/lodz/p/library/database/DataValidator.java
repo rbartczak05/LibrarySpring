@@ -37,7 +37,6 @@ public class DataValidator {
                                 .append("login", new Document().append("bsonType", "string").append("minLength", 3).append("maxLength", 20))
                                 .append("email", new Document().append("bsonType", "string").append("minLength", 3).append("maxLength", 100).append("pattern", "^.+@.+$"))
                                 .append("age", new Document().append("bsonType", "int").append("minimum", 1))
-                                .append("currentLoansCount", new Document().append("bsonType", "int").append("minimum", 0).append("maximum", Reader.maxLoans))
                                 .append("active", new Document().append("bsonType", "bool"))
                         )
         );

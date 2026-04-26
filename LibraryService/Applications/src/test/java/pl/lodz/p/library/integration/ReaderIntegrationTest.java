@@ -11,7 +11,7 @@ public class ReaderIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void createReaderTest() {
-        ReaderDTO reader = new ReaderDTO(null, "uniqueUser", "unique@mail.com", 25, false, "reader", 0);
+        ReaderDTO reader = new ReaderDTO(null, "uniqueUser", "unique@mail.com", 25, false, "reader");
 
         given()
                 .contentType(ContentType.JSON)
@@ -55,7 +55,7 @@ public class ReaderIntegrationTest extends BaseIntegrationTest {
     @Test
     void updateReaderTest() {
         String id = createReader("oldData", "old@mail.com");
-        ReaderDTO update = new ReaderDTO(null, "newData", "new@mail.com", 30, false, "reader", 0);
+        ReaderDTO update = new ReaderDTO(null, "newData", "new@mail.com", 30, false, "reader");
         
         String eTag = given()
                 .when()
@@ -96,7 +96,7 @@ public class ReaderIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void createReaderFailSyntaxTest() {
-        ReaderDTO invalid = new ReaderDTO(null, "", "mail@test.pl", -5, false, "reader", 0);
+        ReaderDTO invalid = new ReaderDTO(null, "", "mail@test.pl", -5, false, "reader");
 
         given()
                 .contentType(ContentType.JSON)
@@ -110,7 +110,7 @@ public class ReaderIntegrationTest extends BaseIntegrationTest {
     @Test
     void createReaderFailUniqueLoginTest() {
         createReader("duplicate", "mail1@test.pl");
-        ReaderDTO duplicate = new ReaderDTO(null, "duplicate", "mail2@test.pl", 25, false, "reader", 0);
+        ReaderDTO duplicate = new ReaderDTO(null, "duplicate", "mail2@test.pl", 25, false, "reader");
 
         given()
                 .contentType(ContentType.JSON)
@@ -122,7 +122,7 @@ public class ReaderIntegrationTest extends BaseIntegrationTest {
     }
 
     private String createReader(String login, String email) {
-        ReaderDTO reader = new ReaderDTO(null, login, email, 20, false, "reader", 0);
+        ReaderDTO reader = new ReaderDTO(null, login, email, 20, false, "reader");
         return given()
                 .contentType(ContentType.JSON)
                 .body(reader)

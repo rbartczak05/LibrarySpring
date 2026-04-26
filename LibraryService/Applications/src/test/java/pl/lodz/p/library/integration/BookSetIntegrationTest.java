@@ -124,7 +124,7 @@ public class BookSetIntegrationTest extends BaseIntegrationTest {
 
     private String createUserAndActivate() {
         String shortId = UUID.randomUUID().toString().substring(0, 8);
-        ReaderDTO reader = new ReaderDTO(null, "r" + shortId, "mail" + shortId + "@test.pl", 20, false, "reader", 0);
+        ReaderDTO reader = new ReaderDTO(null, "r" + shortId, "mail" + shortId + "@test.pl", 20, false, "reader");
         String id = given()
                 .contentType(ContentType.JSON)
                 .body(reader)

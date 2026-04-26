@@ -8,8 +8,6 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import pl.lodz.p.library.adapters.soap.converters.UserSoapConverter;
 import pl.lodz.p.library.adapters.soap.dto.user.requests.*;
 import pl.lodz.p.library.adapters.soap.dto.user.responses.*;
-import pl.lodz.p.library.domain.model.User;
-import pl.lodz.p.library.ports.inbound.UserUseCase;
 
 import java.util.List;
 import java.util.stream.Collectors;

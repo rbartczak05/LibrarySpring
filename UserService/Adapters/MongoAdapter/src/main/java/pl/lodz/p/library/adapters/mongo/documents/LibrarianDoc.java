@@ -1,21 +1,16 @@
 package pl.lodz.p.library.adapters.mongo.documents;
 
-public class LibrarianDoc extends UserDoc {
-    public LibrarianDoc(String login, String password, String email, int age) {
-        super(login, password, email, age);
-    }
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-    public LibrarianDoc(String login, String email, int age) {
-        super(login, email, age);
-        setActive(true);
+@Document(collection = "users")
+@TypeAlias("librarian")
+public class LibrarianDoc extends UserDoc {
+    public LibrarianDoc(String login, String password, String email, String firstName, String lastName, int age, boolean active) {
+        super(login, password, email, firstName, lastName, age, active, "LIBRARIAN");
     }
 
     public LibrarianDoc() {
         super();
-    }
-
-    @Override
-    public String toString() {
-        return "Librarian{} " + super.toString();
     }
 }

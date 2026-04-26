@@ -1,11 +1,12 @@
 package pl.lodz.p.library.adapters.rest.dto;
 
 public class LibrarianDTO extends UserDTO {
-
-    public LibrarianDTO() {
+    public LibrarianDTO(String login, String email, String firstName, String lastName, int age, boolean active) {
+        super(login, email, firstName, lastName, age, active, "LIBRARIAN");
     }
 
-    public LibrarianDTO(String id, String login, String email, int age, boolean active, String type) {
-        super(id, login, email, age, active, type);
+    public LibrarianDTO() {
+        super();
+        setAccessLevel("LIBRARIAN");
     }
 }

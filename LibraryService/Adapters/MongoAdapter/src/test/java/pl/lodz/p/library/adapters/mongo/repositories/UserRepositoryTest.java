@@ -10,7 +10,6 @@ import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.library.adapters.mongo.documents.ReaderDoc;
-import pl.lodz.p.library.adapters.mongo.documents.UserDoc;
 
 import java.util.List;
 import java.util.Optional;

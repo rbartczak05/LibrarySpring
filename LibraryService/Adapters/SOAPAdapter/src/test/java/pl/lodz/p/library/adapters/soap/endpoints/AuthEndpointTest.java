@@ -17,7 +17,6 @@ import org.springframework.ws.test.server.MockWebServiceClient;
 import org.springframework.xml.transform.StringSource;
 import pl.lodz.p.library.adapters.soap.security.JwtSoapService;
 import pl.lodz.p.library.domain.model.Reader;
-import pl.lodz.p.library.ports.inbound.UserUseCase;
 
 import java.util.List;
 import java.util.Map;

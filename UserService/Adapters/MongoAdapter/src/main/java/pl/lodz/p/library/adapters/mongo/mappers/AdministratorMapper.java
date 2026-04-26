@@ -6,20 +6,37 @@ import pl.lodz.p.library.domain.model.Administrator;
 
 @Component
 public class AdministratorMapper {
-
-    public Administrator toDomain(AdministratorDoc doc) {
-        if (doc == null) return null;
-        Administrator admin = new Administrator(doc.getLogin(), doc.getPassword(), doc.getEmail(), doc.getAge());
-        admin.setId(doc.getId());
-        admin.setActive(doc.isActive());
-        return admin;
+    public Administrator toDomain(AdministratorDoc administratorDoc) {
+        if (administratorDoc == null) {
+            return null;
+        }
+        Administrator administrator = new Administrator(
+                administratorDoc.getLogin(),
+                administratorDoc.getPassword(),
+                administratorDoc.getEmail(),
+                administratorDoc.getFirstName(),
+                administratorDoc.getLastName(),
+                administratorDoc.getAge()
+        );
+        administrator.setId(administratorDoc.getId());
+        administrator.setActive(administratorDoc.isActive());
+        return administrator;
     }
 
-    public AdministratorDoc toDocument(Administrator admin) {
-        if (admin == null) return null;
-        AdministratorDoc doc = new AdministratorDoc(admin.getLogin(), admin.getPassword(), admin.getEmail(), admin.getAge());
-        doc.setId(admin.getId());
-        doc.setActive(admin.isActive());
-        return doc;
+    public AdministratorDoc toDocument(Administrator administrator) {
+        if (administrator == null) {
+            return null;
+        }
+        AdministratorDoc administratorDoc = new AdministratorDoc(
+                administrator.getLogin(),
+                administrator.getPassword(),
+                administrator.getEmail(),
+                administrator.getFirstName(),
+                administrator.getLastName(),
+                administrator.getAge(),
+                administrator.isActive()
+        );
+        administratorDoc.setId(administrator.getId());
+        return administratorDoc;
     }
 }

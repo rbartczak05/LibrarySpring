@@ -14,8 +14,6 @@ import pl.lodz.p.library.adapters.soap.dto.auth.*;
 import pl.lodz.p.library.adapters.soap.security.JwtSoapService;
 import pl.lodz.p.library.domain.exceptions.AuthException;
 import pl.lodz.p.library.domain.model.Reader;
-import pl.lodz.p.library.domain.model.User;
-import pl.lodz.p.library.ports.inbound.UserUseCase;
 
 @Endpoint
 public class AuthEndpoint {

@@ -1,50 +1,46 @@
 package pl.lodz.p.library.adapters.rest.dto;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import org.hibernate.validator.constraints.Length;
-import org.springframework.data.annotation.Id;
+import jakarta.validation.constraints.Size;
 
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "type")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = ReaderDTO.class, name = "reader"),
-        @JsonSubTypes.Type(value = LibrarianDTO.class, name = "librarian"),
-        @JsonSubTypes.Type(value = AdministratorDTO.class, name = "admin")
-})
 public abstract class UserDTO {
-    @Id
     private String id;
 
-    @NotBlank(message = "Login nie może być pusty.")
-    @Length(min = 3, max = 20, message = "Login musi mieć od 3 do 20 znaków.")
+    @NotBlank
+    @Size(min = 3, max = 20)
     private String login;
 
-    @NotBlank(message = "Email nie może być pusty.")
-    @Email(message = "Podany ciąg nie jest poprawnym adresem email.")
-    @Length(min = 3, max = 100, message = "Email musi mieć od 3 do 100 znaków.")
+    @NotBlank
+    @Email
+    @Size(min = 3, max = 100)
     private String email;
 
-    @Min(value = 1, message = "Nie wolno rejestrować nienarodzonych!")
+    @NotBlank
+    private String firstName;
+
+    @NotBlank
+    private String lastName;
+
+    @Min(1)
     private int age;
+
     private boolean active;
-    private String type;
 
-    public UserDTO() {
-    }
+    private String accessLevel;
 
-    public UserDTO(String id, String login, String email, int age, boolean active, String type) {
-        this.id = id;
+    public UserDTO(String login, String email, String firstName, String lastName, int age, boolean active, String accessLevel) {
         this.login = login;
         this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.age = age;
         this.active = active;
-        this.type = type;
+        this.accessLevel = accessLevel;
+    }
+
+    public UserDTO() {
     }
 
     public String getId() {
@@ -71,6 +67,22 @@ public abstract class UserDTO {
         this.email = email;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     public int getAge() {
         return age;
     }
@@ -87,11 +99,11 @@ public abstract class UserDTO {
         this.active = active;
     }
 
-    public String getType() {
-        return type;
+    public String getAccessLevel() {
+        return accessLevel;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setAccessLevel(String accessLevel) {
+        this.accessLevel = accessLevel;
     }
 }

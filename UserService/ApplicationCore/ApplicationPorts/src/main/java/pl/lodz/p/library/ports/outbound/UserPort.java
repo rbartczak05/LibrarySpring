@@ -12,6 +12,10 @@ public interface UserPort {
 
     Optional<User> findUserByEmail(String email);
 
+    List<User> findUserByFirstName(String firstName);
+
+    List<User> findUserByLastName(String firstName);
+
     List<User> findUsersByAge(int age);
 
     List<User> findUsersByActive(boolean active);

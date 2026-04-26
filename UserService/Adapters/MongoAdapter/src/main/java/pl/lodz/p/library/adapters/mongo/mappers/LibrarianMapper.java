@@ -6,20 +6,37 @@ import pl.lodz.p.library.domain.model.Librarian;
 
 @Component
 public class LibrarianMapper {
-
-    public Librarian toDomain(LibrarianDoc doc) {
-        if (doc == null) return null;
-        Librarian lib = new Librarian(doc.getLogin(), doc.getPassword(), doc.getEmail(), doc.getAge());
-        lib.setId(doc.getId());
-        lib.setActive(doc.isActive());
-        return lib;
+    public Librarian toDomain(LibrarianDoc librarianDoc) {
+        if (librarianDoc == null) {
+            return null;
+        }
+        Librarian librarian = new Librarian(
+                librarianDoc.getLogin(),
+                librarianDoc.getPassword(),
+                librarianDoc.getEmail(),
+                librarianDoc.getFirstName(),
+                librarianDoc.getLastName(),
+                librarianDoc.getAge()
+        );
+        librarian.setId(librarianDoc.getId());
+        librarian.setActive(librarianDoc.isActive());
+        return librarian;
     }
 
-    public LibrarianDoc toDocument(Librarian lib) {
-        if (lib == null) return null;
-        LibrarianDoc doc = new LibrarianDoc(lib.getLogin(), lib.getPassword(), lib.getEmail(), lib.getAge());
-        doc.setId(lib.getId());
-        doc.setActive(lib.isActive());
-        return doc;
+    public LibrarianDoc toDocument(Librarian librarian) {
+        if (librarian == null) {
+            return null;
+        }
+        LibrarianDoc librarianDoc = new LibrarianDoc(
+                librarian.getLogin(),
+                librarian.getPassword(),
+                librarian.getEmail(),
+                librarian.getFirstName(),
+                librarian.getLastName(),
+                librarian.getAge(),
+                librarian.isActive()
+        );
+        librarianDoc.setId(librarian.getId());
+        return librarianDoc;
     }
 }

@@ -41,11 +41,13 @@ public class AdministratorControllerTest {
     @BeforeEach
     void setUp() {
         RestAssuredMockMvc.mockMvc(mockMvc);
-        admin = new Administrator("admin", "password", "admin@example.com", 30);
+
+        admin = new Administrator("admin", "pass", "admin@example.com", "Adam", "Kowalski", 30);
         admin.setId("admin1");
         admin.setActive(true);
 
-        adminDTO = new AdministratorDTO("admin1", "admin", "admin@example.com", 30, true, "ADMIN");
+        adminDTO = new AdministratorDTO("admin", "admin@example.com", "Adam", "Kowalski", 30, true);
+        adminDTO.setId("admin1");
     }
 
     @Test
@@ -54,9 +56,9 @@ public class AdministratorControllerTest {
         when(userUseCase.findAllUsers()).thenReturn(Collections.singletonList(admin));
 
         given()
-        .when()
+                .when()
                 .get("/admins")
-        .then()
+                .then()
                 .status(org.springframework.http.HttpStatus.OK)
                 .body("$", hasSize(1))
                 .body("[0].login", equalTo("admin"));
@@ -69,9 +71,9 @@ public class AdministratorControllerTest {
         when(jwtService.generateSignatureForId("admin1")).thenReturn("mock-signature");
 
         given()
-        .when()
+                .when()
                 .get("/admins/admin1")
-        .then()
+                .then()
                 .status(org.springframework.http.HttpStatus.OK)
                 .header("If-Match", "mock-signature")
                 .body("login", equalTo("admin"));
@@ -85,9 +87,9 @@ public class AdministratorControllerTest {
         given()
                 .contentType("application/json")
                 .body(adminDTO)
-        .when()
+                .when()
                 .post("/admins")
-        .then()
+                .then()
                 .status(org.springframework.http.HttpStatus.CREATED)
                 .body("login", equalTo("admin"));
     }

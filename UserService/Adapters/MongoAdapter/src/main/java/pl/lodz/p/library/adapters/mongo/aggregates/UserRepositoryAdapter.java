@@ -69,6 +69,16 @@ public class UserRepositoryAdapter implements UserPort {
     }
 
     @Override
+    public List<User> findUserByFirstName(String firstName) {
+        return repository.findUserByFirstName(firstName).stream().map(this::toDomain).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<User> findUserByLastName(String firstName) {
+        return repository.findUserByLastName(firstName).stream().map(this::toDomain).collect(Collectors.toList());
+    }
+
+    @Override
     public List<User> findUsersByAge(int age) {
         return repository.findUsersByAge(age).stream().map(this::toDomain).collect(Collectors.toList());
     }

@@ -2,10 +2,7 @@ package pl.lodz.p.library.adapters.soap.converters;
 
 import pl.lodz.p.library.adapters.soap.dto.user.UserDTO;
 import pl.lodz.p.library.domain.exceptions.UserException;
-import pl.lodz.p.library.domain.model.Administrator;
-import pl.lodz.p.library.domain.model.Librarian;
 import pl.lodz.p.library.domain.model.Reader;
-import pl.lodz.p.library.domain.model.User;
 
 public class UserSoapConverter {
     private UserSoapConverter() {}

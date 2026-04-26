@@ -6,18 +6,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.lodz.p.library.adapters.mongo.documents.AdministratorDoc;
-import pl.lodz.p.library.adapters.mongo.documents.LibrarianDoc;
 import pl.lodz.p.library.adapters.mongo.documents.ReaderDoc;
-import pl.lodz.p.library.adapters.mongo.documents.UserDoc;
-import pl.lodz.p.library.adapters.mongo.mappers.AdministratorMapper;
-import pl.lodz.p.library.adapters.mongo.mappers.LibrarianMapper;
 import pl.lodz.p.library.adapters.mongo.mappers.ReaderMapper;
 import pl.lodz.p.library.adapters.mongo.repositories.UserRepository;
-import pl.lodz.p.library.domain.model.Administrator;
-import pl.lodz.p.library.domain.model.Librarian;
 import pl.lodz.p.library.domain.model.Reader;
-import pl.lodz.p.library.domain.model.User;
 
 import java.util.List;
 import java.util.Optional;
