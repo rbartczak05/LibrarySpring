@@ -13,29 +13,29 @@ class ModelTest {
 
     @Test
     void readerConstructorTest() {
-        Reader reader = new Reader("testUser", "test@gmail.com", 25);
-        Assertions.assertEquals("testUser", reader.getLogin());
-        Assertions.assertEquals("test@gmail.com", reader.getEmail());
-        Assertions.assertEquals(25, reader.getAge());
-        Assertions.assertFalse(reader.isActive());
-        Assertions.assertEquals(5, reader.getMaxLoans());
-        Assertions.assertEquals(0, reader.getCurrentLoansCount());
+        Client client = new Client("testUser", "test@gmail.com", 25);
+        Assertions.assertEquals("testUser", client.getLogin());
+        Assertions.assertEquals("test@gmail.com", client.getEmail());
+        Assertions.assertEquals(25, client.getAge());
+        Assertions.assertFalse(client.isActive());
+        Assertions.assertEquals(5, client.getMaxLoans());
+        Assertions.assertEquals(0, client.getCurrentLoansCount());
     }
 
     @Test
     void readerCanBorrowBookTest() {
-        Reader reader = new Reader("testUser", "test@gmail.com", 25);
-        reader.setActive(true);
+        Client client = new Client("testUser", "test@gmail.com", 25);
+        client.setActive(true);
 
-        reader.setCurrentLoansCount(4);
-        Assertions.assertTrue(reader.canBorrowBook());
+        client.setCurrentLoansCount(4);
+        Assertions.assertTrue(client.canBorrowBook());
 
-        reader.setCurrentLoansCount(5);
-        Assertions.assertThrows(UserException.class, reader::canBorrowBook);
+        client.setCurrentLoansCount(5);
+        Assertions.assertThrows(UserException.class, client::canBorrowBook);
 
-        reader.setActive(false);
-        reader.setCurrentLoansCount(2);
-        Assertions.assertThrows(UserException.class, reader::canBorrowBook);
+        client.setActive(false);
+        client.setCurrentLoansCount(2);
+        Assertions.assertThrows(UserException.class, client::canBorrowBook);
     }
 
     @Test
@@ -76,16 +76,16 @@ class ModelTest {
 
     @Test
     void loanConstructorTest() {
-        Reader reader = new Reader("testUser", "test@gmail.com", 25);
-        reader.setId(UUID.randomUUID().toString());
+        Client client = new Client("testUser", "test@gmail.com", 25);
+        client.setId(UUID.randomUUID().toString());
         BookSet book = new BookSet("Diuna", "Frank Herbert", 1965, 3);
         book.setId(UUID.randomUUID().toString());
 
         LocalDateTime before = LocalDateTime.now();
-        Loan loan = new Loan(reader.getId(), book.getId());
+        Loan loan = new Loan(client.getId(), book.getId());
         LocalDateTime after = LocalDateTime.now();
 
-        Assertions.assertEquals(reader.getId(), loan.getReaderId());
+        Assertions.assertEquals(client.getId(), loan.getReaderId());
         Assertions.assertEquals(book.getId(), loan.getBookSetId());
         Assertions.assertTrue(loan.isActive());
 

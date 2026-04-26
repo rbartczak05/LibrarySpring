@@ -58,7 +58,7 @@ class UserEndpointTest {
                 .andExpect(noFault())
                 .andExpect(xpath("//ns:user/ns:id", NS_MAP).evaluatesTo("u-1"))
                 .andExpect(xpath("//ns:user/ns:login", NS_MAP).evaluatesTo("jan"))
-                .andExpect(xpath("//ns:user/ns:type", NS_MAP).evaluatesTo("reader"));
+                .andExpect(xpath("//ns:user/ns:type", NS_MAP).evaluatesTo("client"));
     }
 
     @Test
@@ -84,7 +84,7 @@ class UserEndpointTest {
                         <email>newuser@test.pl</email>
                         <age>25</age>
                         <active>false</active>
-                        <type>reader</type>
+                        <type>client</type>
                         <currentLoansCount>0</currentLoansCount>
                     </userDTO>
                     <password>secret123</password>
