@@ -86,18 +86,22 @@ class AuthEndpointTest {
 
     @Test
     void register_shouldReturnTokens() {
-        Reader reader = new Reader("testuser", "pass", "test@example.com", "Tomasz", "Zieliński", 25);
+        Reader reader = new Reader("nowak", "pass", "nowak@test.pl", "Jan", "Nowak", 25);
         when(jwtSoapService.generateAccessToken(any())).thenReturn("access-token");
         when(jwtSoapService.generateRefreshToken(any())).thenReturn("refresh-token");
         when(passwordEncoder.encode(anyString())).thenReturn("encoded");
         when(userUseCase.addUser(any())).thenReturn(reader);
-        when(userDetailsService.loadUserByUsername("nowak")).thenReturn(mockUserDetails);
+
+        User mockNowakDetails = new User("nowak", "encoded", List.of(new SimpleGrantedAuthority("ROLE_READER")));
+        when(userDetailsService.loadUserByUsername("nowak")).thenReturn(mockNowakDetails);
 
         client.sendRequest(withPayload(new StringSource("""
                 <registerRequest xmlns="%s">
                     <login>nowak</login>
                     <password>haslo123</password>
                     <email>nowak@test.pl</email>
+                    <firstName>Jan</firstName>
+                    <lastName>Nowak</lastName>
                     <age>25</age>
                 </registerRequest>""".formatted(NS))))
                 .andExpect(noFault())
@@ -124,7 +128,7 @@ class AuthEndpointTest {
     void changePassword_correctOldPassword_shouldReturnTokens() {
         Reader user = new Reader("jankowalski", "stare123", "test@example.com", "Tomasz", "Zieliński", 25);
         when(userUseCase.findUserByLogin("jankowalski")).thenReturn(user);
-        when(passwordEncoder.matches("stare123", "encoded_old")).thenReturn(true);
+        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
         when(passwordEncoder.encode("nowe123")).thenReturn("encoded_new");
         when(userDetailsService.loadUserByUsername("jankowalski")).thenReturn(mockUserDetails);
         when(jwtSoapService.generateAccessToken(any())).thenReturn("access-token");

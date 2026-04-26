@@ -1,17 +1,10 @@
 package pl.lodz.p.library.adapters.soap.converters;
 
 import pl.lodz.p.library.adapters.soap.dto.user.UserDTO;
-import pl.lodz.p.library.domain.model.Administrator;
-import pl.lodz.p.library.domain.model.Librarian;
-import pl.lodz.p.library.domain.model.Reader;
-import pl.lodz.p.library.domain.model.User;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import pl.lodz.p.library.domain.model.*;
 
 public class UserSoapConverter {
-    private UserSoapConverter() {
-    }
+    private UserSoapConverter() {}
 
     public static UserDTO toDTO(User user) {
         if (user == null) return null;
@@ -31,20 +24,19 @@ public class UserSoapConverter {
         return dto;
     }
 
-    public static List<UserDTO> toUserDTOList(List<User> users) {
-        return users.stream().map(UserSoapConverter::toDTO).collect(Collectors.toList());
-    }
-
     public static User fromDTO(UserDTO dto) {
         if (dto == null) return null;
         User user;
-        if ("ADMINISTRATOR".equalsIgnoreCase(dto.getAccessLevel())) {
+        String level = dto.getAccessLevel();
+
+        if ("ADMINISTRATOR".equalsIgnoreCase(level)) {
             user = new Administrator(dto.getLogin(), dto.getEmail(), dto.getFirstName(), dto.getLastName(), dto.getAge());
-        } else if ("LIBRARIAN".equalsIgnoreCase(dto.getAccessLevel())) {
+        } else if ("LIBRARIAN".equalsIgnoreCase(level)) {
             user = new Librarian(dto.getLogin(), dto.getEmail(), dto.getFirstName(), dto.getLastName(), dto.getAge());
         } else {
             user = new Reader(dto.getLogin(), dto.getEmail(), dto.getFirstName(), dto.getLastName(), dto.getAge());
         }
+
         user.setId(dto.getId());
         user.setActive(dto.isActive());
         return user;

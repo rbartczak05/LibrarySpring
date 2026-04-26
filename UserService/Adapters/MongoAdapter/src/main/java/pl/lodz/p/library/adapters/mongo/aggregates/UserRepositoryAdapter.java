@@ -109,6 +109,8 @@ public class UserRepositoryAdapter implements UserPort {
         return repository.findById(id).map(existing -> {
             existing.setLogin(userUpdates.getLogin());
             existing.setEmail(userUpdates.getEmail());
+            existing.setFirstName(userUpdates.getFirstName());
+            existing.setLastName(userUpdates.getLastName());
             existing.setAge(userUpdates.getAge());
             existing.setActive(userUpdates.isActive());
             return toDomain(repository.save(existing));

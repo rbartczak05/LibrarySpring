@@ -53,7 +53,7 @@ public abstract class BaseIntegrationTest {
 
         userPort.findAllUsers().forEach(user -> userPort.deleteUser(user.getId()));
 
-        Administrator admin = new Administrator("admin_test", "admin@test.pl", 30);
+        Administrator admin = new Administrator("admin_test", "admin@test.pl", "Admin", "Testowy", 30);
         userUseCase.changeUserPasswordInModel(admin, passwordEncoder.encode("admin123"));
         userPort.addUser(admin);
 

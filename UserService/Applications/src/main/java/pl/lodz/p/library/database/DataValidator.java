@@ -10,7 +10,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.stereotype.Component;
-import pl.lodz.p.library.domain.model.Reader;
 
 import java.util.Arrays;
 
@@ -27,47 +26,21 @@ public class DataValidator {
     public void initDatabaseValidation() {
         MongoDatabase database = mongoTemplate.getDb();
         database.getCollection("users").drop();
-        database.getCollection("booksets").drop();
-        database.getCollection("loans").drop();
 
         Document userValidator = new Document("$jsonSchema",
                 new Document("bsonType", "object")
-                        .append("required", Arrays.asList("login", "email", "age"))
+                        .append("required", Arrays.asList("login", "email", "firstName", "lastName", "age"))
                         .append("properties", new Document()
                                 .append("login", new Document().append("bsonType", "string").append("minLength", 3).append("maxLength", 20))
                                 .append("email", new Document().append("bsonType", "string").append("minLength", 3).append("maxLength", 100).append("pattern", "^.+@.+$"))
+                                .append("firstName", new Document().append("bsonType", "string").append("minLength", 1))
+                                .append("lastName", new Document().append("bsonType", "string").append("minLength", 1))
                                 .append("age", new Document().append("bsonType", "int").append("minimum", 1))
                                 .append("active", new Document().append("bsonType", "bool"))
                         )
         );
 
-        Document bookSetValidator = new Document("$jsonSchema",
-                new Document("bsonType", "object")
-                        .append("required", Arrays.asList("title", "author", "releaseYear", "quantity"))
-                        .append("properties", new Document()
-                                .append("title", new Document().append("bsonType", "string").append("minLength", 1))
-                                .append("author", new Document().append("bsonType", "string").append("minLength", 1))
-                                .append("releaseYear", new Document().append("bsonType", "int").append("minimum", 0))
-                                .append("quantity", new Document().append("bsonType", "int").append("minimum", 0))
-                        )
-        );
-
-        Document loanValidator = new Document("$jsonSchema",
-                new Document("bsonType", "object")
-                        .append("required", Arrays.asList("readerId", "bookSetId", "startTime", "active"))
-                        .append("properties", new Document()
-                                .append("readerId", new Document().append("bsonType", "string").append("minLength", 1))
-                                .append("bookSetId", new Document().append("bsonType", "string").append("minLength", 1))
-                                .append("startTime", new Document().append("bsonType", "date"))
-                                .append("active", new Document().append("bsonType", "bool"))
-                                .append("returnTime", new Document().append("bsonType", Arrays.asList("date", "null")))
-                                .append("endTime", new Document().append("bsonType", Arrays.asList("date", "null")))
-                        )
-        );
-
         createCollection(database, "users", userValidator);
-        createCollection(database, "booksets", bookSetValidator);
-        createCollection(database, "loans", loanValidator);
         mongoTemplate.indexOps("users").createIndex(new Index().on("login", Sort.Direction.ASC).unique());
         mongoTemplate.indexOps("users").createIndex(new Index().on("email", Sort.Direction.ASC).unique());
     }

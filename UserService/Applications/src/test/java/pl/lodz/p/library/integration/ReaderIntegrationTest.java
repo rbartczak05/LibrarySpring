@@ -11,7 +11,7 @@ public class ReaderIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void createReaderTest() {
-        ReaderDTO reader = new ReaderDTO(null, "uniqueUser", "unique@mail.com", 25, false, "reader");
+        ReaderDTO reader = new ReaderDTO("uniqueUser", "unique@mail.com", "Jan", "Kowalski", 25, false);
 
         given()
                 .contentType(ContentType.JSON)
@@ -55,8 +55,8 @@ public class ReaderIntegrationTest extends BaseIntegrationTest {
     @Test
     void updateReaderTest() {
         String id = createReader("oldData", "old@mail.com");
-        ReaderDTO update = new ReaderDTO(null, "newData", "new@mail.com", 30, false, "reader");
-        
+        ReaderDTO update = new ReaderDTO("newData", "new@mail.com", "Jan", "Kowalski", 30, false);
+
         String eTag = given()
                 .when()
                 .get("/readers/{id}", id)
@@ -96,7 +96,7 @@ public class ReaderIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void createReaderFailSyntaxTest() {
-        ReaderDTO invalid = new ReaderDTO(null, "", "mail@test.pl", -5, false, "reader");
+        ReaderDTO invalid = new ReaderDTO("", "mail@test.pl", "Jan", "Kowalski", -5, false);
 
         given()
                 .contentType(ContentType.JSON)
@@ -110,7 +110,7 @@ public class ReaderIntegrationTest extends BaseIntegrationTest {
     @Test
     void createReaderFailUniqueLoginTest() {
         createReader("duplicate", "mail1@test.pl");
-        ReaderDTO duplicate = new ReaderDTO(null, "duplicate", "mail2@test.pl", 25, false, "reader");
+        ReaderDTO duplicate = new ReaderDTO("duplicate", "mail2@test.pl", "Jan", "Kowalski", 25, false);
 
         given()
                 .contentType(ContentType.JSON)
@@ -122,7 +122,7 @@ public class ReaderIntegrationTest extends BaseIntegrationTest {
     }
 
     private String createReader(String login, String email) {
-        ReaderDTO reader = new ReaderDTO(null, login, email, 20, false, "reader");
+        ReaderDTO reader = new ReaderDTO(login, email, "Jan", "Kowalski", 20, false);
         return given()
                 .contentType(ContentType.JSON)
                 .body(reader)

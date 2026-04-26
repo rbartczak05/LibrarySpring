@@ -79,13 +79,13 @@ class UserRepositoryTest {
     void findUserByFirstName() {
         List<UserDoc> users = userRepository.findUserByFirstName("Jan");
         assertEquals(1, users.size());
-        assertEquals("Jan", users.get(0).getFirstName());
+        assertEquals("Jan", users.getFirst().getFirstName());
     }
 
     @Test
     void findUserByLastName() {
         List<UserDoc> users = userRepository.findUserByLastName("Nowak");
         assertEquals(1, users.size());
-        assertEquals("Nowak", users.get(0).getLastName());
+        assertEquals("Nowak", users.getFirst().getLastName());
     }
 }

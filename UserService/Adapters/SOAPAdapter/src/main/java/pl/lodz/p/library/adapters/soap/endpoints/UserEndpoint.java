@@ -8,6 +8,9 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import pl.lodz.p.library.adapters.soap.converters.UserSoapConverter;
 import pl.lodz.p.library.adapters.soap.dto.user.requests.*;
 import pl.lodz.p.library.adapters.soap.dto.user.responses.*;
+import pl.lodz.p.library.domain.model.Administrator;
+import pl.lodz.p.library.domain.model.Librarian;
+import pl.lodz.p.library.domain.model.Reader;
 import pl.lodz.p.library.domain.model.User;
 import pl.lodz.p.library.ports.inbound.UserUseCase;
 
@@ -62,12 +65,24 @@ public class UserEndpoint {
         return response;
     }
 
-    @PayloadRoot(namespace = namespace, localPart = "AddUserRequest")
+    @PayloadRoot(namespace = namespace, localPart = "addUserRequest")
     @ResponsePayload
     @PreAuthorize("hasRole('ADMIN')")
     public AddUserResponse addUser(@RequestPayload AddUserRequest request) {
-        User toSave = UserSoapConverter.fromDTO(request.getUserDTO());
-        toSave.setPassword(request.getPassword());
+        User toSave;
+        String level = request.getAccessLevel();
+
+        if ("ADMINISTRATOR".equalsIgnoreCase(level)) {
+            toSave = new Administrator(request.getLogin(), request.getPassword(), request.getEmail(),
+                    request.getFirstName(), request.getLastName(), request.getAge());
+        } else if ("LIBRARIAN".equalsIgnoreCase(level)) {
+            toSave = new Librarian(request.getLogin(), request.getPassword(), request.getEmail(),
+                    request.getFirstName(), request.getLastName(), request.getAge());
+        } else {
+            toSave = new Reader(request.getLogin(), request.getPassword(), request.getEmail(),
+                    request.getFirstName(), request.getLastName(), request.getAge());
+        }
+
         AddUserResponse response = new AddUserResponse();
         response.setUser(UserSoapConverter.toDTO(userUseCase.addUser(toSave)));
         return response;

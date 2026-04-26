@@ -5,10 +5,9 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import pl.lodz.p.library.adapters.soap.dto.user.UserDTO;
-
 import java.util.List;
 
-@XmlRootElement(name = "GetAllUsersRequest")
+@XmlRootElement(name = "GetAllUsersResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GetAllUsersResponse {
     @XmlElement(name = "user", required = true)

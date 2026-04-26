@@ -30,10 +30,13 @@ class UserEndpointTest {
 
     private static final String NS = "http://pl.lodz.p.library.adapters.soap.dto.user/";
     private static final Map<String, String> NS_MAP = Map.of("ns", NS);
+
     @Autowired
     private ApplicationContext context;
+
     @MockitoBean
     private UserUseCase userUseCase;
+
     private MockWebServiceClient client;
 
     @BeforeEach
@@ -42,7 +45,7 @@ class UserEndpointTest {
     }
 
     private Reader buildReader(String id, String login) {
-        Reader r = new Reader("testuser", "pass", "test@example.com", "Tomasz", "Zieliński", 25);
+        Reader r = new Reader(login, "pass", "test@example.com", "Tomasz", "Zieliński", 25);
         r.setId(id);
         r.setActive(true);
         return r;
@@ -57,7 +60,7 @@ class UserEndpointTest {
                 .andExpect(noFault())
                 .andExpect(xpath("//ns:user/ns:id", NS_MAP).evaluatesTo("u-1"))
                 .andExpect(xpath("//ns:user/ns:login", NS_MAP).evaluatesTo("jan"))
-                .andExpect(xpath("//ns:user/ns:type", NS_MAP).evaluatesTo("reader"));
+                .andExpect(xpath("//ns:user/ns:accessLevel", NS_MAP).evaluatesTo("READER"));
     }
 
     @Test
@@ -65,7 +68,29 @@ class UserEndpointTest {
         when(userUseCase.findUserById("u-42")).thenReturn(buildReader("u-42", "anna"));
 
         client.sendRequest(withPayload(new StringSource(
-                "<GetUserByIdRequest xmlns=\"" + NS + "\"><id>u-42</id></GetUserByIdRequest>")))
+                        "<GetUserByIdRequest xmlns=\"" + NS + "\"><id>u-42</id></GetUserByIdRequest>")))
+                .andExpect(noFault())
+                .andExpect(xpath("//ns:user/ns:id", NS_MAP).evaluatesTo("u-42"))
+                .andExpect(xpath("//ns:user/ns:login", NS_MAP).evaluatesTo("anna"));
+    }
+
+    @Test
+    void getUserByLogin_shouldReturnUser() {
+        when(userUseCase.findUserByLogin("anna")).thenReturn(buildReader("u-42", "anna"));
+
+        client.sendRequest(withPayload(new StringSource(
+                        "<GetUserByLoginRequest xmlns=\"" + NS + "\"><login>anna</login></GetUserByLoginRequest>")))
+                .andExpect(noFault())
+                .andExpect(xpath("//ns:user/ns:id", NS_MAP).evaluatesTo("u-42"))
+                .andExpect(xpath("//ns:user/ns:login", NS_MAP).evaluatesTo("anna"));
+    }
+
+    @Test
+    void getUserByEmail_shouldReturnUser() {
+        when(userUseCase.findUserByEmail("test@example.com")).thenReturn(buildReader("u-42", "anna"));
+
+        client.sendRequest(withPayload(new StringSource(
+                        "<GetUserByEmailRequest xmlns=\"" + NS + "\"><email>test@example.com</email></GetUserByEmailRequest>")))
                 .andExpect(noFault())
                 .andExpect(xpath("//ns:user/ns:id", NS_MAP).evaluatesTo("u-42"))
                 .andExpect(xpath("//ns:user/ns:login", NS_MAP).evaluatesTo("anna"));
@@ -77,17 +102,15 @@ class UserEndpointTest {
         when(userUseCase.addUser(any(User.class))).thenReturn(saved);
 
         client.sendRequest(withPayload(new StringSource("""
-                <AddUserRequest xmlns="%s">
-                    <userDTO>
-                        <login>newuser</login>
-                        <email>newuser@test.pl</email>
-                        <age>25</age>
-                        <active>false</active>
-                        <type>reader</type>
-                        <currentLoansCount>0</currentLoansCount>
-                    </userDTO>
-                    <password>secret123</password>
-                </AddUserRequest>""".formatted(NS))))
+            <addUserRequest xmlns="%s">
+                <login>newuser</login>
+                <password>secret123</password>
+                <email>newuser@test.pl</email>
+                <firstName>Jan</firstName>
+                <lastName>Kowalski</lastName>
+                <age>25</age>
+                <accessLevel>READER</accessLevel>
+            </addUserRequest>""".formatted(NS))))
                 .andExpect(noFault())
                 .andExpect(xpath("//ns:user/ns:id", NS_MAP).evaluatesTo("u-new"))
                 .andExpect(xpath("//ns:user/ns:login", NS_MAP).evaluatesTo("newuser"));
@@ -101,6 +124,18 @@ class UserEndpointTest {
                         "<ActivateUserRequest xmlns=\"" + NS + "\"><id>u-inactive</id></ActivateUserRequest>")))
                 .andExpect(noFault())
                 .andExpect(xpath("//ns:user/ns:active", NS_MAP).evaluatesTo("true"));
+    }
+
+    @Test
+    void deactivateUser_shouldReturnDeactivatedUser() {
+        Reader deactivated = buildReader("u-active", "piotr");
+        deactivated.setActive(false);
+        when(userUseCase.deactivateUser("u-active")).thenReturn(deactivated);
+
+        client.sendRequest(withPayload(new StringSource(
+                        "<DeactivateUserRequest xmlns=\"" + NS + "\"><id>u-active</id></DeactivateUserRequest>")))
+                .andExpect(noFault())
+                .andExpect(xpath("//ns:user/ns:active", NS_MAP).evaluatesTo("false"));
     }
 
     @Test

@@ -16,7 +16,7 @@ class UserServiceTest extends BaseServiceTest {
 
     @Test
     void addUserTest() {
-        Reader reader = new Reader("testUser", "test@gmail.com", 25);
+        Reader reader = new Reader("testUser", "test@gmail.com", "Test", "User", 25);
         User savedUser = userService.addUser(reader);
 
         Assertions.assertNotNull(savedUser.getId());
@@ -26,7 +26,7 @@ class UserServiceTest extends BaseServiceTest {
 
     @Test
     void findUserByIdTest() {
-        Reader reader = new Reader("testUser", "test@gmail.com", 25);
+        Reader reader = new Reader("testUser", "test@gmail.com", "Test", "User", 25);
         User savedUser = userPort.addUser(reader).orElseThrow();
 
         User foundUser = userService.findUserById(savedUser.getId());
@@ -42,7 +42,7 @@ class UserServiceTest extends BaseServiceTest {
 
     @Test
     void activateUserTest() {
-        Reader reader = new Reader("testUser", "test@gmail.com", 25);
+        Reader reader = new Reader("testUser", "test@gmail.com", "Test", "User", 25);
         User savedUser = userPort.addUser(reader).orElseThrow();
 
         User activatedUser = userService.activateUser(savedUser.getId());
@@ -52,7 +52,7 @@ class UserServiceTest extends BaseServiceTest {
 
     @Test
     void deactivateUserTest() {
-        Reader reader = new Reader("testUser", "test@gmail.com", 25);
+        Reader reader = new Reader("testUser", "test@gmail.com", "Test", "User", 25);
         reader.setActive(true);
         User savedUser = userPort.addUser(reader).orElseThrow();
 
