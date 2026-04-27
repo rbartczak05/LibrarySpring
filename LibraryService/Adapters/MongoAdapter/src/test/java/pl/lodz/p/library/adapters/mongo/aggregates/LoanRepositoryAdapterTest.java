@@ -33,7 +33,7 @@ class LoanRepositoryAdapterTest {
 
     @Test
     void findById() {
-        LoanDoc doc = new LoanDoc("r1", "b1", LocalDateTime.now());
+        LoanDoc doc = new LoanDoc("c1", "b1", LocalDateTime.now());
         doc.setId("1");
         when(repository.findById("1")).thenReturn(Optional.of(doc));
 
@@ -44,72 +44,72 @@ class LoanRepositoryAdapterTest {
 
     @Test
     void findByClientId() {
-        when(repository.findByClientId("r1")).thenReturn(List.of(new LoanDoc("r1", "b1", LocalDateTime.now())));
-        List<Loan> result = adapter.findByClientId("r1");
+        when(repository.findByClientId("c1")).thenReturn(List.of(new LoanDoc("c1", "b1", LocalDateTime.now())));
+        List<Loan> result = adapter.findByClientId("c1");
         assertEquals(1, result.size());
     }
 
     @Test
     void findByBookSetId() {
-        when(repository.findByBookSetId("b1")).thenReturn(List.of(new LoanDoc("r1", "b1", LocalDateTime.now())));
+        when(repository.findByBookSetId("b1")).thenReturn(List.of(new LoanDoc("c1", "b1", LocalDateTime.now())));
         List<Loan> result = adapter.findByBookSetId("b1");
         assertEquals(1, result.size());
     }
 
     @Test
     void findByClientIdAndBookSetId() {
-        when(repository.findByClientIdAndBookSetId("r1", "b1")).thenReturn(List.of(new LoanDoc("r1", "b1", LocalDateTime.now())));
-        List<Loan> result = adapter.findByClientIdAndBookSetId("r1", "b1");
+        when(repository.findByClientIdAndBookSetId("c1", "b1")).thenReturn(List.of(new LoanDoc("c1", "b1", LocalDateTime.now())));
+        List<Loan> result = adapter.findByClientIdAndBookSetId("c1", "b1");
         assertEquals(1, result.size());
     }
 
     @Test
     void findByActive() {
-        when(repository.findByActive(true)).thenReturn(List.of(new LoanDoc("r1", "b1", LocalDateTime.now())));
+        when(repository.findByActive(true)).thenReturn(List.of(new LoanDoc("c1", "b1", LocalDateTime.now())));
         List<Loan> result = adapter.findByActive(true);
         assertEquals(1, result.size());
     }
 
     @Test
     void findByBookSetIdAndActive() {
-        when(repository.findByBookSetIdAndActive("b1", true)).thenReturn(List.of(new LoanDoc("r1", "b1", LocalDateTime.now())));
+        when(repository.findByBookSetIdAndActive("b1", true)).thenReturn(List.of(new LoanDoc("c1", "b1", LocalDateTime.now())));
         List<Loan> result = adapter.findByBookSetIdAndActive("b1", true);
         assertEquals(1, result.size());
     }
 
     @Test
     void findByClientIdAndActive() {
-        when(repository.findByClientIdAndActive("r1", true)).thenReturn(List.of(new LoanDoc("r1", "b1", LocalDateTime.now())));
-        List<Loan> result = adapter.findByClientIdAndActive("r1", true);
+        when(repository.findByClientIdAndActive("c1", true)).thenReturn(List.of(new LoanDoc("c1", "b1", LocalDateTime.now())));
+        List<Loan> result = adapter.findByClientIdAndActive("c1", true);
         assertEquals(1, result.size());
     }
 
     @Test
     void findAll() {
-        when(repository.findAll()).thenReturn(List.of(new LoanDoc("r1", "b1", LocalDateTime.now())));
+        when(repository.findAll()).thenReturn(List.of(new LoanDoc("c1", "b1", LocalDateTime.now())));
         List<Loan> result = adapter.findAll();
         assertEquals(1, result.size());
     }
 
     @Test
     void createLoan() {
-        LoanDoc doc = new LoanDoc("r1", "b1", LocalDateTime.now());
+        LoanDoc doc = new LoanDoc("c1", "b1", LocalDateTime.now());
         doc.setId("1");
         when(repository.save(any(LoanDoc.class))).thenReturn(doc);
 
-        Optional<Loan> result = adapter.createLoan("r1", "b1");
+        Optional<Loan> result = adapter.createLoan("c1", "b1");
         assertTrue(result.isPresent());
         assertEquals("1", result.get().getId());
     }
 
     @Test
     void createLoanWithTime() {
-        LocalDateTime time = LocalDateTime.now().minusDays(1);
-        LoanDoc doc = new LoanDoc("r1", "b1", time);
+        LocalDateTime time = LocalDateTime.now().minusDays(1).withNano(0);
+        LoanDoc doc = new LoanDoc("c1", "b1", time);
         doc.setId("1");
         when(repository.save(any(LoanDoc.class))).thenReturn(doc);
 
-        Optional<Loan> result = adapter.createLoan("r1", "b1", time);
+        Optional<Loan> result = adapter.createLoan("c1", "b1", time);
         assertTrue(result.isPresent());
         assertEquals("1", result.get().getId());
         assertEquals(time, result.get().getStartTime());
@@ -117,24 +117,26 @@ class LoanRepositoryAdapterTest {
 
     @Test
     void updateLoan() {
-        LoanDoc existing = new LoanDoc("r1", "b1", LocalDateTime.now());
+        LocalDateTime now = LocalDateTime.now().withNano(0);
+        LoanDoc existing = new LoanDoc("c1", "b1", now);
         existing.setId("1");
 
-        Loan updates = new Loan("r1", "b1", LocalDateTime.now().plusDays(1));
-        updates.setEndTime(LocalDateTime.now().plusDays(10));
+        LocalDateTime newStart = now.plusDays(1);
+        Loan updates = new Loan("c1", "b1", newStart);
+        updates.setEndTime(now.plusDays(10));
 
         when(repository.findById("1")).thenReturn(Optional.of(existing));
         when(repository.save(any(LoanDoc.class))).thenAnswer(i -> i.getArguments()[0]);
 
         Optional<Loan> result = adapter.updateLoan("1", updates);
         assertTrue(result.isPresent());
-        assertEquals(updates.getStartTime(), result.get().getStartTime());
+        assertEquals(newStart, result.get().getStartTime());
         assertEquals(updates.getEndTime(), result.get().getEndTime());
     }
 
     @Test
     void endLoan() {
-        LoanDoc existing = new LoanDoc("r1", "b1", LocalDateTime.now());
+        LoanDoc existing = new LoanDoc("c1", "b1", LocalDateTime.now());
         existing.setId("1");
         existing.setActive(true);
 

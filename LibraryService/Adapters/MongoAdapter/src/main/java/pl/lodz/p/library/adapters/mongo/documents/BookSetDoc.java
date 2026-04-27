@@ -11,19 +11,9 @@ public class BookSetDoc {
 
     @Id
     private String id;
-
-    @NotBlank
     private String title;
-
-    @NotBlank
     private String author;
-
-    @NotNull
-    @Min(value = 0)
     private int releaseYear;
-
-    @NotNull
-    @Min(value = 0)
     private int quantity;
 
     public BookSetDoc(String title, String author, int releaseYear, int quantity) {

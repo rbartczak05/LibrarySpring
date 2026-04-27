@@ -35,15 +35,15 @@ public class LoanService implements LoanUseCase {
         return loanPort.findById(id).orElseThrow(() -> new LoanException("Wypożyczenie o ID: " + id + " nie zostało odnalezione."));
     }
 
-    public List<Loan> findLoansByClient(String clientId) {
+    public List<Loan> findByClientId(String clientId) {
         return loanPort.findByClientId(clientId);
     }
 
-    public List<Loan> findLoansByBookSet(String bookSetId) {
+    public List<Loan> findByBookSetId(String bookSetId) {
         return loanPort.findByBookSetId(bookSetId);
     }
 
-    public List<Loan> findLoansByClientIdAndBookSetId(String clientId, String bookSetId) {
+    public List<Loan> findByClientIdAndBookSetId(String clientId, String bookSetId) {
         return loanPort.findByClientIdAndBookSetId(clientId, bookSetId);
     }
 

@@ -46,11 +46,6 @@ public class LoanRepositoryAdapter implements LoanPort {
     }
 
     @Override
-    public List<Loan> findByClientIdAndBookSetId(String readerId, String bookSetId) {
-        return List.of();
-    }
-
-    @Override
     public List<Loan> findByClientIdAndBookSetId(String clientId, String bookSetId) {
         return repository.findByClientIdAndBookSetId(clientId, bookSetId).stream().map(mapper::toDomain).collect(Collectors.toList());
     }
@@ -71,13 +66,8 @@ public class LoanRepositoryAdapter implements LoanPort {
     }
 
     @Override
-    public List<Loan> findByClientIdAndActive(String readerId, boolean active) {
-        return List.of();
-    }
-
-    @Override
-    public Optional<Loan> createLoan(String readerId, String bookSetId) {
-        return this.createLoan(readerId, bookSetId, null);
+    public Optional<Loan> createLoan(String clientId, String bookSetId) {
+        return this.createLoan(clientId, bookSetId, null);
     }
 
     @Override
@@ -91,6 +81,7 @@ public class LoanRepositoryAdapter implements LoanPort {
     @Override
     public Optional<Loan> updateLoan(String loanId, Loan loanUpdates) {
         return repository.findById(loanId).map(existing -> {
+            existing.setStartTime(loanUpdates.getStartTime());
             existing.setEndTime(loanUpdates.getEndTime());
             existing.setReturnTime(loanUpdates.getReturnTime());
             existing.setActive(loanUpdates.isActive());

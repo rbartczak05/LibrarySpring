@@ -8,11 +8,11 @@ import java.util.List;
 public interface LoanUseCase {
     Loan findLoanById(String id);
 
-    List<Loan> findLoansByClient(String clientId);
+    List<Loan> findByClientId(String clientId);
 
-    List<Loan> findLoansByBookSet(String bookSetId);
+    List<Loan> findByBookSetId(String bookSetId);
 
-    List<Loan> findLoansByClientIdAndBookSetId(String clientId, String bookSetId);
+    List<Loan> findByClientIdAndBookSetId(String clientId, String bookSetId);
 
     List<Loan> findByActiveLoans(boolean active);
 

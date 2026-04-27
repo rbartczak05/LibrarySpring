@@ -35,7 +35,6 @@ class BookSetEndpointTest {
     private BookSetUseCase bookSetUseCase;
 
     private MockWebServiceClient client;
-
     private static final String NS = "http://pl.lodz.p.library.adapters.soap.dto.bookset/";
     private static final Map<String, String> NS_MAP = Map.of("ns", NS);
 
@@ -45,39 +44,38 @@ class BookSetEndpointTest {
     }
 
     private BookSet buildBookSet(String id, String title, String author) {
-        BookSet b = new BookSet(title, author, 2000, 5);
-        b.setId(id);
-        return b;
+        BookSet bookSet = new BookSet(title, author, 2000, 5);
+        bookSet.setId(id);
+        return bookSet;
     }
 
     @Test
     void getAllBookSets_shouldReturnList() {
-        when(bookSetUseCase.findAllBookSets())
-                .thenReturn(List.of(buildBookSet("id-1", "Dune", "Herbert")));
+        when(bookSetUseCase.findAllBookSets()).thenReturn(List.of(
+                buildBookSet("bs-1", "Title1", "Author1"),
+                buildBookSet("bs-2", "Title2", "Author2")
+        ));
 
         client.sendRequest(withPayload(new StringSource(
-                "<GetAllBookSetsRequest xmlns=\"" + NS + "\"/>")))
+                        "<GetAllBookSetsRequest xmlns=\"" + NS + "\"/>")))
                 .andExpect(noFault())
-                .andExpect(xpath("//ns:GetAllBookSetsResponse/ns:bookSet/ns:id", NS_MAP).evaluatesTo("id-1"))
-                .andExpect(xpath("//ns:GetAllBookSetsResponse/ns:bookSet/ns:title", NS_MAP).evaluatesTo("Dune"));
+                .andExpect(xpath("//ns:bookSets[1]/ns:id", NS_MAP).evaluatesTo("bs-1"))
+                .andExpect(xpath("//ns:bookSets[2]/ns:title", NS_MAP).evaluatesTo("Title2"));
     }
 
     @Test
     void getBookSetById_shouldReturnBookSet() {
-        when(bookSetUseCase.findBookSetById("id-1"))
-                .thenReturn(buildBookSet("id-1", "1984", "Orwell"));
+        when(bookSetUseCase.findBookSetById("bs-1")).thenReturn(buildBookSet("bs-1", "Title1", "Author1"));
 
         client.sendRequest(withPayload(new StringSource(
-                "<GetBookSetByIdRequest xmlns=\"" + NS + "\"><id>id-1</id></GetBookSetByIdRequest>")))
+                        "<GetBookSetByIdRequest xmlns=\"" + NS + "\"><id>bs-1</id></GetBookSetByIdRequest>")))
                 .andExpect(noFault())
-                .andExpect(xpath("//ns:bookSet/ns:id", NS_MAP).evaluatesTo("id-1"))
-                .andExpect(xpath("//ns:bookSet/ns:title", NS_MAP).evaluatesTo("1984"));
+                .andExpect(xpath("//ns:bookSet/ns:author", NS_MAP).evaluatesTo("Author1"));
     }
 
     @Test
-    void addBookSet_shouldReturnSavedBookSet() {
-        when(bookSetUseCase.addBookSet(any(BookSet.class)))
-                .thenReturn(buildBookSet("new-id", "Solaris", "Lem"));
+    void addBookSet_shouldReturnCreatedBookSet() {
+        when(bookSetUseCase.addBookSet(any(BookSet.class))).thenReturn(buildBookSet("new-id", "Solaris", "Lem"));
 
         client.sendRequest(withPayload(new StringSource("""
                 <AddBookSetRequest xmlns="%s">
@@ -85,7 +83,7 @@ class BookSetEndpointTest {
                         <title>Solaris</title>
                         <author>Lem</author>
                         <releaseYear>1961</releaseYear>
-                        <quantity>4</quantity>
+                        <quantity>10</quantity>
                     </bookSetDTO>
                 </AddBookSetRequest>""".formatted(NS))))
                 .andExpect(noFault())
@@ -114,9 +112,9 @@ class BookSetEndpointTest {
     @Test
     void deleteBookSet_shouldReturnDeleted() {
         client.sendRequest(withPayload(new StringSource(
-                "<DeleteBookSetRequest xmlns=\"" + NS + "\"><id>id-del</id></DeleteBookSetRequest>")))
+                        "<DeleteBookSetRequest xmlns=\"" + NS + "\"><id>id-del</id></DeleteBookSetRequest>")))
                 .andExpect(noFault())
-                .andExpect(xpath("//ns:DeleteBookSetResponse/ns:isDeleted", NS_MAP).evaluatesTo("true"));
+                .andExpect(xpath("//ns:deleted", NS_MAP).evaluatesTo("true"));
 
         verify(bookSetUseCase).deleteBookSet("id-del");
     }

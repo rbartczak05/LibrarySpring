@@ -32,9 +32,9 @@ public class LoanDTO {
     @XmlElement(name = "endTime", required = true)
     private XMLGregorianCalendar endTime;
 
-    @NotBlank(message = "ID czytelnika jest wymagane do utworzenia wypożyczenia.")
-    @XmlElement(name = "readerId", required = true)
-    private String readerId;
+    @NotBlank(message = "ID klienta jest wymagane do utworzenia wypożyczenia.")
+    @XmlElement(name = "clientId", required = true)
+    private String clientId;
 
     @NotBlank(message = "ID książki jest wymagane do utworzenia wypożyczenia.")
     @XmlElement(name = "bookSetId", required = true)
@@ -43,13 +43,13 @@ public class LoanDTO {
     public LoanDTO() {
     }
 
-    public LoanDTO(String id, boolean active, XMLGregorianCalendar startTime, XMLGregorianCalendar endTime, XMLGregorianCalendar returnTime, String readerId, String bookSetId) {
+    public LoanDTO(String id, boolean active, XMLGregorianCalendar startTime, XMLGregorianCalendar endTime, XMLGregorianCalendar returnTime, String clientId, String bookSetId) {
         this.id = id;
         this.active = active;
         this.startTime = startTime;
-        this.returnTime = null;
+        this.returnTime = returnTime;
         this.endTime = endTime;
-        this.readerId = readerId;
+        this.clientId = clientId;
         this.bookSetId = bookSetId;
     }
 
@@ -101,11 +101,11 @@ public class LoanDTO {
         this.bookSetId = bookSetId;
     }
 
-    public String getReaderId() {
-        return readerId;
+    public String getClientId() {
+        return clientId;
     }
 
-    public void setReaderId(String readerId) {
-        this.readerId = readerId;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 }

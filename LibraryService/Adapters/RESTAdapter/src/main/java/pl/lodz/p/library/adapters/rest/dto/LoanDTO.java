@@ -4,17 +4,15 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.data.annotation.Id;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
-import pl.lodz.p.library.domain.exceptions.BookSetException;
+import pl.lodz.p.library.domain.exceptions.LoanException;
 
 import java.time.LocalDateTime;
 
 @Relation(collectionRelation = "loans", itemRelation = "loan")
 public class LoanDTO extends RepresentationModel<LoanDTO> {
-    @Id
     private String id;
 
     @NotNull(message = "Stan wypożyczenia nie może być pusty.")
@@ -35,8 +33,8 @@ public class LoanDTO extends RepresentationModel<LoanDTO> {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endTime;
 
-    @NotBlank(message = "ID czytelnika jest wymagane do utworzenia wypożyczenia.")
-    private String readerId;
+    @NotBlank(message = "ID klienta jest wymagane do utworzenia wypożyczenia.")
+    private String clientId;
 
     @NotBlank(message = "ID książki jest wymagane do utworzenia wypożyczenia.")
     private String bookSetId;
@@ -44,12 +42,13 @@ public class LoanDTO extends RepresentationModel<LoanDTO> {
     public LoanDTO() {
     }
 
-    public LoanDTO(String id, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime returnTime, String bookSetId, String readerId) {
+    public LoanDTO(String id, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime returnTime, String bookSetId, String clientId) {
+        this.id = id;
         this.active = true;
         this.startTime = startTime;
-        this.returnTime = null;
-        this.endTime = startTime.plusDays(30);
-        this.readerId = readerId;
+        this.returnTime = returnTime;
+        this.endTime = endTime != null ? endTime : startTime.plusDays(30);
+        this.clientId = clientId;
         this.bookSetId = bookSetId;
     }
 
@@ -75,10 +74,10 @@ public class LoanDTO extends RepresentationModel<LoanDTO> {
 
     public void setStartTime(LocalDateTime startTime) {
         if (this.returnTime != null && this.returnTime.isBefore(startTime)) {
-            throw new BookSetException("Data zwrotu musi być późniejsza niż data rozpoczęcia.");
+            throw new LoanException("Data zwrotu musi być późniejsza niż data rozpoczęcia.");
         }
         if (this.endTime != null && this.endTime.isBefore(startTime)) {
-            throw new BookSetException("Data zakończenia musi być późniejsza niż data rozpoczęcia.");
+            throw new LoanException("Data zakończenia musi być późniejsza niż data rozpoczęcia.");
         }
         this.startTime = startTime;
     }
@@ -89,7 +88,7 @@ public class LoanDTO extends RepresentationModel<LoanDTO> {
 
     public void setReturnTime(LocalDateTime returnTime) {
         if (returnTime != null && this.startTime != null && returnTime.isBefore(this.startTime)) {
-            throw new BookSetException("Data zwrotu musi być późniejsza niż data rozpoczęcia.");
+            throw new LoanException("Data zwrotu musi być późniejsza niż data rozpoczęcia.");
         }
         this.returnTime = returnTime;
     }
@@ -100,17 +99,17 @@ public class LoanDTO extends RepresentationModel<LoanDTO> {
 
     public void setEndTime(LocalDateTime endTime) {
         if (endTime != null && this.startTime != null && endTime.isBefore(this.startTime)) {
-            throw new BookSetException("Data zakończenia musi być późniejsza niż data rozpoczęcia.");
+            throw new LoanException("Data zakończenia musi być późniejsza niż data rozpoczęcia.");
         }
         this.endTime = endTime;
     }
 
-    public String getReaderId() {
-        return readerId;
+    public String getClientId() {
+        return clientId;
     }
 
-    public void setReaderId(String readerId) {
-        this.readerId = readerId;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
     public String getBookSetId() {

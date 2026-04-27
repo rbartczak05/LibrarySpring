@@ -8,12 +8,25 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "CreateLoanRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CreateLoanRequest {
-    @XmlElement(required = true)
+    @XmlElement(name = "clientId", required = true)
+    private String clientId;
+
+    @XmlElement(name = "bookSetId", required = true)
     private String bookSetId;
-    @XmlElement(required = true)
-    private String readerId;
-    public String getBookSetId() { return bookSetId; }
-    public void setBookSetId(String bookSetId) { this.bookSetId = bookSetId; }
-    public String getReaderId() { return readerId; }
-    public void setReaderId(String readerId) { this.readerId = readerId; }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getBookSetId() {
+        return bookSetId;
+    }
+
+    public void setBookSetId(String bookSetId) {
+        this.bookSetId = bookSetId;
+    }
 }

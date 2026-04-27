@@ -2,7 +2,7 @@ package pl.lodz.p.library.domain;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pl.lodz.p.library.domain.exceptions.BookSetException;
+import pl.lodz.p.library.domain.exceptions.LoanException;
 import pl.lodz.p.library.domain.exceptions.ClientException;
 import pl.lodz.p.library.domain.model.*;
 
@@ -74,7 +74,7 @@ class ModelTest {
         LocalDateTime startTime = loan.getStartTime();
         LocalDateTime beforeStart = startTime.minusDays(1);
 
-        Assertions.assertThrows(BookSetException.class, () -> loan.setReturnTime(beforeStart));
+        Assertions.assertThrows(LoanException.class, () -> loan.setReturnTime(beforeStart));
     }
 
     @Test
@@ -83,6 +83,6 @@ class ModelTest {
         LocalDateTime startTime = loan.getStartTime();
         LocalDateTime beforeStart = startTime.minusDays(1);
 
-        Assertions.assertThrows(BookSetException.class, () -> loan.setEndTime(beforeStart));
+        Assertions.assertThrows(LoanException.class, () -> loan.setEndTime(beforeStart));
     }
 }

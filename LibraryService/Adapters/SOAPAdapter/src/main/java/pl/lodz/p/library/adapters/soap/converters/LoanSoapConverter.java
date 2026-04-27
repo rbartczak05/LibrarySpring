@@ -13,14 +13,14 @@ public class LoanSoapConverter {
 
     public static LoanDTO toDTO(Loan loan) {
         if (loan == null) return null;
-        return new LoanDTO(loan.getId(), loan.isActive(), toXml(loan.getStartTime()), toXml(loan.getReturnTime()),
-                toXml(loan.getEndTime()), loan.getReaderId(), loan.getBookSetId()
+        return new LoanDTO(loan.getId(), loan.isActive(), toXml(loan.getStartTime()), toXml(loan.getEndTime()),
+                toXml(loan.getReturnTime()), loan.getClientId(), loan.getBookSetId()
         );
     }
 
     public static Loan fromDTO(LoanDTO dto) {
         if (dto == null) return null;
-        Loan loan = new Loan(dto.getReaderId(), dto.getBookSetId(), fromXml(dto.getStartTime()));
+        Loan loan = new Loan(dto.getClientId(), dto.getBookSetId(), fromXml(dto.getStartTime()));
         loan.setId(dto.getId());
         loan.setActive(dto.isActive());
         loan.setEndTime(fromXml(dto.getEndTime()));

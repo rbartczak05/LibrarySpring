@@ -9,6 +9,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.library.ports.outbound.BookSetPort;
+import pl.lodz.p.library.ports.outbound.ClientPort;
 import pl.lodz.p.library.ports.outbound.LoanPort;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -24,7 +25,7 @@ public abstract class BaseServiceTest {
     @LocalServerPort
     protected int port;
 
-    @Autowired protected UserPort userPort;
+    @Autowired protected ClientPort clientPort;
     @Autowired protected BookSetPort bookSetPort;
     @Autowired protected LoanPort loanPort;
 
@@ -36,9 +37,7 @@ public abstract class BaseServiceTest {
     @BeforeEach
     void cleanUp() {
         loanPort.findAll().forEach(loan -> loanPort.deleteLoan(loan.getId()));
-
-        userPort.findAllUsers().forEach(user -> userPort.deleteUser(user.getId()));
-
+        clientPort.findAll().forEach(client -> clientPort.deleteById(client.getId()));
         bookSetPort.findAllBookSets().forEach(bookSet -> bookSetPort.deleteBookSet(bookSet.getId()));
     }
 }

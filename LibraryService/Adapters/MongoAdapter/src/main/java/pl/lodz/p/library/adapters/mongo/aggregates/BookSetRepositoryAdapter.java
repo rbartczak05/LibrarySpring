@@ -25,6 +25,11 @@ public class BookSetRepositoryAdapter implements BookSetPort {
     }
 
     @Override
+    public List<BookSet> findAll() {
+        return repository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList());
+    }
+
+    @Override
     public Optional<BookSet> findById(String id) {
         return repository.findById(id).map(mapper::toDomain);
     }
@@ -45,6 +50,11 @@ public class BookSetRepositoryAdapter implements BookSetPort {
     }
 
     @Override
+    public List<BookSet> findBookSetsByQuantity(int quantity) {
+        return repository.findBooksByQuantity(quantity).stream().map(mapper::toDomain).collect(Collectors.toList());
+    }
+
+    @Override
     public List<BookSet> findAllBookSetsByQuantity(int quantity) {
         return repository.findBooksByQuantity(quantity).stream().map(mapper::toDomain).collect(Collectors.toList());
     }
@@ -55,15 +65,45 @@ public class BookSetRepositoryAdapter implements BookSetPort {
     }
 
     @Override
+    public List<BookSet> findByQuantityLessThan(int quantity) {
+        return repository.findByQuantityLessThan(quantity).stream().map(mapper::toDomain).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookSet> findBookSetsByAvailable(boolean available) {
+        if (available) {
+            return repository.findByQuantityGreaterThan(0).stream().map(mapper::toDomain).collect(Collectors.toList());
+        } else {
+            return repository.findBooksByQuantity(0).stream().map(mapper::toDomain).collect(Collectors.toList());
+        }
+    }
+
+    @Override
     public List<BookSet> findAllBookSets() {
         return repository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList());
     }
 
     @Override
+    public Optional<BookSet> addBookSet(BookSet bookSet) {
+        BookSetDoc doc = mapper.toDocument(bookSet);
+        return Optional.ofNullable(mapper.toDomain(repository.save(doc)));
+    }
+
+    @Override
+    public Optional<BookSet> updateBookSet(String id, BookSet bookSetUpdates) {
+        return repository.findById(id).map(existing -> {
+            existing.setTitle(bookSetUpdates.getTitle());
+            existing.setAuthor(bookSetUpdates.getAuthor());
+            existing.setReleaseYear(bookSetUpdates.getReleaseYear());
+            existing.setQuantity(bookSetUpdates.getQuantity());
+            return mapper.toDomain(repository.save(existing));
+        });
+    }
+
+    @Override
     public BookSet save(BookSet bookSet) {
         BookSetDoc doc = mapper.toDocument(bookSet);
-        BookSetDoc saved = repository.save(doc);
-        return mapper.toDomain(saved);
+        return mapper.toDomain(repository.save(doc));
     }
 
     @Override

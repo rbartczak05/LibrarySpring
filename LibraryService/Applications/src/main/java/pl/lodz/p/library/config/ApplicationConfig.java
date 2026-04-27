@@ -10,30 +10,33 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import pl.lodz.p.library.ports.outbound.ClientPort;
 
 @Configuration
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class ApplicationConfig {
-    private final UserPort userPort;
 
-    public ApplicationConfig(UserPort userPort) {
-        this.userPort = userPort;
+    private final ClientPort clientPort;
+
+    public ApplicationConfig(ClientPort clientPort) {
+        this.clientPort = clientPort;
     }
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userPort.findUserByLogin(username).map(user -> org.springframework.security.core.userdetails.User.builder().username(user.getLogin()).password(user.getPassword()).roles(mapRole(user)).build()).orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
-    }
-
-    private String mapRole(User user) {
-        if (user instanceof Administrator) return "ADMIN";
-        if (user instanceof Librarian) return "LIBRARIAN";
-        return "READER";
+        return id -> clientPort.findById(id)
+                .map(client -> org.springframework.security.core.userdetails.User.builder()
+                        .username(client.getId())
+                        .password("")
+                        .authorities("ROLE_CLIENT")
+                        .build())
+                .orElseThrow(() -> new RuntimeException("Klient nie znaleziony"));
     }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService());
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }

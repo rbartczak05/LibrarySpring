@@ -12,14 +12,14 @@ class LoanDocTest {
         LocalDateTime end = start.plusDays(7);
         LocalDateTime returned = start.plusDays(5);
 
-        LoanDoc doc = new LoanDoc("readerId", "bookSetId", start);
+        LoanDoc doc = new LoanDoc("clientId", "bookSetId", start);
         doc.setId("123");
         doc.setEndTime(end);
         doc.setReturnTime(returned);
         doc.setActive(false);
 
         assertEquals("123", doc.getId());
-        assertEquals("readerId", doc.getReaderId());
+        assertEquals("clientId", doc.getClientId());
         assertEquals("bookSetId", doc.getBookSetId());
         assertEquals(start, doc.getStartTime());
         assertEquals(end, doc.getEndTime());

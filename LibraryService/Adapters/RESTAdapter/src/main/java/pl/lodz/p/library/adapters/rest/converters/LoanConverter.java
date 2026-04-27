@@ -16,13 +16,13 @@ public class LoanConverter {
         dto.setEndTime(loan.getEndTime());
         dto.setReturnTime(loan.getReturnTime());
         dto.setBookSetId(loan.getBookSetId());
-        dto.setReaderId(loan.getReaderId());
+        dto.setClientId(loan.getClientId());
         return dto;
     }
 
     public static Loan fromDTO(LoanDTO dto) {
         if (dto == null) return null;
-        Loan loan = new Loan(dto.getReaderId(), dto.getBookSetId(), dto.getStartTime());
+        Loan loan = new Loan(dto.getClientId(), dto.getBookSetId(), dto.getStartTime());
         loan.setId(dto.getId());
         loan.setActive(dto.isActive());
         loan.setReturnTime(dto.getReturnTime());

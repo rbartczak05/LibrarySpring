@@ -92,8 +92,7 @@ class BookSetRepositoryAdapterTest {
     @Test
     void findByQuantityLessThan() {
         BookSetDoc doc1 = new BookSetDoc("T1", "A", 2000, 1);
-        BookSetDoc doc2 = new BookSetDoc("T2", "A", 2000, 5);
-        when(repository.findAll()).thenReturn(List.of(doc1, doc2));
+        when(repository.findByQuantityLessThan(3)).thenReturn(List.of(doc1));
 
         List<BookSet> result = adapter.findByQuantityLessThan(3);
 

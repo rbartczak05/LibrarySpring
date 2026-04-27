@@ -1,6 +1,5 @@
 package pl.lodz.p.library.adapters.mongo.documents;
 
-import jakarta.validation.constraints.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -10,26 +9,11 @@ public class ClientDoc {
 
     @Id
     private String id;
-
-    @NotBlank
     private String firstName;
-
-    @NotBlank
     private String lastName;
-
-    @NotBlank
-    @Email
-    @Size(min = 3, max = 100)
     private String email;
-
-    @Min(1)
     private int age;
-
     private boolean active;
-
-    @NotNull
-    @Min(value = 0)
-    @Max(value = maxLoans)
     private int currentLoansCount = 0;
 
     public ClientDoc(String firstName, String lastName, String email, int age) {

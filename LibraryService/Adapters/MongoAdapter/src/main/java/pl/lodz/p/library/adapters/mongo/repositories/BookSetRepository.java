@@ -17,4 +17,6 @@ public interface BookSetRepository extends MongoRepository<BookSetDoc, String> {
     List<BookSetDoc> findBooksByQuantity(int quantity);
 
     List<BookSetDoc> findByQuantityGreaterThan(int quantity);
+
+    List<BookSetDoc> findByQuantityLessThan(int quantity);
 }

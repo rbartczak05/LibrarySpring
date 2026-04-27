@@ -18,7 +18,7 @@ class LoanMapperTest {
         LocalDateTime end = LocalDateTime.of(2023, 2, 1, 10, 0);
         LocalDateTime returned = LocalDateTime.of(2023, 1, 15, 10, 0);
 
-        LoanDoc doc = new LoanDoc("reader1", "book1", start);
+        LoanDoc doc = new LoanDoc("client1", "book1", start);
         doc.setId("1");
         doc.setEndTime(end);
         doc.setReturnTime(returned);
@@ -28,7 +28,7 @@ class LoanMapperTest {
 
         assertNotNull(loan);
         assertEquals("1", loan.getId());
-        assertEquals("reader1", loan.getReaderId());
+        assertEquals("client1", loan.getClientId());
         assertEquals("book1", loan.getBookSetId());
         assertEquals(start, loan.getStartTime());
         assertEquals(end, loan.getEndTime());
@@ -47,7 +47,7 @@ class LoanMapperTest {
         LocalDateTime end = LocalDateTime.of(2023, 2, 1, 10, 0);
         LocalDateTime returned = LocalDateTime.of(2023, 1, 15, 10, 0);
 
-        Loan loan = new Loan("reader1", "book1", start);
+        Loan loan = new Loan("client1", "book1", start);
         loan.setId("1");
         loan.setEndTime(end);
         loan.setReturnTime(returned);
@@ -57,7 +57,7 @@ class LoanMapperTest {
 
         assertNotNull(doc);
         assertEquals("1", doc.getId());
-        assertEquals("reader1", doc.getReaderId());
+        assertEquals("client1", doc.getClientId());
         assertEquals("book1", doc.getBookSetId());
         assertEquals(start, doc.getStartTime());
         assertEquals(end, doc.getEndTime());

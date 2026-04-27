@@ -6,16 +6,16 @@ import static org.junit.jupiter.api.Assertions.*;
 class ClientDocTest {
 
     @Test
-    void testReaderDoc() {
-        ClientDoc doc = new ClientDoc("reader1", "pass", "reader@test.pl", 25);
+    void testClientDoc() {
+        ClientDoc doc = new ClientDoc("Jan", "Kowalski", "jan@test.pl", 25);
         doc.setId("123");
         doc.setActive(true);
         doc.setCurrentLoansCount(3);
 
         assertEquals("123", doc.getId());
-        assertEquals("reader1", doc.getLogin());
-        assertEquals("pass", doc.getPassword());
-        assertEquals("reader@test.pl", doc.getEmail());
+        assertEquals("Jan", doc.getFirstName());
+        assertEquals("Kowalski", doc.getLastName());
+        assertEquals("jan@test.pl", doc.getEmail());
         assertEquals(25, doc.getAge());
         assertTrue(doc.isActive());
         assertEquals(3, doc.getCurrentLoansCount());

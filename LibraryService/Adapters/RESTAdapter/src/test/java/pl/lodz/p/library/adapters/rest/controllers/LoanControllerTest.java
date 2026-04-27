@@ -6,14 +6,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.lodz.p.library.adapters.rest.dto.LoanDTO;
 import pl.lodz.p.library.adapters.rest.security.JwtService;
 import pl.lodz.p.library.domain.model.Loan;
+import pl.lodz.p.library.domain.model.Client;
 import pl.lodz.p.library.ports.inbound.LoanUseCase;
+import pl.lodz.p.library.ports.inbound.ClientUseCase;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -36,78 +37,85 @@ public class LoanControllerTest {
     private LoanUseCase loanUseCase;
 
     @MockitoBean
-    private UserUseCase userUseCase;
+    private ClientUseCase clientUseCase;
 
     @MockitoBean
     private JwtService jwtService;
 
-    @MockitoBean
-    private UserDetailsService userDetailsService;
-
     private Loan loan;
     private LoanDTO loanDTO;
+    private Client client;
 
     @BeforeEach
     void setUp() {
         RestAssuredMockMvc.mockMvc(mockMvc);
-        LocalDateTime now = LocalDateTime.of(2023, 10, 27, 10, 0);
-        loan = new Loan("reader1", "book1", now);
+
+        client = new Client("Jan", "Kowalski", "jan@test.pl", 25);
+        client.setId("client1");
+
+        loan = new Loan("client1", "book1", LocalDateTime.now());
         loan.setId("loan1");
 
-        loanDTO = new LoanDTO("loan1", now, now.plusDays(30), null, "book1", "reader1");
+        loanDTO = new LoanDTO();
+        loanDTO.setId("loan1");
+        loanDTO.setClientId("client1");
+        loanDTO.setBookSetId("book1");
+        loanDTO.setActive(true);
+        loanDTO.setStartTime(loan.getStartTime());
+        loanDTO.setEndTime(loan.getEndTime());
     }
 
     @Test
-    @WithMockUser(roles = "LIBRARIAN")
+    @WithMockUser
     void getAllLoans_ShouldReturnList() {
         when(loanUseCase.findAllLoans()).thenReturn(Collections.singletonList(loan));
 
         given()
-        .when()
+                .when()
                 .get("/loans")
-        .then()
+                .then()
                 .status(org.springframework.http.HttpStatus.OK)
                 .body("_embedded.loans", hasSize(1));
     }
 
     @Test
-    @WithMockUser(roles = "LIBRARIAN")
+    @WithMockUser
     void getLoanById_ShouldReturnLoan() {
         when(loanUseCase.findLoanById("loan1")).thenReturn(loan);
 
         given()
-        .when()
+                .when()
                 .get("/loans/loan1")
-        .then()
+                .then()
                 .status(org.springframework.http.HttpStatus.OK)
                 .body("id", equalTo("loan1"));
     }
 
     @Test
-    @WithMockUser(roles = "LIBRARIAN")
+    @WithMockUser
     void createLoan_ShouldCreateLoan() {
         when(loanUseCase.createLoan(anyString(), anyString(), any())).thenReturn(loan);
 
         given()
-                .queryParam("readerId", "reader1")
+                .queryParam("clientId", "client1")
                 .queryParam("bookSetId", "book1")
-        .when()
+                .when()
                 .post("/loans")
-        .then()
+                .then()
                 .status(org.springframework.http.HttpStatus.CREATED)
                 .body("id", equalTo("loan1"));
     }
 
     @Test
-    @WithMockUser(roles = "LIBRARIAN")
+    @WithMockUser
     void endLoan_ShouldEndLoan() {
         loan.setActive(false);
         when(loanUseCase.endLoan("loan1")).thenReturn(loan);
 
         given()
-        .when()
+                .when()
                 .post("/loans/loan1/end")
-        .then()
+                .then()
                 .status(org.springframework.http.HttpStatus.OK)
                 .body("active", equalTo(false));
     }

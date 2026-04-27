@@ -2,65 +2,40 @@ package pl.lodz.p.library.database;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import pl.lodz.p.library.adapters.mongo.repositories.BookSetRepository;
-import pl.lodz.p.library.adapters.mongo.repositories.LoanRepository;
-import pl.lodz.p.library.domain.model.*;
+import pl.lodz.p.library.domain.model.BookSet;
+import pl.lodz.p.library.domain.model.Client;
 import pl.lodz.p.library.ports.inbound.BookSetUseCase;
 import pl.lodz.p.library.ports.inbound.LoanUseCase;
-import pl.lodz.p.library.ports.outbound.ReaderPort;
-
-import java.util.UUID;
+import pl.lodz.p.library.ports.outbound.ClientPort;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
-    private final BookSetRepository bookSetRepository;
-    private final LoanRepository loanRepository;
     private final BookSetUseCase bookSetUseCase;
     private final LoanUseCase loanUseCase;
-    private final ReaderPort readerPort;
+    private final ClientPort clientPort;
 
-    public DataInitializer(BookSetRepository bookSetRepository, LoanRepository loanRepository, BookSetUseCase bookSetUseCase, LoanUseCase loanUseCase, ReaderPort readerPort) {
-        this.bookSetRepository = bookSetRepository;
-        this.loanRepository = loanRepository;
+    public DataInitializer(BookSetUseCase bookSetUseCase, LoanUseCase loanUseCase, ClientPort clientPort) {
         this.bookSetUseCase = bookSetUseCase;
         this.loanUseCase = loanUseCase;
-        this.readerPort = readerPort;
+        this.clientPort = clientPort;
     }
 
     @Override
     public void run(String... args) {
-        loanRepository.deleteAll();
-        bookSetRepository.deleteAll();
-        readerPort.deleteAll();
+        Client jan = new Client("Jan", "Kowalski", "jan@test.pl", 25);
+        jan.setActive(true);
+        jan = clientPort.save(jan);
 
-        Reader readerJanek = new Reader(UUID.randomUUID().toString(), "konto-uuid-janka", "Janek");
-        Reader readerRemek = new Reader(UUID.randomUUID().toString(), "konto-uuid-remka", "Remek");
-        Reader readerPiotrek = new Reader(UUID.randomUUID().toString(), "konto-uuid-piotrka", "Piotrek");
+        Client anna = new Client("Anna", "Nowak", "anna@test.pl", 30);
+        anna.setActive(true);
+        anna = clientPort.save(anna);
 
-        readerJanek = readerPort.save(readerJanek);
-        readerRemek = readerPort.save(readerRemek);
-        readerPiotrek = readerPort.save(readerPiotrek);
+        BookSet book1 = new BookSet("Wiedźmin", "Andrzej Sapkowski", 1993, 10);
+        BookSet book2 = new BookSet("Solaris", "Stanisław Lem", 1961, 5);
+        book1 = bookSetUseCase.addBookSet(book1);
+        book2 = bookSetUseCase.addBookSet(book2);
 
-        // 2. TWORZENIE KSIĄŻEK
-        BookSet bookCoNas = new BookSet("Co nas nie zabije", "Wim Hof", 2017, 32);
-        BookSet bookNicNas = new BookSet("Nic mnie nie złamie", "David Goggins", 2023, 10);
-        BookSet bookAtomowe = new BookSet("Atomowe nawyki", "James Clear", 2019, 12);
-        bookCoNas = bookSetUseCase.addBookSet(bookCoNas);
-        bookNicNas = bookSetUseCase.addBookSet(bookNicNas);
-        bookAtomowe = bookSetUseCase.addBookSet(bookAtomowe);
-
-        // 3. TWORZENIE WYPOŻYCZEŃ (łączymy wewnętrzne ID profilu z ID Książki)
-        Loan loanToEnd1 = loanUseCase.createLoan(readerJanek.getId(), bookCoNas.getId());
-        Loan loanToEnd2 = loanUseCase.createLoan(readerRemek.getId(), bookNicNas.getId());
-        Loan loanToEnd3 = loanUseCase.createLoan(readerPiotrek.getId(), bookAtomowe.getId());
-
-        loanUseCase.createLoan(readerJanek.getId(), bookNicNas.getId());
-        loanUseCase.createLoan(readerRemek.getId(), bookCoNas.getId());
-
-        loanUseCase.endLoan(loanToEnd1.getId());
-        loanUseCase.endLoan(loanToEnd2.getId());
-        loanUseCase.endLoan(loanToEnd3.getId());
-
-        System.out.println("LibraryService: Książki i wypożyczenia zostały pomyślnie zainicjowane.");
+        loanUseCase.createLoan(jan.getId(), book1.getId());
+        loanUseCase.createLoan(anna.getId(), book2.getId());
     }
 }

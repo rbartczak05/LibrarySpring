@@ -1,32 +1,16 @@
 package pl.lodz.p.library.domain.model;
 
-import jakarta.validation.constraints.*;
 import pl.lodz.p.library.domain.exceptions.ClientException;
 
 public class Client {
     public static final int maxLoans = 5;
 
     private String id;
-
-    @NotBlank
     private String firstName;
-
-    @NotBlank
     private String lastName;
-
-    @NotBlank
-    @Email
-    @Size(min = 3, max = 100)
     private String email;
-
-    @Min(1)
     private int age;
-
     private boolean active;
-
-    @NotNull
-    @Min(value = 0)
-    @Max(value = maxLoans)
     private int currentLoansCount = 0;
 
     public Client(String firstName, String lastName, String email, int age) {
@@ -53,6 +37,9 @@ public class Client {
     }
 
     public void setFirstName(String firstName) {
+        if (firstName == null || firstName.trim().isEmpty()) {
+            throw new ClientException("First name cannot be blank");
+        }
         this.firstName = firstName;
     }
 
@@ -61,6 +48,9 @@ public class Client {
     }
 
     public void setLastName(String lastName) {
+        if (lastName == null || lastName.trim().isEmpty()) {
+            throw new ClientException("Last name cannot be blank");
+        }
         this.lastName = lastName;
     }
 
@@ -69,6 +59,9 @@ public class Client {
     }
 
     public void setEmail(String email) {
+        if (email == null || email.trim().isEmpty() || email.length() < 3 || email.length() > 100) {
+            throw new ClientException("Invalid email length");
+        }
         this.email = email;
     }
 
@@ -77,6 +70,9 @@ public class Client {
     }
 
     public void setAge(int age) {
+        if (age < 1) {
+            throw new ClientException("Age must be at least 1");
+        }
         this.age = age;
     }
 
@@ -116,7 +112,7 @@ public class Client {
     @Override
     public String toString() {
         return "Client{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +

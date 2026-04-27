@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.library.adapters.rest.converters.LoanConverter;
 import pl.lodz.p.library.adapters.rest.dto.LoanDTO;
 import pl.lodz.p.library.domain.model.Loan;
+import pl.lodz.p.library.domain.model.Client;
 import pl.lodz.p.library.ports.inbound.LoanUseCase;
+import pl.lodz.p.library.ports.inbound.ClientUseCase;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,11 +25,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("/loans")
 public class LoanController {
     private final LoanUseCase loanUseCase;
-    private final UserUseCase userUseCase;
+    private final ClientUseCase clientUseCase;
 
-    public LoanController(LoanUseCase loanUseCase, UserUseCase userUseCase) {
+    public LoanController(LoanUseCase loanUseCase, ClientUseCase clientUseCase) {
         this.loanUseCase = loanUseCase;
-        this.userUseCase = userUseCase;
+        this.clientUseCase = clientUseCase;
     }
 
     @GetMapping
@@ -44,31 +46,31 @@ public class LoanController {
         return applyLinks(LoanConverter.toDTO(loanUseCase.findLoanById(id)));
     }
 
-    @GetMapping("/reader_id/{readerId}")
-    public CollectionModel<LoanDTO> getLoansByReader(@PathVariable String readerId) {
-        List<LoanDTO> loans = loanUseCase.findLoansByClient(readerId).stream()
+    @GetMapping("/client_id/{clientId}")
+    public CollectionModel<LoanDTO> getLoansByClient(@PathVariable String clientId) {
+        List<LoanDTO> loans = loanUseCase.findByClientId(clientId).stream()
                 .map(LoanConverter::toDTO)
                 .map(LoanController::applyLinks)
                 .collect(Collectors.toList());
-        return CollectionModel.of(loans, linkTo(methodOn(LoanController.class).getLoansByReader(readerId)).withSelfRel());
+        return CollectionModel.of(loans, linkTo(methodOn(LoanController.class).getLoansByClient(clientId)).withSelfRel());
     }
 
     @GetMapping("/bookset_id/{bookSetId}")
     public CollectionModel<LoanDTO> getLoansByBookSet(@PathVariable String bookSetId) {
-        List<LoanDTO> loans = loanUseCase.findLoansByBookSet(bookSetId).stream()
+        List<LoanDTO> loans = loanUseCase.findByBookSetId(bookSetId).stream()
                 .map(LoanConverter::toDTO)
                 .map(LoanController::applyLinks)
                 .collect(Collectors.toList());
         return CollectionModel.of(loans, linkTo(methodOn(LoanController.class).getLoansByBookSet(bookSetId)).withSelfRel());
     }
 
-    @GetMapping("/reader_bookset/{readerId}/{bookSetId}")
-    public CollectionModel<LoanDTO> getLoansByReaderAndBookSet(@PathVariable String readerId, @PathVariable String bookSetId) {
-        List<LoanDTO> loans = loanUseCase.findLoansByClientIdAndBookSetId(readerId, bookSetId).stream()
+    @GetMapping("/client_bookset/{clientId}/{bookSetId}")
+    public CollectionModel<LoanDTO> getLoansByClientAndBookSet(@PathVariable String clientId, @PathVariable String bookSetId) {
+        List<LoanDTO> loans = loanUseCase.findByClientIdAndBookSetId(clientId, bookSetId).stream()
                 .map(LoanConverter::toDTO)
                 .map(LoanController::applyLinks)
                 .collect(Collectors.toList());
-        return CollectionModel.of(loans, linkTo(methodOn(LoanController.class).getLoansByReaderAndBookSet(readerId, bookSetId)).withSelfRel());
+        return CollectionModel.of(loans, linkTo(methodOn(LoanController.class).getLoansByClientAndBookSet(clientId, bookSetId)).withSelfRel());
     }
 
     @GetMapping("/active/{active}")
@@ -80,22 +82,22 @@ public class LoanController {
         return CollectionModel.of(loans, linkTo(methodOn(LoanController.class).getActiveLoans(active)).withSelfRel());
     }
 
-    @GetMapping("/reader_id/{readerId}/active")
-    public CollectionModel<LoanDTO> getActiveLoansByReader(@PathVariable String readerId) {
-        List<LoanDTO> loans = loanUseCase.findByClientIdAndActive(readerId, true).stream()
+    @GetMapping("/client_id/{clientId}/active")
+    public CollectionModel<LoanDTO> getActiveLoansByClient(@PathVariable String clientId) {
+        List<LoanDTO> loans = loanUseCase.findByClientIdAndActive(clientId, true).stream()
                 .map(LoanConverter::toDTO)
                 .map(LoanController::applyLinks)
                 .collect(Collectors.toList());
-        return CollectionModel.of(loans, linkTo(methodOn(LoanController.class).getActiveLoansByReader(readerId)).withSelfRel());
+        return CollectionModel.of(loans, linkTo(methodOn(LoanController.class).getActiveLoansByClient(clientId)).withSelfRel());
     }
 
-    @GetMapping("/reader_id/{readerId}/inactive")
-    public CollectionModel<LoanDTO> getInactiveLoansByReader(@PathVariable String readerId) {
-        List<LoanDTO> loans = loanUseCase.findByClientIdAndActive(readerId, false).stream()
+    @GetMapping("/client_id/{clientId}/inactive")
+    public CollectionModel<LoanDTO> getInactiveLoansByClient(@PathVariable String clientId) {
+        List<LoanDTO> loans = loanUseCase.findByClientIdAndActive(clientId, false).stream()
                 .map(LoanConverter::toDTO)
                 .map(LoanController::applyLinks)
                 .collect(Collectors.toList());
-        return CollectionModel.of(loans, linkTo(methodOn(LoanController.class).getInactiveLoansByReader(readerId)).withSelfRel());
+        return CollectionModel.of(loans, linkTo(methodOn(LoanController.class).getInactiveLoansByClient(clientId)).withSelfRel());
     }
 
     @GetMapping("/bookset_id/{bookSetId}/active")
@@ -118,16 +120,16 @@ public class LoanController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public LoanDTO createLoan(@RequestParam String readerId, @RequestParam String bookSetId, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime loanStartTime) {
-        return LoanConverter.toDTO(loanUseCase.createLoan(readerId, bookSetId, loanStartTime));
+    public LoanDTO createLoan(@RequestParam String clientId, @RequestParam String bookSetId, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime loanStartTime) {
+        return LoanConverter.toDTO(loanUseCase.createLoan(clientId, bookSetId, loanStartTime));
     }
 
     @PostMapping("/me")
     @ResponseStatus(HttpStatus.CREATED)
     public LoanDTO createMyLoan(@RequestParam String bookSetId) {
-        String currentLogin = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userUseCase.findUserByLogin(currentLogin);
-        return LoanConverter.toDTO(loanUseCase.createLoan(user.getId(), bookSetId, LocalDateTime.now()));
+        String currentClientId = SecurityContextHolder.getContext().getAuthentication().getName();
+        Client client = clientUseCase.findClientById(currentClientId);
+        return LoanConverter.toDTO(loanUseCase.createLoan(client.getId(), bookSetId, LocalDateTime.now()));
     }
 
     @PostMapping("/{id}")
@@ -152,9 +154,9 @@ public class LoanController {
 
     @GetMapping("/me")
     public CollectionModel<LoanDTO> getMyLoans() {
-        String currentLogin = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userUseCase.findUserByLogin(currentLogin);
-        List<LoanDTO> loans = loanUseCase.findLoansByClient(user.getId()).stream()
+        String currentClientId = SecurityContextHolder.getContext().getAuthentication().getName();
+        Client client = clientUseCase.findClientById(currentClientId);
+        List<LoanDTO> loans = loanUseCase.findByClientId(client.getId()).stream()
                 .map(LoanConverter::toDTO)
                 .map(LoanController::applyLinks)
                 .collect(Collectors.toList());
@@ -166,7 +168,7 @@ public class LoanController {
         if (dto.isActive()) {
             dto.add(linkTo(methodOn(LoanController.class).endLoan(dto.getId())).withRel("end"));
         }
-        dto.add(linkTo(methodOn(ReaderController.class).getReaderById(dto.getReaderId())).withRel("reader"));
+        dto.add(linkTo(methodOn(ClientController.class).getClientById(dto.getClientId())).withRel("client"));
         dto.add(linkTo(methodOn(BookSetController.class).getBookSetByID(dto.getBookSetId())).withRel("bookset"));
         dto.add(linkTo(methodOn(LoanController.class).deleteLoan(dto.getId())).withRel("delete"));
         return dto;
