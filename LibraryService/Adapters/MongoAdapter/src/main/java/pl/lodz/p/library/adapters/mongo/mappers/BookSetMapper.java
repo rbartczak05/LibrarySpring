@@ -18,8 +18,10 @@ public class BookSetMapper {
 
     public BookSetDoc toDocument(BookSet bookSet) {
         if (bookSet == null) return null;
+
         BookSetDoc doc = new BookSetDoc(bookSet.getTitle(), bookSet.getAuthor(), bookSet.getReleaseYear(), bookSet.getQuantity());
         doc.setId(bookSet.getId());
+
         return doc;
     }
 }

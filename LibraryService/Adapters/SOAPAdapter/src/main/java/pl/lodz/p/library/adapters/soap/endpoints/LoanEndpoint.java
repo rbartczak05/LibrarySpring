@@ -48,7 +48,7 @@ public class LoanEndpoint {
     @ResponsePayload
     @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public GetLoansByReaderResponse getLoansByReader(@RequestPayload GetLoansByReaderRequest request) {
-        List<Loan> loans = loanUseCase.findLoansByReader(request.getReaderId());
+        List<Loan> loans = loanUseCase.findLoansByClient(request.getReaderId());
         GetLoansByReaderResponse response = new GetLoansByReaderResponse();
         response.setLoanDTO(loans.stream().map(LoanSoapConverter::toDTO).collect(Collectors.toList()));
         return response;

@@ -6,9 +6,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.lodz.p.library.adapters.mongo.documents.ReaderDoc;
-import pl.lodz.p.library.adapters.mongo.mappers.ReaderMapper;
-import pl.lodz.p.library.adapters.mongo.repositories.UserRepository;
+import pl.lodz.p.library.adapters.mongo.documents.ClientDoc;
+import pl.lodz.p.library.adapters.mongo.mappers.ClientMapper;
 import pl.lodz.p.library.domain.model.Reader;
 
 import java.util.List;
@@ -29,14 +28,14 @@ class UserRepositoryAdapterTest {
     @Spy
     private LibrarianMapper librarianMapper = new LibrarianMapper();
     @Spy
-    private ReaderMapper readerMapper = new ReaderMapper();
+    private ClientMapper clientMapper = new ClientMapper();
 
     @InjectMocks
     private UserRepositoryAdapter adapter;
 
     @Test
     void findUserById() {
-        ReaderDoc doc = new ReaderDoc("login", "pass", "email", 20);
+        ClientDoc doc = new ClientDoc("login", "pass", "email", 20);
         doc.setId("1");
         when(repository.findById("1")).thenReturn(Optional.of(doc));
 
@@ -68,21 +67,21 @@ class UserRepositoryAdapterTest {
 
     @Test
     void findUsersByAge() {
-        when(repository.findUsersByAge(20)).thenReturn(List.of(new ReaderDoc("login", "pass", "email", 20)));
+        when(repository.findUsersByAge(20)).thenReturn(List.of(new ClientDoc("login", "pass", "email", 20)));
         List<User> result = adapter.findUsersByAge(20);
         assertEquals(1, result.size());
     }
 
     @Test
     void findUsersByActive() {
-        when(repository.findUsersByActive(true)).thenReturn(List.of(new ReaderDoc("login", "pass", "email", 20)));
+        when(repository.findUsersByActive(true)).thenReturn(List.of(new ClientDoc("login", "pass", "email", 20)));
         List<User> result = adapter.findUsersByActive(true);
         assertEquals(1, result.size());
     }
 
     @Test
     void findUsersByLoginFragment() {
-        when(repository.findUsersByLoginFragment("log")).thenReturn(List.of(new ReaderDoc("login", "pass", "email", 20)));
+        when(repository.findUsersByLoginFragment("log")).thenReturn(List.of(new ClientDoc("login", "pass", "email", 20)));
         List<User> result = adapter.findUsersByLoginFragment("log");
         assertEquals(1, result.size());
     }
@@ -90,7 +89,7 @@ class UserRepositoryAdapterTest {
     @Test
     void findAllUsers() {
         when(repository.findAll()).thenReturn(List.of(
-                new ReaderDoc("r", "p", "e", 20),
+                new ClientDoc("r", "p", "e", 20),
                 new AdministratorDoc("a", "p", "e", 30)
         ));
         List<User> result = adapter.findAllUsers();
@@ -100,7 +99,7 @@ class UserRepositoryAdapterTest {
     @Test
     void addUserReader() {
         Reader reader = new Reader("r", "p", "e", 20);
-        ReaderDoc doc = new ReaderDoc("r", "p", "e", 20);
+        ClientDoc doc = new ClientDoc("r", "p", "e", 20);
         doc.setId("1");
 
         when(repository.save(any(UserDoc.class))).thenReturn(doc);
@@ -112,7 +111,7 @@ class UserRepositoryAdapterTest {
 
     @Test
     void updateUser() {
-        ReaderDoc existing = new ReaderDoc("r", "p", "e", 20);
+        ClientDoc existing = new ClientDoc("r", "p", "e", 20);
         existing.setId("1");
 
         Reader updates = new Reader("newR", "p", "newE", 25);
@@ -131,7 +130,7 @@ class UserRepositoryAdapterTest {
 
     @Test
     void activateUser() {
-        ReaderDoc existing = new ReaderDoc("r", "p", "e", 20);
+        ClientDoc existing = new ClientDoc("r", "p", "e", 20);
         existing.setId("1");
         existing.setActive(false);
 
@@ -145,7 +144,7 @@ class UserRepositoryAdapterTest {
 
     @Test
     void deactivateUser() {
-        ReaderDoc existing = new ReaderDoc("r", "p", "e", 20);
+        ClientDoc existing = new ClientDoc("r", "p", "e", 20);
         existing.setId("1");
         existing.setActive(true);
 

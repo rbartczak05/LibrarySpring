@@ -9,23 +9,23 @@ import java.util.Optional;
 public interface LoanPort {
     Optional<Loan> findById(String id);
 
-    List<Loan> findByReaderId(String readerId);
+    List<Loan> findByClientId(String clientId);
 
     List<Loan> findByBookSetId(String bookSetId);
 
-    List<Loan> findByReaderIdAndBookSetId(String readerId, String bookSetId);
+    List<Loan> findByClientIdAndBookSetId(String clientId, String bookSetId);
 
     List<Loan> findByActive(boolean active);
 
-    List<Loan> findByBookSetIdAndActive(String bookSetId, boolean active);
+    List<Loan> findByClientIdAndActive(String clientId, boolean active);
 
-    List<Loan> findByReaderIdAndActive(String readerId, boolean active);
+    List<Loan> findByBookSetIdAndActive(String bookSetId, boolean active);
 
     List<Loan> findAll();
 
-    Optional<Loan> createLoan(String readerId, String bookSetId);
+    Optional<Loan> createLoan(String clientId, String bookSetId);
 
-    Optional<Loan> createLoan(String readerId, String bookSetId, LocalDateTime loanStartTime);
+    Optional<Loan> createLoan(String clientId, String bookSetId, LocalDateTime loanStartTime);
 
     Optional<Loan> updateLoan(String loanId, Loan loanUpdates);
 

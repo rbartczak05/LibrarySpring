@@ -12,33 +12,28 @@ public class BookSetDoc {
     @Id
     private String id;
 
-    @NotBlank(message = "Tytuł książki nie może być pusty.")
+    @NotBlank
     private String title;
 
-    @NotBlank(message = "Autor książki nie może być pusty.")
+    @NotBlank
     private String author;
 
-    @NotNull(message = "Rok wydania jest wymagany.")
-    @Min(value = 0, message = "Rok wydania musi być liczbą nieujemną.")
+    @NotNull
+    @Min(value = 0)
     private int releaseYear;
 
-    @NotNull(message = "Ilość sztuk jest wymagana.")
-    @Min(value = 0, message = "Ilość sztuk na stanie musi być 0 lub większa.")
+    @NotNull
+    @Min(value = 0)
     private int quantity;
 
-    /**
-     * BookSet jako książka wraz z ilością jej sztuk na stanie
-     *
-     * @param title       - tytuł
-     * @param author      - autor
-     * @param releaseYear - rok wydania
-     * @param quantity    - pozostała ilość sztuk
-     */
     public BookSetDoc(String title, String author, int releaseYear, int quantity) {
         this.title = title;
         this.author = author;
         this.releaseYear = releaseYear;
         this.quantity = quantity;
+    }
+
+    public BookSetDoc() {
     }
 
     public String getId() {
@@ -53,12 +48,24 @@ public class BookSetDoc {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getAuthor() {
         return author;
     }
 
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
     public int getReleaseYear() {
         return releaseYear;
+    }
+
+    public void setReleaseYear(int releaseYear) {
+        this.releaseYear = releaseYear;
     }
 
     public int getQuantity() {
@@ -71,16 +78,5 @@ public class BookSetDoc {
 
     public boolean isAvailable() {
         return quantity > 0;
-    }
-
-    @Override
-    public String toString() {
-        return "BookSet{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", author='" + author + '\'' +
-                ", releaseYear=" + releaseYear +
-                ", quantity=" + quantity +
-                '}';
     }
 }

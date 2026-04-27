@@ -43,9 +43,9 @@ class LoanRepositoryAdapterTest {
     }
 
     @Test
-    void findByReaderId() {
-        when(repository.findByReaderId("r1")).thenReturn(List.of(new LoanDoc("r1", "b1", LocalDateTime.now())));
-        List<Loan> result = adapter.findByReaderId("r1");
+    void findByClientId() {
+        when(repository.findByClientId("r1")).thenReturn(List.of(new LoanDoc("r1", "b1", LocalDateTime.now())));
+        List<Loan> result = adapter.findByClientId("r1");
         assertEquals(1, result.size());
     }
 
@@ -57,9 +57,9 @@ class LoanRepositoryAdapterTest {
     }
 
     @Test
-    void findByReaderIdAndBookSetId() {
-        when(repository.findByReaderIdAndBookSetId("r1", "b1")).thenReturn(List.of(new LoanDoc("r1", "b1", LocalDateTime.now())));
-        List<Loan> result = adapter.findByReaderIdAndBookSetId("r1", "b1");
+    void findByClientIdAndBookSetId() {
+        when(repository.findByClientIdAndBookSetId("r1", "b1")).thenReturn(List.of(new LoanDoc("r1", "b1", LocalDateTime.now())));
+        List<Loan> result = adapter.findByClientIdAndBookSetId("r1", "b1");
         assertEquals(1, result.size());
     }
 
@@ -78,9 +78,9 @@ class LoanRepositoryAdapterTest {
     }
 
     @Test
-    void findByReaderIdAndActive() {
-        when(repository.findByReaderIdAndActive("r1", true)).thenReturn(List.of(new LoanDoc("r1", "b1", LocalDateTime.now())));
-        List<Loan> result = adapter.findByReaderIdAndActive("r1", true);
+    void findByClientIdAndActive() {
+        when(repository.findByClientIdAndActive("r1", true)).thenReturn(List.of(new LoanDoc("r1", "b1", LocalDateTime.now())));
+        List<Loan> result = adapter.findByClientIdAndActive("r1", true);
         assertEquals(1, result.size());
     }
 

@@ -44,8 +44,8 @@ class LoanRepositoryTest {
     }
 
     @Test
-    void findByReaderId() {
-        List<LoanDoc> loans = loanRepository.findByReaderId("reader1");
+    void findByClientId() {
+        List<LoanDoc> loans = loanRepository.findByClientId("reader1");
         assertEquals(1, loans.size());
     }
 
@@ -56,8 +56,8 @@ class LoanRepositoryTest {
     }
 
     @Test
-    void findByReaderIdAndBookSetId() {
-        List<LoanDoc> loans = loanRepository.findByReaderIdAndBookSetId("reader1", "book1");
+    void findByClientIdAndBookSetId() {
+        List<LoanDoc> loans = loanRepository.findByClientIdAndBookSetId("reader1", "book1");
         assertEquals(1, loans.size());
     }
 
@@ -74,8 +74,8 @@ class LoanRepositoryTest {
     }
 
     @Test
-    void findByReaderIdAndActive() {
-        List<LoanDoc> loans = loanRepository.findByReaderIdAndActive("reader2", false);
+    void findByClientIdAndActive() {
+        List<LoanDoc> loans = loanRepository.findByClientIdAndActive("reader2", false);
         assertEquals(1, loans.size());
     }
 }

@@ -1,6 +1,7 @@
 package pl.lodz.p.library.domain.exceptions;
 
 public abstract class AppBaseException extends RuntimeException {
+
     private final String reason;
 
     public AppBaseException(String reason) {

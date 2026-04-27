@@ -8,15 +8,15 @@ import java.util.List;
 
 @Repository
 public interface LoanRepository extends MongoRepository<LoanDoc, String> {
-    List<LoanDoc> findByReaderId(String readerId);
+    List<LoanDoc> findByClientId(String clientId);
 
     List<LoanDoc> findByBookSetId(String bookSetId);
 
-    List<LoanDoc> findByReaderIdAndBookSetId(String readerId, String bookSetId);
+    List<LoanDoc> findByClientIdAndBookSetId(String clientId, String bookSetId);
 
     List<LoanDoc> findByActive(boolean active);
 
-    List<LoanDoc> findByReaderIdAndActive(String readerId, boolean active);
+    List<LoanDoc> findByClientIdAndActive(String clientId, boolean active);
 
     List<LoanDoc> findByBookSetIdAndActive(String bookSetId, boolean active);
 }

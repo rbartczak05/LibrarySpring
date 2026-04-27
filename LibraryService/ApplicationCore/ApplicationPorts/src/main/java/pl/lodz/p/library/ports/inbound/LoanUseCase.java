@@ -8,23 +8,23 @@ import java.util.List;
 public interface LoanUseCase {
     Loan findLoanById(String id);
 
-    List<Loan> findLoansByReader(String readerId);
+    List<Loan> findLoansByClient(String clientId);
 
     List<Loan> findLoansByBookSet(String bookSetId);
 
-    List<Loan> findLoansByReaderIdAndBookSetId(String readerId, String bookSetId);
+    List<Loan> findLoansByClientIdAndBookSetId(String clientId, String bookSetId);
 
     List<Loan> findByActiveLoans(boolean active);
 
-    List<Loan> findByReaderIdAndActive(String readerId, boolean active);
+    List<Loan> findByClientIdAndActive(String clientId, boolean active);
 
     List<Loan> findByBookSetIdAndActive(String bookSetId, boolean active);
 
     List<Loan> findAllLoans();
 
-    Loan createLoan(String readerId, String bookSetId);
+    Loan createLoan(String clientId, String bookSetId);
 
-    Loan createLoan(String readerId, String bookSetId, LocalDateTime loanStartTime);
+    Loan createLoan(String clientId, String bookSetId, LocalDateTime loanStartTime);
 
     Loan updateLoan(String loanId, Loan loanUpdates);
 

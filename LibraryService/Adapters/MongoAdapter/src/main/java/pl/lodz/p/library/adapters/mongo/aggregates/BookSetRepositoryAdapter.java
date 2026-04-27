@@ -25,11 +25,6 @@ public class BookSetRepositoryAdapter implements BookSetPort {
     }
 
     @Override
-    public List<BookSet> findAll() {
-        return repository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList());
-    }
-
-    @Override
     public Optional<BookSet> findById(String id) {
         return repository.findById(id).map(mapper::toDomain);
     }
@@ -50,11 +45,6 @@ public class BookSetRepositoryAdapter implements BookSetPort {
     }
 
     @Override
-    public List<BookSet> findBookSetsByQuantity(int quantity) {
-        return repository.findBooksByQuantity(quantity).stream().map(mapper::toDomain).collect(Collectors.toList());
-    }
-
-    @Override
     public List<BookSet> findAllBookSetsByQuantity(int quantity) {
         return repository.findBooksByQuantity(quantity).stream().map(mapper::toDomain).collect(Collectors.toList());
     }
@@ -65,44 +55,15 @@ public class BookSetRepositoryAdapter implements BookSetPort {
     }
 
     @Override
-    public List<BookSet> findByQuantityLessThan(int quantity) {
-        return repository.findAll().stream()
-                .filter(doc -> doc.getQuantity() < quantity)
-                .map(mapper::toDomain)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<BookSet> findBookSetsByAvailable(boolean available) {
-        if (available) {
-            return findByQuantityGreaterThan(0);
-        } else {
-            return findBookSetsByQuantity(0);
-        }
-    }
-
-    @Override
     public List<BookSet> findAllBookSets() {
-        return findAll();
-    }
-
-    @Override
-    public Optional<BookSet> addBookSet(BookSet bookSet) {
-        BookSetDoc saved = repository.save(mapper.toDocument(bookSet));
-        return Optional.ofNullable(mapper.toDomain(saved));
-    }
-
-    @Override
-    public Optional<BookSet> updateBookSet(String id, BookSet bookSetUpdates) {
-        return repository.findById(id).map(existing -> {
-            existing.setQuantity(bookSetUpdates.getQuantity());
-            return mapper.toDomain(repository.save(existing));
-        });
+        return repository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList());
     }
 
     @Override
     public BookSet save(BookSet bookSet) {
-        return mapper.toDomain(repository.save(mapper.toDocument(bookSet)));
+        BookSetDoc doc = mapper.toDocument(bookSet);
+        BookSetDoc saved = repository.save(doc);
+        return mapper.toDomain(saved);
     }
 
     @Override

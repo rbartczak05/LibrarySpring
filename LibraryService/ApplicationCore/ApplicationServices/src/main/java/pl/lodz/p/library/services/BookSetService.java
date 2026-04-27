@@ -14,12 +14,12 @@ import java.util.List;
 @Service
 public class BookSetService implements BookSetUseCase {
     private final BookSetPort bookSetPort;
-    private final LoanPort getLoanPort;
+    private final LoanPort loanPort;
 
     @Autowired
     public BookSetService(BookSetPort bookSetPort, LoanPort loanPort) {
         this.bookSetPort = bookSetPort;
-        this.getLoanPort = loanPort;
+        this.loanPort = loanPort;
     }
 
     public BookSet findBookSetById(String id) {
@@ -69,8 +69,9 @@ public class BookSetService implements BookSetUseCase {
 
     @Transactional
     public void deleteBookSet(String id) {
-        if(!getLoanPort.findByBookSetIdAndActive(id, true).isEmpty())
+        if (!loanPort.findByBookSetIdAndActive(id, true).isEmpty()) {
             throw new BookSetException("Nie można usunąć książki, która jest obecnie wypożyczona.");
+        }
         bookSetPort.deleteBookSet(id);
     }
 }

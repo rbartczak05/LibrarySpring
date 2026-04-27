@@ -10,7 +10,7 @@ public class LoanMapper {
     public Loan toDomain(LoanDoc doc) {
         if (doc == null) return null;
 
-        Loan loan = new Loan(doc.getReaderId(), doc.getBookSetId(), doc.getStartTime());
+        Loan loan = new Loan(doc.getClientId(), doc.getBookSetId(), doc.getStartTime());
         loan.setId(doc.getId());
         loan.setEndTime(doc.getEndTime());
         loan.setActive(doc.isActive());
@@ -22,7 +22,7 @@ public class LoanMapper {
     public LoanDoc toDocument(Loan loan) {
         if (loan == null) return null;
 
-        LoanDoc doc = new LoanDoc(loan.getReaderId(), loan.getBookSetId(), loan.getStartTime());
+        LoanDoc doc = new LoanDoc(loan.getClientId(), loan.getBookSetId(), loan.getStartTime());
         doc.setId(loan.getId());
         doc.setEndTime(loan.getEndTime());
         doc.setActive(loan.isActive());

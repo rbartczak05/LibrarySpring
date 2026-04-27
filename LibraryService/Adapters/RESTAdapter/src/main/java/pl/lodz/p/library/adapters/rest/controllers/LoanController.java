@@ -46,7 +46,7 @@ public class LoanController {
 
     @GetMapping("/reader_id/{readerId}")
     public CollectionModel<LoanDTO> getLoansByReader(@PathVariable String readerId) {
-        List<LoanDTO> loans = loanUseCase.findLoansByReader(readerId).stream()
+        List<LoanDTO> loans = loanUseCase.findLoansByClient(readerId).stream()
                 .map(LoanConverter::toDTO)
                 .map(LoanController::applyLinks)
                 .collect(Collectors.toList());
@@ -64,7 +64,7 @@ public class LoanController {
 
     @GetMapping("/reader_bookset/{readerId}/{bookSetId}")
     public CollectionModel<LoanDTO> getLoansByReaderAndBookSet(@PathVariable String readerId, @PathVariable String bookSetId) {
-        List<LoanDTO> loans = loanUseCase.findLoansByReaderIdAndBookSetId(readerId, bookSetId).stream()
+        List<LoanDTO> loans = loanUseCase.findLoansByClientIdAndBookSetId(readerId, bookSetId).stream()
                 .map(LoanConverter::toDTO)
                 .map(LoanController::applyLinks)
                 .collect(Collectors.toList());
@@ -82,7 +82,7 @@ public class LoanController {
 
     @GetMapping("/reader_id/{readerId}/active")
     public CollectionModel<LoanDTO> getActiveLoansByReader(@PathVariable String readerId) {
-        List<LoanDTO> loans = loanUseCase.findByReaderIdAndActive(readerId, true).stream()
+        List<LoanDTO> loans = loanUseCase.findByClientIdAndActive(readerId, true).stream()
                 .map(LoanConverter::toDTO)
                 .map(LoanController::applyLinks)
                 .collect(Collectors.toList());
@@ -91,7 +91,7 @@ public class LoanController {
 
     @GetMapping("/reader_id/{readerId}/inactive")
     public CollectionModel<LoanDTO> getInactiveLoansByReader(@PathVariable String readerId) {
-        List<LoanDTO> loans = loanUseCase.findByReaderIdAndActive(readerId, false).stream()
+        List<LoanDTO> loans = loanUseCase.findByClientIdAndActive(readerId, false).stream()
                 .map(LoanConverter::toDTO)
                 .map(LoanController::applyLinks)
                 .collect(Collectors.toList());
@@ -154,7 +154,7 @@ public class LoanController {
     public CollectionModel<LoanDTO> getMyLoans() {
         String currentLogin = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userUseCase.findUserByLogin(currentLogin);
-        List<LoanDTO> loans = loanUseCase.findLoansByReader(user.getId()).stream()
+        List<LoanDTO> loans = loanUseCase.findLoansByClient(user.getId()).stream()
                 .map(LoanConverter::toDTO)
                 .map(LoanController::applyLinks)
                 .collect(Collectors.toList());

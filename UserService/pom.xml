@@ -10,7 +10,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>pl.lodz.p.library</groupId>
+    <groupId>pl.lodz.p.user</groupId>
     <artifactId>UserService</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>

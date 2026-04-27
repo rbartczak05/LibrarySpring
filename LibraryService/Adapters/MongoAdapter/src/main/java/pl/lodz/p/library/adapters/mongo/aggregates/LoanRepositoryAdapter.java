@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class LoanRepositoryAdapter implements LoanPort{
+public class LoanRepositoryAdapter implements LoanPort {
 
     private final LoanRepository repository;
     private final LoanMapper mapper;
@@ -31,8 +31,13 @@ public class LoanRepositoryAdapter implements LoanPort{
     }
 
     @Override
-    public List<Loan> findByReaderId(String readerId) {
-        return repository.findByReaderId(readerId).stream().map(mapper::toDomain).collect(Collectors.toList());
+    public List<Loan> findAll() {
+        return repository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Loan> findByClientId(String clientId) {
+        return repository.findByClientId(clientId).stream().map(mapper::toDomain).collect(Collectors.toList());
     }
 
     @Override
@@ -41,8 +46,13 @@ public class LoanRepositoryAdapter implements LoanPort{
     }
 
     @Override
-    public List<Loan> findByReaderIdAndBookSetId(String readerId, String bookSetId) {
-        return repository.findByReaderIdAndBookSetId(readerId, bookSetId).stream().map(mapper::toDomain).collect(Collectors.toList());
+    public List<Loan> findByClientIdAndBookSetId(String readerId, String bookSetId) {
+        return List.of();
+    }
+
+    @Override
+    public List<Loan> findByClientIdAndBookSetId(String clientId, String bookSetId) {
+        return repository.findByClientIdAndBookSetId(clientId, bookSetId).stream().map(mapper::toDomain).collect(Collectors.toList());
     }
 
     @Override
@@ -51,37 +61,39 @@ public class LoanRepositoryAdapter implements LoanPort{
     }
 
     @Override
+    public List<Loan> findByClientIdAndActive(String clientId, boolean active) {
+        return repository.findByClientIdAndActive(clientId, active).stream().map(mapper::toDomain).collect(Collectors.toList());
+    }
+
+    @Override
     public List<Loan> findByBookSetIdAndActive(String bookSetId, boolean active) {
         return repository.findByBookSetIdAndActive(bookSetId, active).stream().map(mapper::toDomain).collect(Collectors.toList());
     }
 
     @Override
-    public List<Loan> findByReaderIdAndActive(String readerId, boolean active) {
-        return repository.findByReaderIdAndActive(readerId, active).stream().map(mapper::toDomain).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Loan> findAll() {
-        return repository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList());
+    public List<Loan> findByClientIdAndActive(String readerId, boolean active) {
+        return List.of();
     }
 
     @Override
     public Optional<Loan> createLoan(String readerId, String bookSetId) {
-        LoanDoc doc = new LoanDoc(readerId, bookSetId, LocalDateTime.now());
-        return Optional.ofNullable(mapper.toDomain(repository.save(doc)));
+        return this.createLoan(readerId, bookSetId, null);
     }
 
     @Override
-    public Optional<Loan> createLoan(String readerId, String bookSetId, LocalDateTime loanStartTime) {
-        LoanDoc doc = new LoanDoc(readerId, bookSetId, loanStartTime != null ? loanStartTime : LocalDateTime.now());
-        return Optional.ofNullable(mapper.toDomain(repository.save(doc)));
+    public Optional<Loan> createLoan(String clientId, String bookSetId, LocalDateTime startTime) {
+        Loan loan = new Loan(clientId, bookSetId, startTime != null ? startTime : LocalDateTime.now());
+        LoanDoc doc = mapper.toDocument(loan);
+        LoanDoc saved = repository.save(doc);
+        return Optional.ofNullable(mapper.toDomain(saved));
     }
 
     @Override
     public Optional<Loan> updateLoan(String loanId, Loan loanUpdates) {
         return repository.findById(loanId).map(existing -> {
-            existing.setStartTime(loanUpdates.getStartTime());
             existing.setEndTime(loanUpdates.getEndTime());
+            existing.setReturnTime(loanUpdates.getReturnTime());
+            existing.setActive(loanUpdates.isActive());
             return mapper.toDomain(repository.save(existing));
         });
     }
@@ -96,7 +108,7 @@ public class LoanRepositoryAdapter implements LoanPort{
     }
 
     @Override
-    public void deleteLoan(String loanId) {
-        repository.deleteById(loanId);
+    public void deleteLoan(String id) {
+        repository.deleteById(id);
     }
 }

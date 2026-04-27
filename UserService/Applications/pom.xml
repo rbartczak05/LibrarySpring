@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>pl.lodz.p.library</groupId>
+        <groupId>pl.lodz.p.user</groupId>
         <artifactId>UserService</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
@@ -19,22 +19,22 @@
 
     <dependencies>
         <dependency>
-            <groupId>pl.lodz.p.library</groupId>
+            <groupId>pl.lodz.p.user</groupId>
             <artifactId>ApplicationServices</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>pl.lodz.p.library</groupId>
+            <groupId>pl.lodz.p.user</groupId>
             <artifactId>MongoAdapter</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>pl.lodz.p.library</groupId>
+            <groupId>pl.lodz.p.user</groupId>
             <artifactId>RESTAdapter</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>pl.lodz.p.library</groupId>
+            <groupId>pl.lodz.p.user</groupId>
             <artifactId>SOAPAdapter</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>

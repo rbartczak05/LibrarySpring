@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>pl.lodz.p.library</groupId>
+        <groupId>pl.lodz.p.user</groupId>
         <artifactId>Adapters</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
@@ -19,7 +19,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>pl.lodz.p.library</groupId>
+            <groupId>pl.lodz.p.user</groupId>
             <artifactId>ApplicationPorts</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
@@ -84,7 +84,7 @@
                 <artifactId>jaxb2-maven-plugin</artifactId>
                 <configuration>
                     <sources>
-                        <source>src/main/java/pl/lodz/p/library/adapters/soap/dto</source>
+                        <source>src/main/java/pl/lodz/p/user/adapters/soap/dto</source>
                     </sources>
 
                     <outputDirectory>${project.build.directory}/classes</outputDirectory>
@@ -92,19 +92,11 @@
 
                     <transformSchemas>
                         <transformSchema>
-                            <uri>http://pl.lodz.p.library.adapters.soap.dto.bookset/</uri>
-                            <toFile>book_sets.xsd</toFile>
-                        </transformSchema>
-                        <transformSchema>
-                            <uri>http://pl.lodz.p.library.adapters.soap.dto.user/</uri>
+                            <uri>http://pl.lodz.p.user.adapters.soap.dto.user/</uri>
                             <toFile>users.xsd</toFile>
                         </transformSchema>
                         <transformSchema>
-                            <uri>http://pl.lodz.p.library.adapters.soap.dto.loan/</uri>
-                            <toFile>loans.xsd</toFile>
-                        </transformSchema>
-                        <transformSchema>
-                            <uri>http://pl.lodz.p.library.adapters.soap.dto.auth/</uri>
+                            <uri>http://pl.lodz.p.user.adapters.soap.dto.auth/</uri>
                             <toFile>auth.xsd</toFile>
                         </transformSchema>
                     </transformSchemas>

@@ -9,7 +9,7 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import pl.lodz.p.library.adapters.mongo.documents.ReaderDoc;
+import pl.lodz.p.library.adapters.mongo.documents.ClientDoc;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,11 +30,11 @@ class UserRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        ReaderDoc user1 = new ReaderDoc("login1", "pass", "email1@test.pl", 20);
+        ClientDoc user1 = new ClientDoc("login1", "pass", "email1@test.pl", 20);
         user1.setActive(true);
         userRepository.save(user1);
 
-        ReaderDoc user2 = new ReaderDoc("log_other", "pass", "email2@test.pl", 30);
+        ClientDoc user2 = new ClientDoc("log_other", "pass", "email2@test.pl", 30);
         user2.setActive(false);
         userRepository.save(user2);
     }

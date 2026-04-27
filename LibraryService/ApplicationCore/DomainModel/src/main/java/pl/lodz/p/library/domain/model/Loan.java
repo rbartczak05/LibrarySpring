@@ -1,7 +1,6 @@
 package pl.lodz.p.library.domain.model;
 
 import pl.lodz.p.library.domain.exceptions.BookSetException;
-
 import java.time.LocalDateTime;
 
 public class Loan {
@@ -10,24 +9,23 @@ public class Loan {
     private LocalDateTime startTime;
     private LocalDateTime returnTime;
     private LocalDateTime endTime;
-    private String readerId;
+    private String clientId;
     private String bookSetId;
 
-    public Loan(String readerId, String bookSetId, LocalDateTime startTime) {
+    public Loan(String clientId, String bookSetId, LocalDateTime startTime) {
         this.active = true;
         this.startTime = startTime;
         this.returnTime = null;
         this.endTime = startTime.plusDays(30);
-        this.readerId = readerId;
+        this.clientId = clientId;
         this.bookSetId = bookSetId;
     }
 
-    public Loan(String reader, String bookSet) {
-        this(reader, bookSet, LocalDateTime.now());
+    public Loan(String clientId, String bookSetId) {
+        this(clientId, bookSetId, LocalDateTime.now());
     }
 
     public Loan() {
-
     }
 
     public String getId() {
@@ -51,11 +49,11 @@ public class Loan {
     }
 
     public void setStartTime(LocalDateTime startTime) {
-        if (this.returnTime != null && this.returnTime.isBefore(startTime)) {
-            throw new BookSetException("Data zwrotu musi być późniejsza niż data rozpoczęcia.");
+        if (this.returnTime != null && startTime.isAfter(this.returnTime)) {
+            throw new BookSetException("Data rozpoczęcia musi być wcześniejsza niż data zwrotu.");
         }
-        if (this.endTime != null && this.endTime.isBefore(startTime)) {
-            throw new BookSetException("Data zakończenia musi być późniejsza niż data rozpoczęcia.");
+        if (this.endTime != null && startTime.isAfter(this.endTime)) {
+            throw new BookSetException("Data rozpoczęcia musi być wcześniejsza niż data zakończenia.");
         }
         this.startTime = startTime;
     }
@@ -82,12 +80,12 @@ public class Loan {
         this.endTime = endTime;
     }
 
-    public String getReaderId() {
-        return readerId;
+    public String getClientId() {
+        return clientId;
     }
 
-    public void setReaderId(String readerId) {
-        this.readerId = readerId;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
     public String getBookSetId() {
@@ -100,6 +98,14 @@ public class Loan {
 
     @Override
     public String toString() {
-        return "Loan{" + "id=" + id + ", active=" + active + ", startTime=" + startTime + ", returnTime=" + returnTime + ", endTime=" + endTime + ", readerId=" + readerId + ", bookSetId=" + bookSetId + '}';
+        return "Loan{" +
+                "id='" + id + '\'' +
+                ", active=" + active +
+                ", startTime=" + startTime +
+                ", returnTime=" + returnTime +
+                ", endTime=" + endTime +
+                ", clientId='" + clientId + '\'' +
+                ", bookSetId='" + bookSetId + '\'' +
+                '}';
     }
 }
