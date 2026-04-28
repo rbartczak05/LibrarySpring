@@ -8,7 +8,7 @@ import pl.lodz.p.library.adapters.soap.dto.loan.LoanDTO;
 
 import java.util.List;
 
-@XmlRootElement(name = "GetLoansByReaderResponse")
+@XmlRootElement(name = "GetLoansByClientResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GetLoansByClientResponse {
     @XmlElement(name = "loan", required = true)

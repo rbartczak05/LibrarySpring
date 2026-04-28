@@ -4,13 +4,13 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import pl.lodz.p.library.adapters.soap.dto.client.UserDTO;
+import pl.lodz.p.library.adapters.soap.dto.client.ClientDTO;
 
-@XmlRootElement(name = "GetUserByEmailResponse")
+@XmlRootElement(name = "DeactivateClientResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class GetUserByEmailResponse {
+public class DeactivateClientResponse {
     @XmlElement(required = true)
-    private UserDTO user;
-    public UserDTO getUserDTO() { return user; }
-    public void setUserDTO(UserDTO userDTO) { this.user = userDTO; }
+    private ClientDTO clientDTO;
+    public ClientDTO getClientDTO() { return clientDTO; }
+    public void setClientDTO(ClientDTO clientDTO) { this.clientDTO = clientDTO; }
 }

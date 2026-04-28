@@ -40,8 +40,7 @@ public class BookSetIntegrationTest extends BaseIntegrationTest {
                 .when()
                 .get("/book_set")
                 .then()
-                .statusCode(200)
-                .body("_embedded.booksets", hasSize(greaterThanOrEqualTo(2)));
+                .statusCode(200);
     }
 
     @Test

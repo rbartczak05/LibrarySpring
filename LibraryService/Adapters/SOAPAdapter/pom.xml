@@ -82,6 +82,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>4.1.0</version>
                 <configuration>
                     <sources>
                         <source>src/main/java/pl/lodz/p/library/adapters/soap/dto</source>
@@ -96,8 +97,8 @@
                             <toFile>book_sets.xsd</toFile>
                         </transformSchema>
                         <transformSchema>
-                            <uri>http://pl.lodz.p.library.adapters.soap.dto.user/</uri>
-                            <toFile>users.xsd</toFile>
+                            <uri>http://pl.lodz.p.library.adapters.soap.dto.client/</uri>
+                            <toFile>clients.xsd</toFile>
                         </transformSchema>
                         <transformSchema>
                             <uri>http://pl.lodz.p.library.adapters.soap.dto.loan/</uri>
@@ -109,7 +110,6 @@
                         </transformSchema>
                     </transformSchemas>
                 </configuration>
-                <version>4.1.0</version>
                 <executions>
                     <execution>
                         <id>schemagen</id>

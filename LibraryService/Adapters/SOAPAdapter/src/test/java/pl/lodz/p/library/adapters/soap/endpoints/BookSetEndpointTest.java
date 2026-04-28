@@ -59,8 +59,8 @@ class BookSetEndpointTest {
         client.sendRequest(withPayload(new StringSource(
                         "<GetAllBookSetsRequest xmlns=\"" + NS + "\"/>")))
                 .andExpect(noFault())
-                .andExpect(xpath("//ns:bookSets[1]/ns:id", NS_MAP).evaluatesTo("bs-1"))
-                .andExpect(xpath("//ns:bookSets[2]/ns:title", NS_MAP).evaluatesTo("Title2"));
+                .andExpect(xpath("//ns:bookSet[1]/ns:id", NS_MAP).evaluatesTo("bs-1"))
+                .andExpect(xpath("//ns:bookSet[2]/ns:title", NS_MAP).evaluatesTo("Title2"));
     }
 
     @Test
@@ -114,7 +114,7 @@ class BookSetEndpointTest {
         client.sendRequest(withPayload(new StringSource(
                         "<DeleteBookSetRequest xmlns=\"" + NS + "\"><id>id-del</id></DeleteBookSetRequest>")))
                 .andExpect(noFault())
-                .andExpect(xpath("//ns:deleted", NS_MAP).evaluatesTo("true"));
+                .andExpect(xpath("//ns:isDeleted", NS_MAP).evaluatesTo("true"));
 
         verify(bookSetUseCase).deleteBookSet("id-del");
     }

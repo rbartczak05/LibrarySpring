@@ -43,7 +43,7 @@ class LoanEndpointTest {
     }
 
     private Loan buildLoan(String id, String clientId, String bookSetId) {
-        Loan loan = new Loan(clientId, bookSetId, LocalDateTime.parse("2023-01-01T10:00:00"));
+        Loan loan = new Loan(clientId, bookSetId, LocalDateTime.parse("2023-01-01T10:00:01"));
         loan.setId(id);
         return loan;
     }
@@ -57,7 +57,7 @@ class LoanEndpointTest {
         client.sendRequest(withPayload(new StringSource(
                         "<GetAllLoansRequest xmlns=\"" + NS + "\"/>")))
                 .andExpect(noFault())
-                .andExpect(xpath("//ns:loans[1]/ns:id", NS_MAP).evaluatesTo("l-1"));
+                .andExpect(xpath("//ns:loan[1]/ns:id", NS_MAP).evaluatesTo("l-1"));
     }
 
     @Test
@@ -67,7 +67,7 @@ class LoanEndpointTest {
         client.sendRequest(withPayload(new StringSource(
                         "<GetLoanByIdRequest xmlns=\"" + NS + "\"><id>l-1</id></GetLoanByIdRequest>")))
                 .andExpect(noFault())
-                .andExpect(xpath("//ns:loanDTO/ns:clientId", NS_MAP).evaluatesTo("c-1"));
+                .andExpect(xpath("//ns:loan/ns:clientId", NS_MAP).evaluatesTo("c-1"));
     }
 
     @Test
@@ -79,7 +79,7 @@ class LoanEndpointTest {
         client.sendRequest(withPayload(new StringSource(
                         "<GetLoansByClientRequest xmlns=\"" + NS + "\"><clientId>c-1</clientId></GetLoansByClientRequest>")))
                 .andExpect(noFault())
-                .andExpect(xpath("//ns:loanDTO[1]/ns:id", NS_MAP).evaluatesTo("l-1"));
+                .andExpect(xpath("//ns:loan[1]/ns:id", NS_MAP).evaluatesTo("l-1"));
     }
 
     @Test
@@ -92,8 +92,8 @@ class LoanEndpointTest {
                     <bookSetId>b-1</bookSetId>
                 </CreateLoanRequest>""".formatted(NS))))
                 .andExpect(noFault())
-                .andExpect(xpath("//ns:loanDTO/ns:id", NS_MAP).evaluatesTo("l-new"))
-                .andExpect(xpath("//ns:loanDTO/ns:active", NS_MAP).evaluatesTo("true"));
+                .andExpect(xpath("//ns:loan/ns:id", NS_MAP).evaluatesTo("l-new"))
+                .andExpect(xpath("//ns:loan/ns:active", NS_MAP).evaluatesTo("true"));
     }
 
     @Test
@@ -105,8 +105,8 @@ class LoanEndpointTest {
         client.sendRequest(withPayload(new StringSource(
                         "<EndLoanRequest xmlns=\"" + NS + "\"><id>l-end</id></EndLoanRequest>")))
                 .andExpect(noFault())
-                .andExpect(xpath("//ns:loanDTO/ns:id", NS_MAP).evaluatesTo("l-end"))
-                .andExpect(xpath("//ns:loanDTO/ns:active", NS_MAP).evaluatesTo("false"));
+                .andExpect(xpath("//ns:loan/ns:id", NS_MAP).evaluatesTo("l-end"))
+                .andExpect(xpath("//ns:loan/ns:active", NS_MAP).evaluatesTo("false"));
     }
 
     @Test
@@ -114,7 +114,7 @@ class LoanEndpointTest {
         client.sendRequest(withPayload(new StringSource(
                         "<DeleteLoanRequest xmlns=\"" + NS + "\"><id>l-del</id></DeleteLoanRequest>")))
                 .andExpect(noFault())
-                .andExpect(xpath("//ns:deleted", NS_MAP).evaluatesTo("true"));
+                .andExpect(xpath("//ns:isDeleted", NS_MAP).evaluatesTo("true"));
 
         verify(loanUseCase).deleteLoan("l-del");
     }

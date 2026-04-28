@@ -6,9 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.test.context.ContextConfiguration;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import pl.lodz.p.library.adapters.mongo.TestMongoConfig;
 import pl.lodz.p.library.adapters.mongo.documents.BookSetDoc;
 
 import java.util.List;
@@ -17,11 +19,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataMongoTest
 @Testcontainers
+@ContextConfiguration(classes = TestMongoConfig.class)
 class BookSetRepositoryTest {
 
     @Container
     @ServiceConnection
-    static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest");
+    static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:8.2.7");
 
     @Autowired
     private BookSetRepository bookSetRepository;

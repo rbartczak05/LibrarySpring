@@ -21,7 +21,7 @@ class ClientRepositoryTest {
 
     @Container
     @ServiceConnection
-    static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest");
+    static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:8.2.7");
 
     @Autowired
     private ClientRepository clientRepository;

@@ -5,9 +5,9 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "DeactivateUserRequest")
+@XmlRootElement(name = "DeleteClientRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DeactivateUserRequest {
+public class DeleteClientRequest {
     @XmlElement(required = true)
     private String id;
     public String getId() { return id; }

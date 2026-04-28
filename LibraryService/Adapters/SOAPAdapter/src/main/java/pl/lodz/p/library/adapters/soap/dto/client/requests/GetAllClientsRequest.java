@@ -4,6 +4,6 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "GetAllUsersRequest")
+@XmlRootElement(name = "GetAllClientsRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class GetAllUsersRequest {}
+public class GetAllClientsRequest {}

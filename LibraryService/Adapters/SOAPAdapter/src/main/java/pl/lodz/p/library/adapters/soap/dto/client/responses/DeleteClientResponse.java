@@ -5,9 +5,9 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "DeleteUserResponse")
+@XmlRootElement(name = "DeleteClientResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DeleteUserResponse {
+public class DeleteClientResponse {
     @XmlElement(required = true)
     private boolean isDeleted;
     public boolean isDeleted() { return isDeleted; }

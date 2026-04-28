@@ -62,7 +62,7 @@ public class BookSetControllerTest {
                 .get("/book_set")
                 .then()
                 .status(org.springframework.http.HttpStatus.OK)
-                .body("_embedded.booksets[0].title", equalTo("The Witcher"));
+                .body("[0].title", equalTo("The Witcher"));
     }
 
     @Test

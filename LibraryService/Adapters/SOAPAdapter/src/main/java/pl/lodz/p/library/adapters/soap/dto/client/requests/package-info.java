@@ -1,5 +1,5 @@
 @XmlSchema(
-        namespace = "http://pl.lodz.p.library.adapters.soap.dto.user/",
+        namespace = "http://pl.lodz.p.library.adapters.soap.dto.client/",
         elementFormDefault = XmlNsForm.QUALIFIED
 )
 package pl.lodz.p.library.adapters.soap.dto.client.requests;

@@ -5,11 +5,11 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "GetUserByIdRequest")
+@XmlRootElement(name = "GetClientByLoginRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class GetUserByIdRequest {
+public class GetClientByLoginRequest {
     @XmlElement(required = true)
-    private String id;
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    private String login;
+    public String getLogin() { return login; }
+    public void setLogin(String login) { this.login = login; }
 }

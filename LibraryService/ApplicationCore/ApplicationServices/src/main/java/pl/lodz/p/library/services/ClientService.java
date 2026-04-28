@@ -1,5 +1,6 @@
 package pl.lodz.p.library.services;
 
+import org.springframework.stereotype.Service;
 import pl.lodz.p.library.domain.exceptions.ClientException;
 import pl.lodz.p.library.domain.model.Client;
 import pl.lodz.p.library.ports.inbound.ClientUseCase;
@@ -7,6 +8,7 @@ import pl.lodz.p.library.ports.outbound.ClientPort;
 
 import java.util.List;
 
+@Service
 public class ClientService implements ClientUseCase {
 
     private final ClientPort clientPort;

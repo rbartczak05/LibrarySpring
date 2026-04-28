@@ -55,8 +55,8 @@ class ClientEndpointTest {
         mockClient.sendRequest(withPayload(new StringSource(
                         "<GetAllClientsRequest xmlns=\"" + NS + "\"/>")))
                 .andExpect(noFault())
-                .andExpect(xpath("//ns:clients[1]/ns:id", NS_MAP).evaluatesTo("c-1"))
-                .andExpect(xpath("//ns:clients[1]/ns:firstName", NS_MAP).evaluatesTo("Jan"));
+                .andExpect(xpath("//ns:client[1]/ns:id", NS_MAP).evaluatesTo("c-1"))
+                .andExpect(xpath("//ns:client[1]/ns:firstName", NS_MAP).evaluatesTo("Jan"));
     }
 
     @Test
@@ -66,6 +66,6 @@ class ClientEndpointTest {
         mockClient.sendRequest(withPayload(new StringSource(
                         "<GetClientByIdRequest xmlns=\"" + NS + "\"><id>c-1</id></GetClientByIdRequest>")))
                 .andExpect(noFault())
-                .andExpect(xpath("//ns:client/ns:firstName", NS_MAP).evaluatesTo("Jan"));
+                .andExpect(xpath("//ns:clientDTO/ns:firstName", NS_MAP).evaluatesTo("Jan"));
     }
 }
