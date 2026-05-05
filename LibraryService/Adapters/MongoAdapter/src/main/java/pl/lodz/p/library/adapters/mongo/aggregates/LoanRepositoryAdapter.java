@@ -102,4 +102,9 @@ public class LoanRepositoryAdapter implements LoanPort {
     public void deleteLoan(String id) {
         repository.deleteById(id);
     }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
+    }
 }

@@ -24,6 +24,7 @@ import pl.lodz.p.user.ports.inbound.UserUseCase;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final UserUseCase userUseCase;
@@ -41,52 +42,62 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
         try {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword()));
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.login(), request.password())
+            );
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             String accessToken = jwtService.generateAccessToken(userDetails);
             String refreshToken = jwtService.generateRefreshToken(userDetails);
-
             String role = userDetails.getAuthorities().iterator().next().getAuthority();
-            return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken, role, request.getLogin()));
 
+            return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken, role, request.login()));
         } catch (AuthenticationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Nieprawidłowy login lub hasło");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Nieprawidlowy login lub haslo");
         }
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
-        String refreshToken = request.getRefreshToken();
-        String userLogin = jwtService.extractUsername(refreshToken);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userLogin);
+        String refreshToken = request.refreshToken();
+        String userId = jwtService.extractUsername(refreshToken);
+        User user = userUseCase.findUserById(userId);
 
-        if (userDetails != null) {
+        if (user != null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getLogin());
             String newAccessToken = jwtService.generateAccessToken(userDetails);
             String role = userDetails.getAuthorities().iterator().next().getAuthority();
-            return ResponseEntity.ok(new AuthResponse(newAccessToken, refreshToken, role, userLogin));
+            return ResponseEntity.ok(new AuthResponse(newAccessToken, refreshToken, role, user.getLogin()));
         }
-
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Nieprawidłowy lub wygasły token odświeżania");
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Nieprawidlowy lub wygasly token");
     }
 
     @PostMapping("/change-password")
     public ResponseEntity<Void> changePassword(@RequestBody ChangePasswordRequest request) {
-        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userUseCase.findUserByLogin(currentUsername);
-        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Nie udało się zmienić hasła.");
+        String currentUserId = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userUseCase.findUserById(currentUserId);
+
+        if (!passwordEncoder.matches(request.oldPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Nie udalo sie zmienic hasla.");
         }
-        String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
+
+        String encodedNewPassword = passwordEncoder.encode(request.newPassword());
         userUseCase.changeUserPasswordInModel(user, encodedNewPassword);
         userUseCase.addUser(user);
+
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/register")
     public ResponseEntity<Void> register(@RequestBody RegisterRequest request) {
-        Reader reader = new Reader(request.getLogin(), passwordEncoder.encode(request.getPassword()), request.getEmail(), request.getFirstName(), request.getLastName(), request.getAge());
+        Reader reader = new Reader(
+                request.login(),
+                passwordEncoder.encode(request.password()),
+                request.email(),
+                request.firstName(),
+                request.lastName(),
+                request.age()
+        );
         userUseCase.addUser(reader);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

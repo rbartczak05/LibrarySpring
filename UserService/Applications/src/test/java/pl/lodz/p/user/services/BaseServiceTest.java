@@ -32,6 +32,6 @@ public abstract class BaseServiceTest {
 
     @BeforeEach
     void cleanUp() {
-        userPort.findAllUsers().forEach(user -> userPort.deleteUser(user.getId()));
+        userPort.deleteAll();
     }
 }

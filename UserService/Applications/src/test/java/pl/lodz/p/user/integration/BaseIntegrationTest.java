@@ -32,13 +32,16 @@ public abstract class BaseIntegrationTest {
     @LocalServerPort
     protected int port;
 
-    @Autowired protected UserPort userPort;
-
-    @Autowired protected UserUseCase userUseCase;
-    @Autowired protected PasswordEncoder passwordEncoder;
-
-    @Autowired protected JwtService jwtService;
-    @Autowired protected UserDetailsService userDetailsService;
+    @Autowired
+    protected UserPort userPort;
+    @Autowired
+    protected UserUseCase userUseCase;
+    @Autowired
+    protected PasswordEncoder passwordEncoder;
+    @Autowired
+    protected JwtService jwtService;
+    @Autowired
+    protected UserDetailsService userDetailsService;
 
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry registry) {
@@ -51,7 +54,7 @@ public abstract class BaseIntegrationTest {
         RestAssured.baseURI = "http://localhost";
         RestAssured.authentication = RestAssured.DEFAULT_AUTH;
 
-        userPort.findAllUsers().forEach(user -> userPort.deleteUser(user.getId()));
+        userPort.deleteAll();
 
         Administrator admin = new Administrator("admin_test", "admin@test.pl", "Admin", "Testowy", 30);
         userUseCase.changeUserPasswordInModel(admin, passwordEncoder.encode("admin123"));

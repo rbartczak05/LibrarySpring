@@ -5,13 +5,19 @@ import pl.lodz.p.library.domain.exceptions.ClientException;
 public class Client {
     public static final int maxLoans = 5;
 
-    private String id;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private int age;
-    private boolean active;
     private int currentLoansCount = 0;
+
+    private String id;
+
+    private String firstName;
+
+    private String lastName;
+
+    private String email;
+
+    private int age;
+
+    private boolean active;
 
     public Client(String firstName, String lastName, String email, int age) {
         this.firstName = firstName;
@@ -111,13 +117,6 @@ public class Client {
 
     @Override
     public String toString() {
-        return "Client{" +
-                "id='" + id + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", age=" + age +
-                ", active=" + active +
-                '}';
+        return "Client{" + "id='" + id + '\'' + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", email='" + email + '\'' + ", age=" + age + ", active=" + active + '}';
     }
 }

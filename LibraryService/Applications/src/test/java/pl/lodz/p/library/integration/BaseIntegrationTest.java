@@ -7,16 +7,10 @@ import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
@@ -26,7 +20,6 @@ import pl.lodz.p.library.ports.outbound.ClientPort;
 import pl.lodz.p.library.ports.outbound.LoanPort;
 
 import java.util.Date;
-import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
@@ -48,9 +41,6 @@ public abstract class BaseIntegrationTest {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @MockBean
-    protected UserDetailsService userDetailsService;
-
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
@@ -62,20 +52,12 @@ public abstract class BaseIntegrationTest {
         RestAssured.baseURI = "http://localhost";
         RestAssured.authentication = RestAssured.DEFAULT_AUTH;
 
-        loanPort.findAll().forEach(loan -> loanPort.deleteLoan(loan.getId()));
-        clientPort.findAll().forEach(client -> clientPort.deleteById(client.getId()));
-        bookSetPort.findAllBookSets().forEach(bookSet -> bookSetPort.deleteBookSet(bookSet.getId()));
-
-        String testAdminId = "admin_test";
-        UserDetails adminDetails = new User(
-                testAdminId,
-                "password_not_needed_in_jwt_test",
-                List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))
-        );
-        Mockito.when(userDetailsService.loadUserByUsername(testAdminId)).thenReturn(adminDetails);
+        loanPort.deleteAll();
+        clientPort.deleteAll();
+        bookSetPort.deleteAll();
 
         String token = Jwts.builder()
-                .subject(testAdminId)
+                .subject("admin_test")
                 .claim("role", "ROLE_ADMIN")
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
@@ -90,9 +72,8 @@ public abstract class BaseIntegrationTest {
     @AfterEach
     void tearDown() {
         RestAssured.reset();
-
-        loanPort.findAll().forEach(loan -> loanPort.deleteLoan(loan.getId()));
-        clientPort.findAll().forEach(client -> clientPort.deleteById(client.getId()));
-        bookSetPort.findAllBookSets().forEach(bookSet -> bookSetPort.deleteBookSet(bookSet.getId()));
+        loanPort.deleteAll();
+        clientPort.deleteAll();
+        bookSetPort.deleteAll();
     }
 }

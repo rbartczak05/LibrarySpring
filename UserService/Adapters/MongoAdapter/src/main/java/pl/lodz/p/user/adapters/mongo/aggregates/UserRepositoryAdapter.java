@@ -29,10 +29,7 @@ public class UserRepositoryAdapter implements UserPort {
     private final ReaderMapper readerMapper;
 
     @Autowired
-    public UserRepositoryAdapter(UserRepository repository,
-                                 AdministratorMapper adminMapper,
-                                 LibrarianMapper librarianMapper,
-                                 ReaderMapper readerMapper) {
+    public UserRepositoryAdapter(UserRepository repository, AdministratorMapper adminMapper, LibrarianMapper librarianMapper, ReaderMapper readerMapper) {
         this.repository = repository;
         this.adminMapper = adminMapper;
         this.librarianMapper = librarianMapper;
@@ -136,5 +133,10 @@ public class UserRepositoryAdapter implements UserPort {
     @Override
     public void deleteUser(String id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
     }
 }

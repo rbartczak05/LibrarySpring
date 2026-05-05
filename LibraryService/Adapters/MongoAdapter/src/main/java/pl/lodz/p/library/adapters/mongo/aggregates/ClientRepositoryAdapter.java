@@ -45,4 +45,9 @@ public class ClientRepositoryAdapter implements ClientPort {
     public void deleteById(String id) {
         repository.deleteById(id);
     }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
+    }
 }

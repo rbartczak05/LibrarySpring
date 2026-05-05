@@ -33,4 +33,6 @@ public interface UserPort {
     Optional<User> deactivateUser(String id);
 
     void deleteUser(String id);
+
+    void deleteAll();
 }

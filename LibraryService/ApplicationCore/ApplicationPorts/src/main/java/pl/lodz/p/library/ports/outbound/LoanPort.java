@@ -32,4 +32,6 @@ public interface LoanPort {
     Optional<Loan> endLoan(String loanId);
 
     void deleteLoan(String loanId);
+
+    void deleteAll();
 }

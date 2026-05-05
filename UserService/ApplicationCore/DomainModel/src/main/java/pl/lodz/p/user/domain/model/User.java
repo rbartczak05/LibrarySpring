@@ -1,33 +1,18 @@
 package pl.lodz.p.user.domain.model;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-
 public abstract class User {
     private String id;
 
-    @NotBlank
-    @Size(min = 3, max = 20)
     private String login;
 
-    @NotBlank
-    @Size(min = 5)
     private String password;
 
-    @NotBlank
-    @Email
-    @Size(min = 3, max = 100)
     private String email;
 
-    @NotBlank
     private String firstName;
 
-    @NotBlank
     private String lastName;
 
-    @Min(1)
     private int age;
 
     private boolean active;
@@ -115,12 +100,6 @@ public abstract class User {
 
     @Override
     public String toString() {
-        return "User" +
-                "{id=" + id +
-                ", login='" + login +
-                "', email='" + email +
-                "', firstName='" + firstName +
-                "', lastName='" + lastName +
-                "', active=" + active + '}';
+        return "User" + "{id=" + id + ", login='" + login + "', email='" + email + "', firstName='" + firstName + "', lastName='" + lastName + "', active=" + active + '}';
     }
 }

@@ -1,24 +1,14 @@
 package pl.lodz.p.library.domain.model;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
 public class BookSet {
     private String id;
 
-    @NotBlank
     private String title;
 
-    @NotBlank
     private String author;
 
-    @NotNull
-    @Min(value = 0)
     private int releaseYear;
 
-    @NotNull
-    @Min(value = 0)
     private int quantity;
 
     public BookSet(String title, String author, int releaseYear, int quantity) {
@@ -77,12 +67,6 @@ public class BookSet {
 
     @Override
     public String toString() {
-        return "BookSet{" +
-                "id='" + id + '\'' +
-                ", title='" + title + '\'' +
-                ", author='" + author + '\'' +
-                ", releaseYear=" + releaseYear +
-                ", quantity=" + quantity +
-                '}';
+        return "BookSet{" + "id='" + id + '\'' + ", title='" + title + '\'' + ", author='" + author + '\'' + ", releaseYear=" + releaseYear + ", quantity=" + quantity + '}';
     }
 }

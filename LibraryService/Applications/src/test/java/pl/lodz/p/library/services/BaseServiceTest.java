@@ -36,8 +36,8 @@ public abstract class BaseServiceTest {
 
     @BeforeEach
     void cleanUp() {
-        loanPort.findAll().forEach(loan -> loanPort.deleteLoan(loan.getId()));
-        clientPort.findAll().forEach(client -> clientPort.deleteById(client.getId()));
-        bookSetPort.findAllBookSets().forEach(bookSet -> bookSetPort.deleteBookSet(bookSet.getId()));
+        loanPort.deleteAll();
+        clientPort.deleteAll();
+        bookSetPort.deleteAll();
     }
 }

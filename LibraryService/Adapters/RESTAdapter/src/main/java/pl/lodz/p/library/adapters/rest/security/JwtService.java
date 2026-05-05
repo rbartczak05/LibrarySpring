@@ -5,40 +5,17 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.library.ports.outbound.JwtPort;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 @Service
 public class JwtService implements JwtPort {
     @Value("${jwt.secret}")
     private String SECRET_KEY;
-
-    private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 15; // 15 minut
-
-    private static final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 7; // 7 dni
-
-    public String generateAccessToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("role", userDetails.getAuthorities().iterator().next().getAuthority());
-        return createToken(claims, userDetails.getUsername(), ACCESS_TOKEN_EXPIRATION);
-    }
-
-    public String generateRefreshToken(UserDetails userDetails) {
-        return createToken(new HashMap<>(), userDetails.getUsername(), REFRESH_TOKEN_EXPIRATION);
-    }
-
-    public String generateSignatureForId(String id) {
-        return Jwts.builder().subject(id)
-                .signWith(getSignInKey(), Jwts.SIG.HS256)
-                .compact();
-    }
 
     public boolean verifySignature(String id, String token) {
         try {
@@ -62,16 +39,8 @@ public class JwtService implements JwtPort {
         return Jwts.parser().verifyWith(getSignInKey()).build().parseSignedClaims(token).getPayload();
     }
 
-    private String createToken(Map<String, Object> claims, String subject, long expiration) {
-        return Jwts.builder().claims(claims).subject(subject).issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(getSignInKey(), Jwts.SIG.HS256)
-                .compact();
-    }
-
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    public boolean isTokenValid(String token) {
+        return !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {

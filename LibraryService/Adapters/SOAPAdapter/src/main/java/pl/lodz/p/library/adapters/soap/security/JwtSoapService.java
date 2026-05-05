@@ -5,7 +5,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.library.ports.outbound.JwtPort;
 
@@ -20,8 +19,8 @@ public class JwtSoapService implements JwtPort {
     private String secretKey;
 
     @Override
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        return extractUsername(token).equals(userDetails.getUsername()) && !isTokenExpired(token);
+    public boolean isTokenValid(String token) {
+        return !isTokenExpired(token);
     }
 
     @Override
@@ -57,4 +56,3 @@ public class JwtSoapService implements JwtPort {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }
-

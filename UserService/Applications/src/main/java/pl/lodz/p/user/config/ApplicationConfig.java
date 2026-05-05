@@ -26,7 +26,13 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userPort.findUserByLogin(username).map(user -> org.springframework.security.core.userdetails.User.builder().username(user.getLogin()).password(user.getPassword()).roles(mapRole(user)).build()).orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
+        return username -> userPort.findUserByLogin(username)
+                .map(user -> org.springframework.security.core.userdetails.User.builder()
+                        .username(user.getId())
+                        .password(user.getPassword())
+                        .roles(mapRole(user))
+                        .build())
+                .orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
     }
 
     private String mapRole(User user) {

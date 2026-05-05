@@ -5,11 +5,17 @@ import java.time.LocalDateTime;
 
 public class Loan {
     private String id;
+
     private boolean active;
+
     private LocalDateTime startTime;
+
     private LocalDateTime returnTime;
+
     private LocalDateTime endTime;
+
     private String clientId;
+
     private String bookSetId;
 
     public Loan(String clientId, String bookSetId, LocalDateTime startTime) {

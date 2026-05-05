@@ -13,4 +13,6 @@ public interface ClientPort {
     Client save(Client client);
 
     void deleteById(String id);
+
+    void deleteAll();
 }

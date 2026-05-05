@@ -110,4 +110,9 @@ public class BookSetRepositoryAdapter implements BookSetPort {
     public void deleteBookSet(String id) {
         repository.deleteById(id);
     }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
+    }
 }

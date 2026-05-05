@@ -35,4 +35,6 @@ public interface BookSetPort {
     BookSet save(BookSet bookSet);
 
     void deleteBookSet(String id);
+
+    void deleteAll();
 }
