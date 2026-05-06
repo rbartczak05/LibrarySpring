@@ -62,7 +62,8 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
         String refreshToken = request.refreshToken();
-        UUID userId = jwtService.extractUsername(refreshToken);
+        String userIdStr = jwtService.extractUsername(refreshToken);
+        UUID userId = UUID.fromString(userIdStr);
         User user = userUseCase.findUserById(userId);
 
         if (user != null) {
@@ -77,7 +78,7 @@ public class AuthController {
     @PostMapping("/change-password")
     public ResponseEntity<Void> changePassword(@RequestBody ChangePasswordRequest request) {
         String currentUserId = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userUseCase.findUserById(currentUserId);
+        User user = userUseCase.findUserById(UUID.fromString(currentUserId));
 
         if (!passwordEncoder.matches(request.oldPassword(), user.getPassword())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Nie udalo sie zmienic hasla.");

@@ -41,8 +41,9 @@ public class ReaderController {
         User user = userUseCase.findUserById(id);
         ReaderDTO readerDto = UserConverter.toReaderDTO((Reader) user);
         String signature = jwtService.generateSignatureForId(id);
+
         return ResponseEntity.ok()
-                .header("If-Match", signature)
+                .eTag(signature)
                 .body(readerDto);
     }
 

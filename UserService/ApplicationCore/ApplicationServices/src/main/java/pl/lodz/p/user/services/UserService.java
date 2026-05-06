@@ -61,6 +61,9 @@ public class UserService implements UserUseCase {
 
     @Transactional
     public User addUser(User user) {
+        if (user.getId() == null) {
+            user.setId(UUID.randomUUID());
+        }
         return userPort.addUser(user).orElseThrow(() -> new UserException("Nie udało się dodać użytkownika"));
     }
 

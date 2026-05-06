@@ -15,6 +15,7 @@ import pl.lodz.p.user.domain.model.Administrator;
 import pl.lodz.p.user.ports.inbound.UserUseCase;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -37,17 +38,19 @@ public class AdministratorControllerTest {
 
     private Administrator admin;
     private AdministratorDTO adminDTO;
+    private UUID adminId;
 
     @BeforeEach
     void setUp() {
         RestAssuredMockMvc.mockMvc(mockMvc);
 
+        adminId = UUID.randomUUID();
         admin = new Administrator("admin", "pass", "admin@example.com", "Adam", "Kowalski", 30);
-        admin.setId("admin1");
+        admin.setId(adminId);
         admin.setActive(true);
 
         adminDTO = new AdministratorDTO("admin", "admin@example.com", "Adam", "Kowalski", 30, true);
-        adminDTO.setId("admin1");
+        adminDTO.setId(adminId);
     }
 
     @Test
@@ -67,12 +70,12 @@ public class AdministratorControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void getAdminById_ShouldReturnAdmin() {
-        when(userUseCase.findUserById("admin1")).thenReturn(admin);
-        when(jwtService.generateSignatureForId("admin1")).thenReturn("mock-signature");
+        when(userUseCase.findUserById(adminId)).thenReturn(admin);
+        when(jwtService.generateSignatureForId(adminId)).thenReturn("mock-signature");
 
         given()
                 .when()
-                .get("/admins/admin1")
+                .get("/admins/" + adminId)
                 .then()
                 .status(org.springframework.http.HttpStatus.OK)
                 .header("If-Match", "mock-signature")

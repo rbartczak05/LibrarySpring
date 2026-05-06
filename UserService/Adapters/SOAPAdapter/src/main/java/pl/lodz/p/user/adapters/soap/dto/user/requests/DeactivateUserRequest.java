@@ -12,6 +12,12 @@ import java.util.UUID;
 public class DeactivateUserRequest {
     @XmlElement(required = true)
     private UUID id;
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 }

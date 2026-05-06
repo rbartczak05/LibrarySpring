@@ -14,6 +14,7 @@ import pl.lodz.p.user.adapters.mongo.documents.UserDoc;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -32,9 +33,11 @@ class UserRepositoryTest {
     @BeforeEach
     void setUp() {
         ReaderDoc user1 = new ReaderDoc("login1", "pass", "email1@test.pl", "Jan", "Kowalski", 20, true);
+        user1.setId(UUID.randomUUID());
         userRepository.save(user1);
 
         ReaderDoc user2 = new ReaderDoc("log_other", "pass", "email2@test.pl", "Piotr", "Nowak", 30, false);
+        user2.setId(UUID.randomUUID());
         userRepository.save(user2);
     }
 

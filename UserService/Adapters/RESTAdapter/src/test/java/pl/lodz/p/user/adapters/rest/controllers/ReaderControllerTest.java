@@ -15,6 +15,7 @@ import pl.lodz.p.user.domain.model.Reader;
 import pl.lodz.p.user.ports.inbound.UserUseCase;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -37,17 +38,19 @@ public class ReaderControllerTest {
 
     private Reader reader;
     private ReaderDTO readerDTO;
+    private UUID readerId;
 
     @BeforeEach
     void setUp() {
         RestAssuredMockMvc.mockMvc(mockMvc);
 
+        readerId = UUID.randomUUID();
         reader = new Reader("testuser", "pass", "test@example.com", "Tomasz", "Zieliński", 25);
-        reader.setId("1");
+        reader.setId(readerId);
         reader.setActive(true);
 
         readerDTO = new ReaderDTO("testuser", "test@example.com", "Tomasz", "Zieliński", 25, true);
-        readerDTO.setId("1");
+        readerDTO.setId(readerId);
     }
 
     @Test
@@ -67,15 +70,15 @@ public class ReaderControllerTest {
     @Test
     @WithMockUser(roles = "LIBRARIAN")
     void getReaderById_ShouldReturnReader() {
-        when(userUseCase.findUserById("1")).thenReturn(reader);
-        when(jwtService.generateSignatureForId("1")).thenReturn("mock-signature");
+        when(userUseCase.findUserById(readerId)).thenReturn(reader);
+        when(jwtService.generateSignatureForId(readerId)).thenReturn("mock-signature");
 
         given()
                 .when()
-                .get("/readers/1")
+                .get("/readers/" + readerId)
                 .then()
                 .status(org.springframework.http.HttpStatus.OK)
-                .header("If-Match", "mock-signature")
+                .header("ETag", "\"mock-signature\"")
                 .body("login", equalTo("testuser"));
     }
 
@@ -97,15 +100,15 @@ public class ReaderControllerTest {
     @Test
     @WithMockUser(roles = "LIBRARIAN")
     void updateReader_ShouldUpdateReader() {
-        when(jwtService.verifySignature(eq("1"), anyString())).thenReturn(true);
-        when(userUseCase.updateUser(eq("1"), any(Reader.class))).thenReturn(reader);
+        when(jwtService.verifySignature(eq(readerId), anyString())).thenReturn(true);
+        when(userUseCase.updateUser(eq(readerId), any(Reader.class))).thenReturn(reader);
 
         given()
                 .header("If-Match", "mock-signature")
                 .contentType("application/json")
                 .body(readerDTO)
                 .when()
-                .post("/readers/1")
+                .post("/readers/" + readerId)
                 .then()
                 .status(org.springframework.http.HttpStatus.OK)
                 .body("login", equalTo("testuser"));
@@ -114,12 +117,12 @@ public class ReaderControllerTest {
     @Test
     @WithMockUser(roles = "LIBRARIAN")
     void activateReader_ShouldActivate() {
-        when(userUseCase.findUserById("1")).thenReturn(reader);
-        when(userUseCase.activateUser("1")).thenReturn(reader);
+        when(userUseCase.findUserById(readerId)).thenReturn(reader);
+        when(userUseCase.activateUser(readerId)).thenReturn(reader);
 
         given()
                 .when()
-                .post("/readers/1/activate")
+                .post("/readers/" + readerId + "/activate")
                 .then()
                 .status(org.springframework.http.HttpStatus.OK)
                 .body("login", equalTo("testuser"));
@@ -128,12 +131,12 @@ public class ReaderControllerTest {
     @Test
     @WithMockUser(roles = "LIBRARIAN")
     void deactivateReader_ShouldDeactivate() {
-        when(userUseCase.findUserById("1")).thenReturn(reader);
-        when(userUseCase.deactivateUser("1")).thenReturn(reader);
+        when(userUseCase.findUserById(readerId)).thenReturn(reader);
+        when(userUseCase.deactivateUser(readerId)).thenReturn(reader);
 
         given()
                 .when()
-                .post("/readers/1/deactivate")
+                .post("/readers/" + readerId + "/deactivate")
                 .then()
                 .status(org.springframework.http.HttpStatus.OK)
                 .body("login", equalTo("testuser"));

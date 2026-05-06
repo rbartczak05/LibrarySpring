@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import pl.lodz.p.user.adapters.mongo.documents.ReaderDoc;
 import pl.lodz.p.user.domain.model.Reader;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ReaderMapperTest {
@@ -13,12 +15,13 @@ class ReaderMapperTest {
     @Test
     void toDomain() {
         ReaderDoc doc = new ReaderDoc("reader1", "pass", "read@test.pl", "Piotr", "Wiśniewski", 25, true);
-        doc.setId("1");
+        UUID id = UUID.randomUUID();
+        doc.setId(id);
 
         Reader reader = mapper.toDomain(doc);
 
         assertNotNull(reader);
-        assertEquals("1", reader.getId());
+        assertEquals(id, reader.getId());
         assertEquals("reader1", reader.getLogin());
         assertEquals("pass", reader.getPassword());
         assertEquals("read@test.pl", reader.getEmail());
@@ -36,13 +39,14 @@ class ReaderMapperTest {
     @Test
     void toDocument() {
         Reader reader = new Reader("reader1", "pass", "read@test.pl", "Piotr", "Wiśniewski", 25);
-        reader.setId("1");
+        UUID id = UUID.randomUUID();
+        reader.setId(id);
         reader.setActive(true);
 
         ReaderDoc doc = mapper.toDocument(reader);
 
         assertNotNull(doc);
-        assertEquals("1", doc.getId());
+        assertEquals(id, doc.getId());
         assertEquals("reader1", doc.getLogin());
         assertEquals("pass", doc.getPassword());
         assertEquals("read@test.pl", doc.getEmail());

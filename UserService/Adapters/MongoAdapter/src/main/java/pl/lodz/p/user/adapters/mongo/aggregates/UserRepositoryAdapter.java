@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class UserRepositoryAdapter implements UserPort {
-
     private final UserRepository repository;
     private final AdministratorMapper adminMapper;
     private final LibrarianMapper librarianMapper;
@@ -72,8 +71,8 @@ public class UserRepositoryAdapter implements UserPort {
     }
 
     @Override
-    public List<User> findUserByLastName(String firstName) {
-        return repository.findUserByLastName(firstName).stream().map(this::toDomain).collect(Collectors.toList());
+    public List<User> findUserByLastName(String lastName) {
+        return repository.findUserByLastName(lastName).stream().map(this::toDomain).collect(Collectors.toList());
     }
 
     @Override
@@ -98,6 +97,9 @@ public class UserRepositoryAdapter implements UserPort {
 
     @Override
     public Optional<User> addUser(User user) {
+        if (user.getId() == null) {
+            user.setId(UUID.randomUUID());
+        }
         UserDoc saved = repository.save(toDocument(user));
         return Optional.ofNullable(toDomain(saved));
     }

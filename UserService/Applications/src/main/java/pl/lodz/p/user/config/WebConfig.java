@@ -14,6 +14,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedMethods("*")
                 .allowedHeaders("*")
                 .allowCredentials(true)
-                .exposedHeaders("If-Match");
+                .exposedHeaders("If-Match", "ETag");
     }
 }

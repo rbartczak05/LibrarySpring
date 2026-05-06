@@ -56,7 +56,7 @@ class BookSetServiceTest extends BaseServiceTest {
         BookSet updated = bookSetService.updateBookSet(book.getId(), updates);
 
         Assertions.assertEquals(100, updated.getQuantity());
-        Assertions.assertEquals("Diuna", updated.getTitle());
+        Assertions.assertEquals("NOWY TYTUŁ", updated.getTitle());
     }
 
     @Test

@@ -36,7 +36,7 @@ public class JwtService implements JwtPort {
     }
 
     public String generateSignatureForId(UUID id) {
-        return Jwts.builder().subject(id)
+        return Jwts.builder().subject(String.valueOf(id))
                 .signWith(getSignInKey(), Jwts.SIG.HS256)
                 .compact();
     }
@@ -44,7 +44,7 @@ public class JwtService implements JwtPort {
     public boolean verifySignature(UUID id, String token) {
         try {
             String extractedId = extractUsername(token);
-            return extractedId.equals(id);
+            return extractedId.equals(String.valueOf(id));
         } catch (Exception e) {
             return false;
         }

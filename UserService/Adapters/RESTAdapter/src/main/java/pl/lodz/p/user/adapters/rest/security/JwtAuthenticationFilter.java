@@ -17,6 +17,7 @@ import pl.lodz.p.user.domain.model.User;
 import pl.lodz.p.user.ports.inbound.UserUseCase;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -50,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         jwt = authHeader.substring(7);
 
         try {
-            userId = jwtService.extractUsername(jwt);
+            userId = UUID.fromString(jwtService.extractUsername(jwt));
         } catch (Exception ignored) {
         }
 

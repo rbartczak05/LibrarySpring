@@ -16,6 +16,7 @@ import pl.lodz.p.user.ports.inbound.UserUseCase;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID; // Dodano brakujący import[cite: 1]
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -30,6 +31,10 @@ class UserEndpointTest {
 
     private static final String NS = "http://pl.lodz.p.user.adapters.soap.dto.user/";
     private static final Map<String, String> NS_MAP = Map.of("ns", NS);
+
+    private static final UUID ID_1 = UUID.randomUUID();
+    private static final UUID ID_2 = UUID.randomUUID();
+    private static final UUID ID_3 = UUID.randomUUID();
 
     @Autowired
     private ApplicationContext context;
@@ -53,52 +58,52 @@ class UserEndpointTest {
 
     @Test
     void getAllUsers_shouldReturnList() {
-        when(userUseCase.findAllUsers()).thenReturn(List.of(buildReader("u-1", "jan")));
+        when(userUseCase.findAllUsers()).thenReturn(List.of(buildReader(ID_1, "jan")));
 
         client.sendRequest(withPayload(new StringSource(
                         "<GetAllUsersRequest xmlns=\"" + NS + "\"/>")))
                 .andExpect(noFault())
-                .andExpect(xpath("//ns:user/ns:id", NS_MAP).evaluatesTo("u-1"))
+                .andExpect(xpath("//ns:user/ns:id", NS_MAP).evaluatesTo(ID_1.toString()))
                 .andExpect(xpath("//ns:user/ns:login", NS_MAP).evaluatesTo("jan"))
                 .andExpect(xpath("//ns:user/ns:accessLevel", NS_MAP).evaluatesTo("READER"));
     }
 
     @Test
     void getUserById_shouldReturnUser() {
-        when(userUseCase.findUserById("u-42")).thenReturn(buildReader("u-42", "anna"));
+        when(userUseCase.findUserById(ID_2)).thenReturn(buildReader(ID_2, "anna"));
 
         client.sendRequest(withPayload(new StringSource(
-                        "<GetUserByIdRequest xmlns=\"" + NS + "\"><id>u-42</id></GetUserByIdRequest>")))
+                        "<GetUserByIdRequest xmlns=\"" + NS + "\"><id>" + ID_2 + "</id></GetUserByIdRequest>")))
                 .andExpect(noFault())
-                .andExpect(xpath("//ns:user/ns:id", NS_MAP).evaluatesTo("u-42"))
+                .andExpect(xpath("//ns:user/ns:id", NS_MAP).evaluatesTo(ID_2.toString()))
                 .andExpect(xpath("//ns:user/ns:login", NS_MAP).evaluatesTo("anna"));
     }
 
     @Test
     void getUserByLogin_shouldReturnUser() {
-        when(userUseCase.findUserByLogin("anna")).thenReturn(buildReader("u-42", "anna"));
+        when(userUseCase.findUserByLogin("anna")).thenReturn(buildReader(ID_2, "anna"));
 
         client.sendRequest(withPayload(new StringSource(
                         "<GetUserByLoginRequest xmlns=\"" + NS + "\"><login>anna</login></GetUserByLoginRequest>")))
                 .andExpect(noFault())
-                .andExpect(xpath("//ns:user/ns:id", NS_MAP).evaluatesTo("u-42"))
+                .andExpect(xpath("//ns:user/ns:id", NS_MAP).evaluatesTo(ID_2.toString()))
                 .andExpect(xpath("//ns:user/ns:login", NS_MAP).evaluatesTo("anna"));
     }
 
     @Test
     void getUserByEmail_shouldReturnUser() {
-        when(userUseCase.findUserByEmail("test@example.com")).thenReturn(buildReader("u-42", "anna"));
+        when(userUseCase.findUserByEmail("test@example.com")).thenReturn(buildReader(ID_2, "anna"));
 
         client.sendRequest(withPayload(new StringSource(
                         "<GetUserByEmailRequest xmlns=\"" + NS + "\"><email>test@example.com</email></GetUserByEmailRequest>")))
                 .andExpect(noFault())
-                .andExpect(xpath("//ns:user/ns:id", NS_MAP).evaluatesTo("u-42"))
+                .andExpect(xpath("//ns:user/ns:id", NS_MAP).evaluatesTo(ID_2.toString()))
                 .andExpect(xpath("//ns:user/ns:login", NS_MAP).evaluatesTo("anna"));
     }
 
     @Test
     void addUser_shouldReturnCreatedUser() {
-        Reader saved = buildReader("u-new", "newuser");
+        Reader saved = buildReader(ID_3, "newuser");
         when(userUseCase.addUser(any(User.class))).thenReturn(saved);
 
         client.sendRequest(withPayload(new StringSource("""
@@ -112,28 +117,28 @@ class UserEndpointTest {
                 <accessLevel>READER</accessLevel>
             </addUserRequest>""".formatted(NS))))
                 .andExpect(noFault())
-                .andExpect(xpath("//ns:user/ns:id", NS_MAP).evaluatesTo("u-new"))
+                .andExpect(xpath("//ns:user/ns:id", NS_MAP).evaluatesTo(ID_3.toString()))
                 .andExpect(xpath("//ns:user/ns:login", NS_MAP).evaluatesTo("newuser"));
     }
 
     @Test
     void activateUser_shouldReturnActivatedUser() {
-        when(userUseCase.activateUser("u-inactive")).thenReturn(buildReader("u-inactive", "piotr"));
+        when(userUseCase.activateUser(ID_2)).thenReturn(buildReader(ID_2, "piotr"));
 
         client.sendRequest(withPayload(new StringSource(
-                        "<ActivateUserRequest xmlns=\"" + NS + "\"><id>u-inactive</id></ActivateUserRequest>")))
+                        "<ActivateUserRequest xmlns=\"" + NS + "\"><id>" + ID_2 + "</id></ActivateUserRequest>")))
                 .andExpect(noFault())
                 .andExpect(xpath("//ns:user/ns:active", NS_MAP).evaluatesTo("true"));
     }
 
     @Test
     void deactivateUser_shouldReturnDeactivatedUser() {
-        Reader deactivated = buildReader("u-active", "piotr");
+        Reader deactivated = buildReader(ID_2, "piotr");
         deactivated.setActive(false);
-        when(userUseCase.deactivateUser("u-active")).thenReturn(deactivated);
+        when(userUseCase.deactivateUser(ID_2)).thenReturn(deactivated);
 
         client.sendRequest(withPayload(new StringSource(
-                        "<DeactivateUserRequest xmlns=\"" + NS + "\"><id>u-active</id></DeactivateUserRequest>")))
+                        "<DeactivateUserRequest xmlns=\"" + NS + "\"><id>" + ID_2 + "</id></DeactivateUserRequest>")))
                 .andExpect(noFault())
                 .andExpect(xpath("//ns:user/ns:active", NS_MAP).evaluatesTo("false"));
     }
@@ -141,10 +146,10 @@ class UserEndpointTest {
     @Test
     void deleteUser_shouldReturnDeleted() {
         client.sendRequest(withPayload(new StringSource(
-                        "<DeleteUserRequest xmlns=\"" + NS + "\"><id>u-del</id></DeleteUserRequest>")))
+                        "<DeleteUserRequest xmlns=\"" + NS + "\"><id>" + ID_2 + "</id></DeleteUserRequest>")))
                 .andExpect(noFault())
                 .andExpect(xpath("//ns:DeleteUserResponse/ns:isDeleted", NS_MAP).evaluatesTo("true"));
 
-        verify(userUseCase).deleteUser("u-del");
+        verify(userUseCase).deleteUser(ID_2);
     }
 }

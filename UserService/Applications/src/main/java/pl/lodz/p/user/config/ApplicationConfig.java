@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.lodz.p.user.domain.model.Administrator;
@@ -28,11 +29,11 @@ public class ApplicationConfig {
     public UserDetailsService userDetailsService() {
         return username -> userPort.findUserByLogin(username)
                 .map(user -> org.springframework.security.core.userdetails.User.builder()
-                        .username(user.getId())
+                        .username(user.getId().toString())
                         .password(user.getPassword())
                         .roles(mapRole(user))
                         .build())
-                .orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
+                .orElseThrow(() -> new UsernameNotFoundException("Użytkownik nie znaleziony: " + username));
     }
 
     private String mapRole(User user) {
@@ -43,7 +44,8 @@ public class ApplicationConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService());
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }

@@ -15,6 +15,7 @@ import pl.lodz.p.user.domain.model.Librarian;
 import pl.lodz.p.user.ports.inbound.UserUseCase;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -37,17 +38,19 @@ public class LibrarianControllerTest {
 
     private Librarian librarian;
     private LibrarianDTO librarianDTO;
+    private UUID librarianId;
 
     @BeforeEach
     void setUp() {
         RestAssuredMockMvc.mockMvc(mockMvc);
 
+        librarianId = UUID.randomUUID();
         librarian = new Librarian("librarian", "pass", "lib@example.com", "Anna", "Nowak", 30);
-        librarian.setId("lib1");
+        librarian.setId(librarianId);
         librarian.setActive(true);
 
         librarianDTO = new LibrarianDTO("librarian", "lib@example.com", "Anna", "Nowak", 30, true);
-        librarianDTO.setId("lib1");
+        librarianDTO.setId(librarianId);
     }
 
     @Test
@@ -67,12 +70,12 @@ public class LibrarianControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void getLibrarianById_ShouldReturnLibrarian() {
-        when(userUseCase.findUserById("lib1")).thenReturn(librarian);
-        when(jwtService.generateSignatureForId("lib1")).thenReturn("mock-signature");
+        when(userUseCase.findUserById(librarianId)).thenReturn(librarian);
+        when(jwtService.generateSignatureForId(librarianId)).thenReturn("mock-signature");
 
         given()
                 .when()
-                .get("/librarians/lib1")
+                .get("/librarians/" + librarianId)
                 .then()
                 .status(org.springframework.http.HttpStatus.OK)
                 .header("If-Match", "mock-signature")

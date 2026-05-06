@@ -11,6 +11,12 @@ import pl.lodz.p.user.adapters.soap.dto.user.UserDTO;
 public class DeactivateUserResponse {
     @XmlElement(required = true)
     private UserDTO user;
-    public UserDTO getUser() { return user; }
-    public void setUser(UserDTO user) { this.user = user; }
+
+    public UserDTO getUser() {
+        return user;
+    }
+
+    public void setUser(UserDTO user) {
+        this.user = user;
+    }
 }

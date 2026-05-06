@@ -11,6 +11,12 @@ import pl.lodz.p.user.adapters.soap.dto.user.UserDTO;
 public class GetUserByIdResponse {
     @XmlElement(required = true)
     private UserDTO user;
-    public UserDTO getUserDTO() { return user; }
-    public void setUserDTO(UserDTO userDTO) { this.user = userDTO; }
+
+    public UserDTO getUserDTO() {
+        return user;
+    }
+
+    public void setUserDTO(UserDTO userDTO) {
+        this.user = userDTO;
+    }
 }

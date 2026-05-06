@@ -2,6 +2,8 @@ package pl.lodz.p.user.ports.outbound;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.UUID;
+
 public interface JwtPort {
     String generateAccessToken(UserDetails userDetails);
 

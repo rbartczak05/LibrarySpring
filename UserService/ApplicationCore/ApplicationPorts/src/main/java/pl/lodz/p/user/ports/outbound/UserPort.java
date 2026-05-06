@@ -15,7 +15,7 @@ public interface UserPort {
 
     List<User> findUserByFirstName(String firstName);
 
-    List<User> findUserByLastName(String firstName);
+    List<User> findUserByLastName(String lastName);
 
     List<User> findUsersByAge(int age);
 

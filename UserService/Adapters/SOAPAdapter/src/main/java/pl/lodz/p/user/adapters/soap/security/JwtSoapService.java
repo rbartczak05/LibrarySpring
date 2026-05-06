@@ -13,6 +13,7 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Service
@@ -38,7 +39,7 @@ public class JwtSoapService implements JwtPort {
 
     @Override
     public String generateSignatureForId(UUID id) {
-        return Jwts.builder().subject(id)
+        return Jwts.builder().subject(String.valueOf(id))
                 .signWith(getSignInKey(), Jwts.SIG.HS256)
                 .compact();
     }
