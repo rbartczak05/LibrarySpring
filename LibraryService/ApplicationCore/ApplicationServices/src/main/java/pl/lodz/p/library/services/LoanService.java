@@ -16,10 +16,10 @@ import pl.lodz.p.library.ports.outbound.LoanPort;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class LoanService implements LoanUseCase {
-
     private final LoanPort loanPort;
     private final BookSetPort bookSetPort;
     private final ClientPort clientPort;
@@ -31,19 +31,19 @@ public class LoanService implements LoanUseCase {
         this.clientPort = clientPort;
     }
 
-    public Loan findLoanById(String id) {
+    public Loan findLoanById(UUID id) {
         return loanPort.findById(id).orElseThrow(() -> new LoanException("Wypożyczenie o ID: " + id + " nie zostało odnalezione."));
     }
 
-    public List<Loan> findByClientId(String clientId) {
+    public List<Loan> findByClientId(UUID clientId) {
         return loanPort.findByClientId(clientId);
     }
 
-    public List<Loan> findByBookSetId(String bookSetId) {
+    public List<Loan> findByBookSetId(UUID bookSetId) {
         return loanPort.findByBookSetId(bookSetId);
     }
 
-    public List<Loan> findByClientIdAndBookSetId(String clientId, String bookSetId) {
+    public List<Loan> findByClientIdAndBookSetId(UUID clientId, UUID bookSetId) {
         return loanPort.findByClientIdAndBookSetId(clientId, bookSetId);
     }
 
@@ -51,11 +51,11 @@ public class LoanService implements LoanUseCase {
         return loanPort.findByActive(active);
     }
 
-    public List<Loan> findByClientIdAndActive(String clientId, boolean active) {
+    public List<Loan> findByClientIdAndActive(UUID clientId, boolean active) {
         return loanPort.findByClientIdAndActive(clientId, active);
     }
 
-    public List<Loan> findByBookSetIdAndActive(String bookSetId, boolean active) {
+    public List<Loan> findByBookSetIdAndActive(UUID bookSetId, boolean active) {
         return loanPort.findByBookSetIdAndActive(bookSetId, active);
     }
 
@@ -64,12 +64,12 @@ public class LoanService implements LoanUseCase {
     }
 
     @Transactional
-    public Loan createLoan(String clientId, String bookSetId) {
+    public Loan createLoan(UUID clientId, UUID bookSetId) {
         return createLoan(clientId, bookSetId, null);
     }
 
     @Transactional
-    public Loan createLoan(String clientId, String bookSetId, LocalDateTime loanStartTime) {
+    public Loan createLoan(UUID clientId, UUID bookSetId, LocalDateTime loanStartTime) {
         Client client = clientPort.findById(clientId).orElseThrow(() -> new ClientException("Client not found"));
         BookSet bookSet = bookSetPort.findById(bookSetId).orElseThrow(() -> new BookSetException("BookSet not found"));
 
@@ -90,7 +90,7 @@ public class LoanService implements LoanUseCase {
     }
 
     @Transactional
-    public Loan updateLoan(String loanId, Loan loanUpdates) {
+    public Loan updateLoan(UUID loanId, Loan loanUpdates) {
         if (loanUpdates == null) {
             throw new LoanException("Zmiany wypożyczenia nie zostały odnalezione.");
         }
@@ -104,7 +104,7 @@ public class LoanService implements LoanUseCase {
     }
 
     @Transactional
-    public Loan endLoan(String loanId) {
+    public Loan endLoan(UUID loanId) {
         Loan loan = findLoanById(loanId);
 
         if (!loan.isActive()) {
@@ -123,7 +123,7 @@ public class LoanService implements LoanUseCase {
     }
 
     @Transactional
-    public void deleteLoan(String loanId) {
+    public void deleteLoan(UUID loanId) {
         Loan loan = findLoanById(loanId);
         if (loan.isActive()) {
             throw new LoanException("Nie można usunąć aktywnego wypożyczenia.");

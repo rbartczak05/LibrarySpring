@@ -11,6 +11,7 @@ import pl.lodz.p.library.ports.outbound.LoanPort;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -26,7 +27,7 @@ public class LoanRepositoryAdapter implements LoanPort {
     }
 
     @Override
-    public Optional<Loan> findById(String id) {
+    public Optional<Loan> findById(UUID id) {
         return repository.findById(id).map(mapper::toDomain);
     }
 
@@ -36,17 +37,17 @@ public class LoanRepositoryAdapter implements LoanPort {
     }
 
     @Override
-    public List<Loan> findByClientId(String clientId) {
+    public List<Loan> findByClientId(UUID clientId) {
         return repository.findByClientId(clientId).stream().map(mapper::toDomain).collect(Collectors.toList());
     }
 
     @Override
-    public List<Loan> findByBookSetId(String bookSetId) {
+    public List<Loan> findByBookSetId(UUID bookSetId) {
         return repository.findByBookSetId(bookSetId).stream().map(mapper::toDomain).collect(Collectors.toList());
     }
 
     @Override
-    public List<Loan> findByClientIdAndBookSetId(String clientId, String bookSetId) {
+    public List<Loan> findByClientIdAndBookSetId(UUID clientId, UUID bookSetId) {
         return repository.findByClientIdAndBookSetId(clientId, bookSetId).stream().map(mapper::toDomain).collect(Collectors.toList());
     }
 
@@ -56,30 +57,33 @@ public class LoanRepositoryAdapter implements LoanPort {
     }
 
     @Override
-    public List<Loan> findByClientIdAndActive(String clientId, boolean active) {
+    public List<Loan> findByClientIdAndActive(UUID clientId, boolean active) {
         return repository.findByClientIdAndActive(clientId, active).stream().map(mapper::toDomain).collect(Collectors.toList());
     }
 
     @Override
-    public List<Loan> findByBookSetIdAndActive(String bookSetId, boolean active) {
+    public List<Loan> findByBookSetIdAndActive(UUID bookSetId, boolean active) {
         return repository.findByBookSetIdAndActive(bookSetId, active).stream().map(mapper::toDomain).collect(Collectors.toList());
     }
 
     @Override
-    public Optional<Loan> createLoan(String clientId, String bookSetId) {
+    public Optional<Loan> createLoan(UUID clientId, UUID bookSetId) {
         return this.createLoan(clientId, bookSetId, null);
     }
 
     @Override
-    public Optional<Loan> createLoan(String clientId, String bookSetId, LocalDateTime startTime) {
+    public Optional<Loan> createLoan(UUID clientId, UUID bookSetId, LocalDateTime startTime) {
         Loan loan = new Loan(clientId, bookSetId, startTime != null ? startTime : LocalDateTime.now());
+        if (loan.getId() == null) {
+            loan.setId(UUID.randomUUID());
+        }
         LoanDoc doc = mapper.toDocument(loan);
         LoanDoc saved = repository.save(doc);
         return Optional.ofNullable(mapper.toDomain(saved));
     }
 
     @Override
-    public Optional<Loan> updateLoan(String loanId, Loan loanUpdates) {
+    public Optional<Loan> updateLoan(UUID loanId, Loan loanUpdates) {
         return repository.findById(loanId).map(existing -> {
             existing.setStartTime(loanUpdates.getStartTime());
             existing.setEndTime(loanUpdates.getEndTime());
@@ -90,7 +94,7 @@ public class LoanRepositoryAdapter implements LoanPort {
     }
 
     @Override
-    public Optional<Loan> endLoan(String loanId) {
+    public Optional<Loan> endLoan(UUID loanId) {
         return repository.findById(loanId).map(existing -> {
             existing.setActive(false);
             existing.setReturnTime(LocalDateTime.now());
@@ -99,7 +103,7 @@ public class LoanRepositoryAdapter implements LoanPort {
     }
 
     @Override
-    public void deleteLoan(String id) {
+    public void deleteLoan(UUID id) {
         repository.deleteById(id);
     }
 

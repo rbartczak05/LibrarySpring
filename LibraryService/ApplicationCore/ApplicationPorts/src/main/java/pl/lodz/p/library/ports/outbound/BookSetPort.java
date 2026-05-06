@@ -4,11 +4,12 @@ import pl.lodz.p.library.domain.model.BookSet;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface BookSetPort {
     List<BookSet> findAll();
 
-    Optional<BookSet> findById(String id);
+    Optional<BookSet> findById(UUID id);
 
     List<BookSet> findBookSetsByTitle(String title);
 
@@ -30,11 +31,11 @@ public interface BookSetPort {
 
     Optional<BookSet> addBookSet(BookSet bookSet);
 
-    Optional<BookSet> updateBookSet(String id, BookSet bookSetUpdates);
+    Optional<BookSet> updateBookSet(UUID id, BookSet bookSetUpdates);
 
     BookSet save(BookSet bookSet);
 
-    void deleteBookSet(String id);
+    void deleteBookSet(UUID id);
 
     void deleteAll();
 }

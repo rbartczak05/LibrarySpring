@@ -5,7 +5,8 @@ import pl.lodz.p.library.adapters.soap.dto.bookset.BookSetDTO;
 import pl.lodz.p.library.domain.model.BookSet;
 
 public class BookSetSoapConverter {
-    private BookSetSoapConverter() {}
+    private BookSetSoapConverter() {
+    }
 
     public static BookSet toDomain(BookSetDTO dto) {
         if (dto == null) return null;

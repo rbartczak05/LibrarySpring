@@ -8,11 +8,13 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlType;
 
+import java.util.UUID;
+
 @XmlType(name = "bookSetDTO")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class BookSetDTO {
     @XmlElement(name = "id", required = true)
-    private String id;
+    private UUID id;
 
     @NotBlank(message = "Tytuł książki nie może być pusty.")
     @XmlElement(name = "title", required = true)
@@ -32,7 +34,7 @@ public class BookSetDTO {
     @XmlElement(name = "quantity", required = true)
     private int quantity;
 
-    public BookSetDTO(String id, String title, String author, int releaseYear, int quantity) {
+    public BookSetDTO(UUID id, String title, String author, int releaseYear, int quantity) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -44,11 +46,11 @@ public class BookSetDTO {
 
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

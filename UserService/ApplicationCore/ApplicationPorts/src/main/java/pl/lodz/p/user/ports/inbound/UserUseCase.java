@@ -3,9 +3,10 @@ package pl.lodz.p.user.ports.inbound;
 import pl.lodz.p.user.domain.model.User;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface UserUseCase {
-    User findUserById(String id);
+    User findUserById(UUID id);
 
     User findUserByLogin(String login);
 
@@ -23,11 +24,11 @@ public interface UserUseCase {
 
     User addUser(User user);
 
-    User updateUser(String id, User userUpdates);
+    User updateUser(UUID id, User userUpdates);
 
-    User activateUser(String id);
+    User activateUser(UUID id);
 
-    User deactivateUser(String id);
+    User deactivateUser(UUID id);
 
-    void deleteUser(String id);
+    void deleteUser(UUID id);
 }

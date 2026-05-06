@@ -2,12 +2,14 @@ package pl.lodz.p.library.domain.model;
 
 import pl.lodz.p.library.domain.exceptions.ClientException;
 
+import java.util.UUID;
+
 public class Client {
     public static final int maxLoans = 5;
 
     private int currentLoansCount = 0;
 
-    private String id;
+    private UUID id;
 
     private String firstName;
 
@@ -30,11 +32,11 @@ public class Client {
     public Client() {
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

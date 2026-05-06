@@ -5,11 +5,19 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+import java.util.UUID;
+
 @XmlRootElement(name = "DeleteClientRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DeleteClientRequest {
     @XmlElement(required = true)
-    private String id;
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    private UUID id;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 }

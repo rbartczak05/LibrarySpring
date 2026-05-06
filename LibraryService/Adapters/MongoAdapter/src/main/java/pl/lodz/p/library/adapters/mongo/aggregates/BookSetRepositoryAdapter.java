@@ -10,6 +10,7 @@ import pl.lodz.p.library.ports.outbound.BookSetPort;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -30,7 +31,7 @@ public class BookSetRepositoryAdapter implements BookSetPort {
     }
 
     @Override
-    public Optional<BookSet> findById(String id) {
+    public Optional<BookSet> findById(UUID id) {
         return repository.findById(id).map(mapper::toDomain);
     }
 
@@ -85,12 +86,24 @@ public class BookSetRepositoryAdapter implements BookSetPort {
 
     @Override
     public Optional<BookSet> addBookSet(BookSet bookSet) {
+        if (bookSet.getId() == null) {
+            bookSet.setId(UUID.randomUUID());
+        }
         BookSetDoc doc = mapper.toDocument(bookSet);
         return Optional.ofNullable(mapper.toDomain(repository.save(doc)));
     }
 
     @Override
-    public Optional<BookSet> updateBookSet(String id, BookSet bookSetUpdates) {
+    public BookSet save(BookSet bookSet) {
+        if (bookSet.getId() == null) {
+            bookSet.setId(UUID.randomUUID());
+        }
+        BookSetDoc doc = mapper.toDocument(bookSet);
+        return mapper.toDomain(repository.save(doc));
+    }
+
+    @Override
+    public Optional<BookSet> updateBookSet(UUID id, BookSet bookSetUpdates) {
         return repository.findById(id).map(existing -> {
             existing.setTitle(bookSetUpdates.getTitle());
             existing.setAuthor(bookSetUpdates.getAuthor());
@@ -101,13 +114,7 @@ public class BookSetRepositoryAdapter implements BookSetPort {
     }
 
     @Override
-    public BookSet save(BookSet bookSet) {
-        BookSetDoc doc = mapper.toDocument(bookSet);
-        return mapper.toDomain(repository.save(doc));
-    }
-
-    @Override
-    public void deleteBookSet(String id) {
+    public void deleteBookSet(UUID id) {
         repository.deleteById(id);
     }
 

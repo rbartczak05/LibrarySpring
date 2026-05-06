@@ -8,7 +8,8 @@ import pl.lodz.p.library.domain.model.Client;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class BookSetIntegrationTest extends BaseIntegrationTest {
 
@@ -45,52 +46,53 @@ public class BookSetIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void getBookSetByIdTest() {
-        String id = createBook("Target", 1);
+        UUID id = createBook("Target", 1);
 
         given()
                 .when()
-                .get("/book_set/{id}", id)
+                .get("/book_set/{id}", id.toString())
                 .then()
                 .statusCode(200)
-                .body("id", equalTo(id))
+                .body("id", equalTo(id.toString()))
                 .body("title", equalTo("Target"));
     }
 
     @Test
     void deleteBookSetFailWithActiveLoanTest() {
-        String bookId = createBook("Loaned Book", 5);
-        String clientId = createActiveClient();
+        UUID bookId = createBook("Loaned Book", 5);
+        UUID clientId = createActiveClient();
 
         given()
-                .queryParam("clientId", clientId)
-                .queryParam("bookSetId", bookId)
+                .queryParam("clientId", clientId.toString())
+                .queryParam("bookSetId", bookId.toString())
                 .post("/loans")
                 .then().statusCode(201);
 
         given()
                 .when()
-                .delete("/book_set/{id}", bookId)
+                .delete("/book_set/{id}", bookId.toString())
                 .then()
                 .statusCode(409);
     }
 
-    private String createBook(String title, int qty) {
+    private UUID createBook(String title, int qty) {
         BookSetDTO dto = new BookSetDTO();
         dto.setTitle(title);
         dto.setAuthor("Author");
         dto.setReleaseYear(2020);
         dto.setQuantity(qty);
 
-        return given()
+        String idStr = given()
                 .contentType(ContentType.JSON)
                 .body(dto)
                 .post("/book_set")
                 .then()
                 .statusCode(201)
                 .extract().path("id");
+        return UUID.fromString(idStr);
     }
 
-    private String createActiveClient() {
+    private UUID createActiveClient() {
         Client client = new Client("John", "Doe", UUID.randomUUID().toString().substring(0, 8) + "@test.pl", 30);
         client.setActive(true);
         return clientPort.save(client).getId();

@@ -10,6 +10,12 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 public class DeleteBookSetResponse {
     @XmlElement(required = true)
     private boolean isDeleted;
-    public boolean isDeleted() { return isDeleted; }
-    public void setDeleted(boolean isDeleted) { this.isDeleted = isDeleted; }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 }

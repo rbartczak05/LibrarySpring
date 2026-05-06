@@ -11,6 +11,12 @@ import pl.lodz.p.library.adapters.soap.dto.client.ClientDTO;
 public class ActivateClientResponse {
     @XmlElement(required = true)
     private ClientDTO clientDTO;
-    public ClientDTO getUser() { return clientDTO; }
-    public void setUser(ClientDTO clientDTO) { this.clientDTO = clientDTO; }
+
+    public ClientDTO getUser() {
+        return clientDTO;
+    }
+
+    public void setUser(ClientDTO clientDTO) {
+        this.clientDTO = clientDTO;
+    }
 }

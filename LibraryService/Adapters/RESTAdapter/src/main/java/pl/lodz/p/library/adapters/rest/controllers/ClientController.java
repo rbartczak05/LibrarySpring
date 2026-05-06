@@ -11,6 +11,7 @@ import pl.lodz.p.library.domain.model.Client;
 import pl.lodz.p.library.ports.inbound.ClientUseCase;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -26,6 +27,12 @@ public class ClientController {
         this.clientUseCase = clientUseCase;
     }
 
+    private static ClientDTO applyLinks(ClientDTO dto) {
+        dto.add(linkTo(methodOn(ClientController.class).getClientById(dto.getId())).withSelfRel());
+        dto.add(linkTo(methodOn(ClientController.class).deleteClient(dto.getId())).withRel("delete"));
+        return dto;
+    }
+
     @GetMapping
     public CollectionModel<ClientDTO> getAllClients() {
         List<ClientDTO> clients = clientUseCase.findAllClients().stream()
@@ -36,7 +43,7 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    public ClientDTO getClientById(@PathVariable String id) {
+    public ClientDTO getClientById(@PathVariable UUID id) {
         return applyLinks(ClientConverter.toDTO(clientUseCase.findClientById(id)));
     }
 
@@ -49,14 +56,8 @@ public class ClientController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Void> deleteClient(@PathVariable String id) {
+    public ResponseEntity<Void> deleteClient(@PathVariable UUID id) {
         clientUseCase.deleteClient(id);
         return ResponseEntity.ok().build();
-    }
-
-    private static ClientDTO applyLinks(ClientDTO dto) {
-        dto.add(linkTo(methodOn(ClientController.class).getClientById(dto.getId())).withSelfRel());
-        dto.add(linkTo(methodOn(ClientController.class).deleteClient(dto.getId())).withRel("delete"));
-        return dto;
     }
 }

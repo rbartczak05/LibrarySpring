@@ -1,8 +1,43 @@
-version: '3.8'
-
 services:
-  mongo1:
-    image: mongo:8.2.7
-    container_name: mongo1
+  # Instancja bazy danych MongoDB
+  mongodb:
+    image: mongo:latest
+    container_name: library_mongodb
     ports:
       - "27017:27017"
+    networks:
+      - microservices-network
+
+  # Aplikacja UserService
+  user-service:
+    build:
+      context: ./UserService
+      dockerfile: Dockerfile
+    container_name: user_service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/user_db
+    depends_on:
+      - mongodb
+    networks:
+      - microservices-network
+
+  # Aplikacja LibraryService
+  library-service:
+    build:
+      context: ./LibraryService
+      dockerfile: Dockerfile
+    container_name: library_service
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/library_db
+    depends_on:
+      - mongodb
+    networks:
+      - microservices-network
+
+networks:
+  microservices-network:
+    driver: bridge

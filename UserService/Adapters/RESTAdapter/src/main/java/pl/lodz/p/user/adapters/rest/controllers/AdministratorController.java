@@ -12,6 +12,7 @@ import pl.lodz.p.user.domain.model.User;
 import pl.lodz.p.user.ports.inbound.UserUseCase;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -35,7 +36,7 @@ public class AdministratorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AdministratorDTO> getAdminById(@PathVariable String id) {
+    public ResponseEntity<AdministratorDTO> getAdminById(@PathVariable UUID id) {
         User user = userUseCase.findUserById(id);
         AdministratorDTO administratorDTO = UserConverter.toAdministratorDTO((Administrator) user);
         String signature = jwtService.generateSignatureForId(id);

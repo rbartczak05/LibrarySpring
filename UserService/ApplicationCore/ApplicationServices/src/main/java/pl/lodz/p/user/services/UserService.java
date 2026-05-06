@@ -10,6 +10,7 @@ import pl.lodz.p.user.ports.outbound.UserPort;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserService implements UserUseCase {
@@ -20,7 +21,7 @@ public class UserService implements UserUseCase {
         this.userPort = userPort;
     }
 
-    public User findUserById(String id) {
+    public User findUserById(UUID id) {
         return userPort.findUserById(id).orElseThrow(() -> new UserException("Użytkownik o ID: " + id + " nie istnieje"));
     }
 
@@ -64,22 +65,22 @@ public class UserService implements UserUseCase {
     }
 
     @Transactional
-    public User updateUser(String id, User userUpdates) {
+    public User updateUser(UUID id, User userUpdates) {
         return userPort.updateUser(id, userUpdates).orElseThrow(() -> new UserException("Nie udało się zaktualizować użytkownika"));
     }
 
     @Transactional
-    public User activateUser(String id) {
+    public User activateUser(UUID id) {
         return userPort.activateUser(id).orElseThrow(() -> new UserException("Nie udało się aktywować użytkownika"));
     }
 
     @Transactional
-    public User deactivateUser(String id) {
+    public User deactivateUser(UUID id) {
         return userPort.deactivateUser(id).orElseThrow(() -> new UserException("Nie udało się deaktywować użytkownika"));
     }
 
     @Transactional
-    public void deleteUser(String id) {
+    public void deleteUser(UUID id) {
         userPort.deleteUser(id);
     }
 }

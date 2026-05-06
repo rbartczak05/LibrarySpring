@@ -13,6 +13,12 @@ import java.util.List;
 public class GetLoansByClientResponse {
     @XmlElement(name = "loan", required = true)
     private List<LoanDTO> loans;
-    public List<LoanDTO> getLoanDTO() { return loans; }
-    public void setLoanDTO(List<LoanDTO> loanDTO) { this.loans = loanDTO; }
+
+    public List<LoanDTO> getLoanDTO() {
+        return loans;
+    }
+
+    public void setLoanDTO(List<LoanDTO> loanDTO) {
+        this.loans = loanDTO;
+    }
 }

@@ -5,16 +5,19 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+import java.util.UUID;
+
 @XmlRootElement(name = "GetBookSetByIdRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GetBookSetByIdRequest {
     @XmlElement(required = true)
-    private String id;
+    private UUID id;
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
-    public void setId(String id) {
+
+    public void setId(UUID id) {
         this.id = id;
     }
 }

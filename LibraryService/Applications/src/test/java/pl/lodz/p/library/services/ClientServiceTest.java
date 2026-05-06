@@ -44,7 +44,7 @@ class ClientServiceTest extends BaseServiceTest {
 
     @Test
     void findClientByIdFailNotFoundTest() {
-        Assertions.assertThrows(ClientException.class, () -> clientService.findClientById(UUID.randomUUID().toString()));
+        Assertions.assertThrows(ClientException.class, () -> clientService.findClientById(UUID.randomUUID()));
     }
 
     @Test

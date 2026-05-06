@@ -21,6 +21,8 @@ import pl.lodz.p.user.domain.model.Reader;
 import pl.lodz.p.user.domain.model.User;
 import pl.lodz.p.user.ports.inbound.UserUseCase;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -60,7 +62,7 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
         String refreshToken = request.refreshToken();
-        String userId = jwtService.extractUsername(refreshToken);
+        UUID userId = jwtService.extractUsername(refreshToken);
         User user = userUseCase.findUserById(userId);
 
         if (user != null) {

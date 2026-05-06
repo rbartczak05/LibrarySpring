@@ -47,14 +47,14 @@ public class ClientIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void getClientByIdTest() {
-        String id = createClient("Target", "target@mail.com");
+        UUID id = createClient("Target", "target@mail.com");
 
         given()
                 .when()
-                .get("/clients/{id}", id)
+                .get("/clients/{id}", id.toString())
                 .then()
                 .statusCode(200)
-                .body("id", equalTo(id))
+                .body("id", equalTo(id.toString()))
                 .body("firstName", equalTo("Target"));
     }
 
@@ -75,19 +75,20 @@ public class ClientIntegrationTest extends BaseIntegrationTest {
                 .statusCode(400);
     }
 
-    private String createClient(String firstName, String email) {
+    private UUID createClient(String firstName, String email) {
         ClientDTO client = new ClientDTO();
         client.setFirstName(firstName);
         client.setLastName("Testowy");
         client.setEmail(email);
         client.setAge(20);
 
-        return given()
+        String idStr = given()
                 .contentType(ContentType.JSON)
                 .body(client)
                 .post("/clients")
                 .then()
                 .statusCode(201)
                 .extract().path("id");
+        return UUID.fromString(idStr);
     }
 }

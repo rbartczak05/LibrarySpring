@@ -3,17 +3,25 @@ package pl.lodz.p.library.adapters.mongo.documents;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.UUID;
+
 @Document(collection = "clients")
 public class ClientDoc {
     public static final int maxLoans = 5;
 
     @Id
-    private String id;
+    private UUID id;
+
     private String firstName;
+
     private String lastName;
+
     private String email;
+
     private int age;
+
     private boolean active;
+
     private int currentLoansCount = 0;
 
     public ClientDoc(String firstName, String lastName, String email, int age) {
@@ -27,11 +35,11 @@ public class ClientDoc {
     public ClientDoc() {
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

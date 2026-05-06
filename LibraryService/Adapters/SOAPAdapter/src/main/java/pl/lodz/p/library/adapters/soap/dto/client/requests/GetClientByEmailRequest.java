@@ -10,6 +10,12 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 public class GetClientByEmailRequest {
     @XmlElement(required = true)
     private String email;
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

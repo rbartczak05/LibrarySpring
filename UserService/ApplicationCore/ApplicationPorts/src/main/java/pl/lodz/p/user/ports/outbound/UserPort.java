@@ -4,9 +4,10 @@ import pl.lodz.p.user.domain.model.User;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface UserPort {
-    Optional<User> findUserById(String id);
+    Optional<User> findUserById(UUID id);
 
     Optional<User> findUserByLogin(String login);
 
@@ -26,13 +27,13 @@ public interface UserPort {
 
     Optional<User> addUser(User user);
 
-    Optional<User> updateUser(String id, User userUpdates);
+    Optional<User> updateUser(UUID id, User userUpdates);
 
-    Optional<User> activateUser(String id);
+    Optional<User> activateUser(UUID id);
 
-    Optional<User> deactivateUser(String id);
+    Optional<User> deactivateUser(UUID id);
 
-    void deleteUser(String id);
+    void deleteUser(UUID id);
 
     void deleteAll();
 }

@@ -9,7 +9,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDateTime;
 
 public class LoanSoapConverter {
-    private LoanSoapConverter() {}
+    private LoanSoapConverter() {
+    }
 
     public static LoanDTO toDTO(Loan loan) {
         if (loan == null) return null;

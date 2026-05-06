@@ -10,6 +10,7 @@ import pl.lodz.p.library.ports.outbound.JwtPort;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Service
@@ -24,7 +25,7 @@ public class JwtSoapService implements JwtPort {
     }
 
     @Override
-    public boolean verifySignature(String id, String token) {
+    public boolean verifySignature(UUID id, String token) {
         try {
             return extractUsername(token).equals(id);
         } catch (Exception e) {

@@ -37,14 +37,14 @@ public class JwtSoapService implements JwtPort {
     }
 
     @Override
-    public String generateSignatureForId(String id) {
+    public String generateSignatureForId(UUID id) {
         return Jwts.builder().subject(id)
                 .signWith(getSignInKey(), Jwts.SIG.HS256)
                 .compact();
     }
 
     @Override
-    public boolean verifySignature(String id, String token) {
+    public boolean verifySignature(UUID id, String token) {
         try {
             return extractUsername(token).equals(id);
         } catch (Exception e) {

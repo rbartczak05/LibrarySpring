@@ -10,6 +10,7 @@ import pl.lodz.p.library.ports.outbound.BookSetPort;
 import pl.lodz.p.library.ports.outbound.LoanPort;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class BookSetService implements BookSetUseCase {
@@ -22,7 +23,7 @@ public class BookSetService implements BookSetUseCase {
         this.loanPort = loanPort;
     }
 
-    public BookSet findBookSetById(String id) {
+    public BookSet findBookSetById(UUID id) {
         return bookSetPort.findById(id)
                 .orElseThrow(() -> new BookSetException("Książka o ID: " + id + " nie znaleziona."));
     }
@@ -61,14 +62,17 @@ public class BookSetService implements BookSetUseCase {
     }
 
     @Transactional
-    public BookSet updateBookSet(String id, BookSet bookSetUpdates) {
+    public BookSet updateBookSet(UUID id, BookSet bookSetUpdates) {
         BookSet existingBookSet = findBookSetById(id);
+        existingBookSet.setTitle(bookSetUpdates.getTitle());
+        existingBookSet.setAuthor(bookSetUpdates.getAuthor());
+        existingBookSet.setReleaseYear(bookSetUpdates.getReleaseYear());
         existingBookSet.setQuantity(bookSetUpdates.getQuantity());
         return bookSetPort.save(existingBookSet);
     }
 
     @Transactional
-    public void deleteBookSet(String id) {
+    public void deleteBookSet(UUID id) {
         if (!loanPort.findByBookSetIdAndActive(id, true).isEmpty()) {
             throw new BookSetException("Nie można usunąć książki, która jest obecnie wypożyczona.");
         }

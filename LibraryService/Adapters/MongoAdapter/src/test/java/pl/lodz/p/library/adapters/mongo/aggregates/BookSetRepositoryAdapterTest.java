@@ -13,8 +13,10 @@ import pl.lodz.p.library.domain.model.BookSet;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -39,12 +41,15 @@ class BookSetRepositoryAdapterTest {
 
     @Test
     void findById() {
+        UUID id = UUID.randomUUID();
         BookSetDoc doc = new BookSetDoc("T", "A", 2000, 1);
-        doc.setId("1");
-        when(repository.findById("1")).thenReturn(Optional.of(doc));
-        Optional<BookSet> result = adapter.findById("1");
+        doc.setId(id);
+        when(repository.findById(id)).thenReturn(Optional.of(doc));
+
+        Optional<BookSet> result = adapter.findById(id);
+
         assertTrue(result.isPresent());
-        assertEquals("1", result.get().getId());
+        assertEquals(id, result.get().getId());
     }
 
     @Test
@@ -93,9 +98,7 @@ class BookSetRepositoryAdapterTest {
     void findByQuantityLessThan() {
         BookSetDoc doc1 = new BookSetDoc("T1", "A", 2000, 1);
         when(repository.findByQuantityLessThan(3)).thenReturn(List.of(doc1));
-
         List<BookSet> result = adapter.findByQuantityLessThan(3);
-
         assertEquals(1, result.size());
         assertEquals("T1", result.getFirst().getTitle());
     }
@@ -123,27 +126,30 @@ class BookSetRepositoryAdapterTest {
 
     @Test
     void addBookSet() {
+        UUID id = UUID.randomUUID();
         BookSet domain = new BookSet("T", "A", 2000, 1);
         BookSetDoc doc = new BookSetDoc("T", "A", 2000, 1);
-        doc.setId("1");
+        doc.setId(id);
 
         when(repository.save(any(BookSetDoc.class))).thenReturn(doc);
 
         Optional<BookSet> result = adapter.addBookSet(domain);
+
         assertTrue(result.isPresent());
-        assertEquals("1", result.get().getId());
+        assertEquals(id, result.get().getId());
     }
 
     @Test
     void updateBookSet() {
+        UUID id = UUID.randomUUID();
         BookSetDoc existing = new BookSetDoc("T", "A", 2000, 1);
-        existing.setId("1");
+        existing.setId(id);
         BookSet updates = new BookSet("T", "A", 2000, 5);
 
-        when(repository.findById("1")).thenReturn(Optional.of(existing));
+        when(repository.findById(id)).thenReturn(Optional.of(existing));
         when(repository.save(any(BookSetDoc.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        Optional<BookSet> result = adapter.updateBookSet("1", updates);
+        Optional<BookSet> result = adapter.updateBookSet(id, updates);
 
         assertTrue(result.isPresent());
         assertEquals(5, result.get().getQuantity());
@@ -151,19 +157,22 @@ class BookSetRepositoryAdapterTest {
 
     @Test
     void save() {
+        UUID id = UUID.randomUUID();
         BookSet domain = new BookSet("T", "A", 2000, 1);
         BookSetDoc doc = new BookSetDoc("T", "A", 2000, 1);
-        doc.setId("1");
+        doc.setId(id);
 
         when(repository.save(any(BookSetDoc.class))).thenReturn(doc);
 
         BookSet result = adapter.save(domain);
-        assertEquals("1", result.getId());
+
+        assertEquals(id, result.getId());
     }
 
     @Test
     void deleteBookSet() {
-        adapter.deleteBookSet("1");
-        verify(repository, times(1)).deleteById("1");
+        UUID id = UUID.randomUUID();
+        adapter.deleteBookSet(id);
+        verify(repository, times(1)).deleteById(id);
     }
 }

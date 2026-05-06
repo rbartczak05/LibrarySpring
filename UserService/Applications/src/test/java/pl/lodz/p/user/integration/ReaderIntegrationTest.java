@@ -62,7 +62,7 @@ public class ReaderIntegrationTest extends BaseIntegrationTest {
                 .get("/readers/{id}", id)
                 .then()
                 .statusCode(200)
-                .extract().header("If-Match");
+                .extract().header("ETag");
 
         given()
                 .header("If-Match", eTag)

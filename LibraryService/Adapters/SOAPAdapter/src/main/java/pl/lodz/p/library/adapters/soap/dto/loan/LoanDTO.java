@@ -6,12 +6,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.*;
 
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.UUID;
 
 @XmlType(name = "loanDTO")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LoanDTO {
     @XmlElement(name = "id", required = true)
-    private String id;
+    private UUID id;
 
     @NotNull(message = "Stan wypożyczenia nie może być pusty.")
     @XmlElement(name = "active", required = true)
@@ -34,16 +35,16 @@ public class LoanDTO {
 
     @NotBlank(message = "ID klienta jest wymagane do utworzenia wypożyczenia.")
     @XmlElement(name = "clientId", required = true)
-    private String clientId;
+    private UUID clientId;
 
     @NotBlank(message = "ID książki jest wymagane do utworzenia wypożyczenia.")
     @XmlElement(name = "bookSetId", required = true)
-    private String bookSetId;
+    private UUID bookSetId;
 
     public LoanDTO() {
     }
 
-    public LoanDTO(String id, boolean active, XMLGregorianCalendar startTime, XMLGregorianCalendar endTime, XMLGregorianCalendar returnTime, String clientId, String bookSetId) {
+    public LoanDTO(UUID id, boolean active, XMLGregorianCalendar startTime, XMLGregorianCalendar endTime, XMLGregorianCalendar returnTime, UUID clientId, UUID bookSetId) {
         this.id = id;
         this.active = active;
         this.startTime = startTime;
@@ -53,11 +54,11 @@ public class LoanDTO {
         this.bookSetId = bookSetId;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -93,19 +94,19 @@ public class LoanDTO {
         this.endTime = endTime;
     }
 
-    public String getBookSetId() {
+    public UUID getBookSetId() {
         return bookSetId;
     }
 
-    public void setBookSetId(String bookSetId) {
+    public void setBookSetId(UUID bookSetId) {
         this.bookSetId = bookSetId;
     }
 
-    public String getClientId() {
+    public UUID getClientId() {
         return clientId;
     }
 
-    public void setClientId(String clientId) {
+    public void setClientId(UUID clientId) {
         this.clientId = clientId;
     }
 }

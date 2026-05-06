@@ -1,16 +1,15 @@
 package pl.lodz.p.library.adapters.mongo.documents;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.UUID;
 
 @Document(collection = "booksets")
 public class BookSetDoc {
 
     @Id
-    private String id;
+    private UUID id;
     private String title;
     private String author;
     private int releaseYear;
@@ -26,11 +25,11 @@ public class BookSetDoc {
     public BookSetDoc() {
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

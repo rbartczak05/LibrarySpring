@@ -65,8 +65,7 @@ class LoanServiceTest extends BaseServiceTest {
     }
 
     @Test
-    void endLoanTest() {
-        Loan savedLoan = loanService.createLoan(client1.getId(), book1.getId());
+    void endLoanTest() {Loan savedLoan = loanService.createLoan(client1.getId(), book1.getId());
 
         loanService.endLoan(savedLoan.getId());
 

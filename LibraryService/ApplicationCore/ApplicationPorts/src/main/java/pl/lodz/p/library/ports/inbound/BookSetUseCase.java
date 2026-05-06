@@ -3,9 +3,10 @@ package pl.lodz.p.library.ports.inbound;
 import pl.lodz.p.library.domain.model.BookSet;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface BookSetUseCase {
-    BookSet findBookSetById(String id);
+    BookSet findBookSetById(UUID id);
 
     List<BookSet> findBookSetsByTitle(String title);
 
@@ -21,7 +22,7 @@ public interface BookSetUseCase {
 
     BookSet addBookSet(BookSet bookSet);
 
-    BookSet updateBookSet(String id, BookSet bookSetUpdates);
+    BookSet updateBookSet(UUID id, BookSet bookSetUpdates);
 
-    void deleteBookSet(String id);
+    void deleteBookSet(UUID id);
 }

@@ -44,7 +44,7 @@ class UserEndpointTest {
         client = MockWebServiceClient.createClient(context);
     }
 
-    private Reader buildReader(String id, String login) {
+    private Reader buildReader(UUID id, String login) {
         Reader r = new Reader(login, "pass", "test@example.com", "Tomasz", "Zieliński", 25);
         r.setId(id);
         r.setActive(true);

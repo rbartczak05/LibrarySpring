@@ -1,16 +1,21 @@
 package pl.lodz.p.library.adapters.soap.dto.client;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlType;
 
+import java.util.UUID;
+
 @XmlType(name = "clientDTO")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ClientDTO {
     @XmlElement(name = "id")
-    private String id;
+    private UUID id;
 
     @NotBlank(message = "Imię nie może być puste")
     @XmlElement(name = "firstName", required = true)
@@ -39,11 +44,11 @@ public class ClientDTO {
     public ClientDTO() {
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

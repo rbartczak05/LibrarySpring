@@ -5,17 +5,19 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+import java.util.UUID;
+
 @XmlRootElement(name = "GetLoansByClientRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GetLoansByClientRequest {
     @XmlElement(name = "clientId", required = true)
-    private String clientId;
+    private UUID clientId;
 
-    public String getClientId() {
+    public UUID getClientId() {
         return clientId;
     }
 
-    public void setClientId(String clientId) {
+    public void setClientId(UUID clientId) {
         this.clientId = clientId;
     }
 }

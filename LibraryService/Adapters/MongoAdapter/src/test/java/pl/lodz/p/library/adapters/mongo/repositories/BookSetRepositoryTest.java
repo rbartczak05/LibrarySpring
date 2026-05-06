@@ -14,6 +14,7 @@ import pl.lodz.p.library.adapters.mongo.TestMongoConfig;
 import pl.lodz.p.library.adapters.mongo.documents.BookSetDoc;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -31,8 +32,13 @@ class BookSetRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        bookSetRepository.save(new BookSetDoc("Test Title", "Test Author", 2020, 5));
-        bookSetRepository.save(new BookSetDoc("Another Title", "Another Author", 2021, 0));
+        BookSetDoc book1 = new BookSetDoc("Test Title", "Test Author", 2020, 5);
+        book1.setId(UUID.randomUUID());
+        bookSetRepository.save(book1);
+
+        BookSetDoc book2 = new BookSetDoc("Another Title", "Another Author", 2021, 0);
+        book2.setId(UUID.randomUUID());
+        bookSetRepository.save(book2);
     }
 
     @AfterEach

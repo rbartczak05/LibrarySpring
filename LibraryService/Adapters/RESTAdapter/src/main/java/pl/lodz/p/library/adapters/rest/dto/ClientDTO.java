@@ -1,12 +1,17 @@
 package pl.lodz.p.library.adapters.rest.dto;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 
+import java.util.UUID;
+
 @Relation(collectionRelation = "clients", itemRelation = "client")
 public class ClientDTO extends RepresentationModel<ClientDTO> {
-    private String id;
+    private UUID id;
 
     @NotBlank(message = "Imię nie może być puste")
     private String firstName;
@@ -28,11 +33,11 @@ public class ClientDTO extends RepresentationModel<ClientDTO> {
     public ClientDTO() {
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

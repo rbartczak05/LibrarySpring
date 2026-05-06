@@ -6,11 +6,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.Id;
 
+import java.util.UUID;
+
 public class BookSetDTO {
 
     @Id
     @Nullable
-    private String id;
+    private UUID id;
 
     @NotBlank(message = "Tytuł książki nie może być pusty.")
     private String title;
@@ -26,7 +28,7 @@ public class BookSetDTO {
     @Min(value = 0, message = "Ilość sztuk na stanie musi być 0 lub większa.")
     private int quantity;
 
-    public BookSetDTO(String id, String title, String author, int releaseYear, int quantity) {
+    public BookSetDTO(UUID id, String title, String author, int releaseYear, int quantity) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -38,11 +40,11 @@ public class BookSetDTO {
 
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

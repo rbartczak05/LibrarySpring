@@ -5,9 +5,10 @@ import org.springframework.stereotype.Repository;
 import pl.lodz.p.library.adapters.mongo.documents.BookSetDoc;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface BookSetRepository extends MongoRepository<BookSetDoc, String> {
+public interface BookSetRepository extends MongoRepository<BookSetDoc, UUID> {
     List<BookSetDoc> findBookByTitle(String title);
 
     List<BookSetDoc> findBooksByAuthor(String author);

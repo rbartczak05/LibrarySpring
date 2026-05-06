@@ -5,8 +5,10 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.UUID;
+
 public abstract class UserDTO {
-    private String id;
+    private UUID id;
 
     @NotBlank
     @Size(min = 3, max = 20)
@@ -43,11 +45,11 @@ public abstract class UserDTO {
     public UserDTO() {
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

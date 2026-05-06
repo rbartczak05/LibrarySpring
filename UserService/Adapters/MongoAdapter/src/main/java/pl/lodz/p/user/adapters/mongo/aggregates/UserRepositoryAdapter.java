@@ -18,6 +18,7 @@ import pl.lodz.p.user.ports.outbound.UserPort;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -51,7 +52,7 @@ public class UserRepositoryAdapter implements UserPort {
     }
 
     @Override
-    public Optional<User> findUserById(String id) {
+    public Optional<User> findUserById(UUID id) {
         return repository.findById(id).map(this::toDomain);
     }
 
@@ -102,7 +103,7 @@ public class UserRepositoryAdapter implements UserPort {
     }
 
     @Override
-    public Optional<User> updateUser(String id, User userUpdates) {
+    public Optional<User> updateUser(UUID id, User userUpdates) {
         return repository.findById(id).map(existing -> {
             existing.setLogin(userUpdates.getLogin());
             existing.setEmail(userUpdates.getEmail());
@@ -115,7 +116,7 @@ public class UserRepositoryAdapter implements UserPort {
     }
 
     @Override
-    public Optional<User> activateUser(String id) {
+    public Optional<User> activateUser(UUID id) {
         return repository.findById(id).map(existing -> {
             existing.setActive(true);
             return toDomain(repository.save(existing));
@@ -123,7 +124,7 @@ public class UserRepositoryAdapter implements UserPort {
     }
 
     @Override
-    public Optional<User> deactivateUser(String id) {
+    public Optional<User> deactivateUser(UUID id) {
         return repository.findById(id).map(existing -> {
             existing.setActive(false);
             return toDomain(repository.save(existing));
@@ -131,7 +132,7 @@ public class UserRepositoryAdapter implements UserPort {
     }
 
     @Override
-    public void deleteUser(String id) {
+    public void deleteUser(UUID id) {
         repository.deleteById(id);
     }
 

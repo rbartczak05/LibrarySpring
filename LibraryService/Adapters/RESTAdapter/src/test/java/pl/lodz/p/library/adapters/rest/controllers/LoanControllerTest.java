@@ -11,19 +11,19 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.lodz.p.library.adapters.rest.dto.LoanDTO;
 import pl.lodz.p.library.adapters.rest.security.JwtService;
-import pl.lodz.p.library.domain.model.Loan;
 import pl.lodz.p.library.domain.model.Client;
-import pl.lodz.p.library.ports.inbound.LoanUseCase;
+import pl.lodz.p.library.domain.model.Loan;
 import pl.lodz.p.library.ports.inbound.ClientUseCase;
+import pl.lodz.p.library.ports.inbound.LoanUseCase;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.UUID;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest(LoanController.class)
@@ -45,21 +45,28 @@ public class LoanControllerTest {
     private Loan loan;
     private LoanDTO loanDTO;
     private Client client;
+    private UUID clientId;
+    private UUID loanId;
+    private UUID bookSetId;
 
     @BeforeEach
     void setUp() {
         RestAssuredMockMvc.mockMvc(mockMvc);
 
-        client = new Client("Jan", "Kowalski", "jan@test.pl", 25);
-        client.setId("client1");
+        clientId = UUID.randomUUID();
+        loanId = UUID.randomUUID();
+        bookSetId = UUID.randomUUID();
 
-        loan = new Loan("client1", "book1", LocalDateTime.now());
-        loan.setId("loan1");
+        client = new Client("Jan", "Kowalski", "jan@test.pl", 25);
+        client.setId(clientId);
+
+        loan = new Loan(clientId, bookSetId, LocalDateTime.now());
+        loan.setId(loanId);
 
         loanDTO = new LoanDTO();
-        loanDTO.setId("loan1");
-        loanDTO.setClientId("client1");
-        loanDTO.setBookSetId("book1");
+        loanDTO.setId(loanId);
+        loanDTO.setClientId(clientId);
+        loanDTO.setBookSetId(bookSetId);
         loanDTO.setActive(true);
         loanDTO.setStartTime(loan.getStartTime());
         loanDTO.setEndTime(loan.getEndTime());
@@ -81,40 +88,40 @@ public class LoanControllerTest {
     @Test
     @WithMockUser
     void getLoanById_ShouldReturnLoan() {
-        when(loanUseCase.findLoanById("loan1")).thenReturn(loan);
+        when(loanUseCase.findLoanById(loanId)).thenReturn(loan);
 
         given()
                 .when()
-                .get("/loans/loan1")
+                .get("/loans/" + loanId.toString())
                 .then()
                 .status(org.springframework.http.HttpStatus.OK)
-                .body("id", equalTo("loan1"));
+                .body("id", equalTo(loanId.toString()));
     }
 
     @Test
     @WithMockUser
     void createLoan_ShouldCreateLoan() {
-        when(loanUseCase.createLoan(anyString(), anyString(), any())).thenReturn(loan);
+        when(loanUseCase.createLoan(any(UUID.class), any(UUID.class), any())).thenReturn(loan);
 
         given()
-                .queryParam("clientId", "client1")
-                .queryParam("bookSetId", "book1")
+                .queryParam("clientId", clientId.toString())
+                .queryParam("bookSetId", bookSetId.toString())
                 .when()
                 .post("/loans")
                 .then()
                 .status(org.springframework.http.HttpStatus.CREATED)
-                .body("id", equalTo("loan1"));
+                .body("id", equalTo(loanId.toString()));
     }
 
     @Test
     @WithMockUser
     void endLoan_ShouldEndLoan() {
         loan.setActive(false);
-        when(loanUseCase.endLoan("loan1")).thenReturn(loan);
+        when(loanUseCase.endLoan(loanId)).thenReturn(loan);
 
         given()
                 .when()
-                .post("/loans/loan1/end")
+                .post("/loans/" + loanId.toString() + "/end")
                 .then()
                 .status(org.springframework.http.HttpStatus.OK)
                 .body("active", equalTo(false));

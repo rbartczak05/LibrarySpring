@@ -15,6 +15,7 @@ import pl.lodz.p.library.domain.model.BookSet;
 import pl.lodz.p.library.ports.inbound.BookSetUseCase;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -36,16 +37,18 @@ public class BookSetControllerTest {
 
     private BookSet bookSet;
     private BookSetDTO bookSetDTO;
+    private UUID bookSetId;
 
     @BeforeEach
     void setUp() {
         RestAssuredMockMvc.mockMvc(mockMvc);
+        bookSetId = UUID.randomUUID();
 
         bookSet = new BookSet("The Witcher", "Andrzej Sapkowski", 1990, 5);
-        bookSet.setId("book1");
+        bookSet.setId(bookSetId);
 
         bookSetDTO = new BookSetDTO();
-        bookSetDTO.setId("book1");
+        bookSetDTO.setId(bookSetId);
         bookSetDTO.setTitle("The Witcher");
         bookSetDTO.setAuthor("Andrzej Sapkowski");
         bookSetDTO.setReleaseYear(1990);
@@ -68,11 +71,11 @@ public class BookSetControllerTest {
     @Test
     @WithMockUser
     void getBookSetById_ShouldReturnBookSet() {
-        when(bookSetUseCase.findBookSetById("book1")).thenReturn(bookSet);
+        when(bookSetUseCase.findBookSetById(bookSetId)).thenReturn(bookSet);
 
         given()
                 .when()
-                .get("/book_set/book1")
+                .get("/book_set/" + bookSetId.toString())
                 .then()
                 .status(org.springframework.http.HttpStatus.OK)
                 .body("title", equalTo("The Witcher"));

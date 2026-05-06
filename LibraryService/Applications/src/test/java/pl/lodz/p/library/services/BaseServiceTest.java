@@ -25,9 +25,12 @@ public abstract class BaseServiceTest {
     @LocalServerPort
     protected int port;
 
-    @Autowired protected ClientPort clientPort;
-    @Autowired protected BookSetPort bookSetPort;
-    @Autowired protected LoanPort loanPort;
+    @Autowired
+    protected ClientPort clientPort;
+    @Autowired
+    protected BookSetPort bookSetPort;
+    @Autowired
+    protected LoanPort loanPort;
 
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry registry) {

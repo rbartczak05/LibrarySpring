@@ -4,19 +4,20 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Document(collection = "loans")
 public class LoanDoc {
     @Id
-    private String id;
+    private UUID id;
     private boolean active;
     private LocalDateTime startTime;
     private LocalDateTime returnTime;
     private LocalDateTime endTime;
-    private String clientId;
-    private String bookSetId;
+    private UUID clientId;
+    private UUID bookSetId;
 
-    public LoanDoc(String clientId, String bookSetId, LocalDateTime startTime) {
+    public LoanDoc(UUID clientId, UUID bookSetId, LocalDateTime startTime) {
         this.active = true;
         this.startTime = startTime;
         this.returnTime = null;
@@ -28,11 +29,11 @@ public class LoanDoc {
     public LoanDoc() {
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -68,19 +69,19 @@ public class LoanDoc {
         this.endTime = endTime;
     }
 
-    public String getClientId() {
+    public UUID getClientId() {
         return clientId;
     }
 
-    public void setClientId(String clientId) {
+    public void setClientId(UUID clientId) {
         this.clientId = clientId;
     }
 
-    public String getBookSetId() {
+    public UUID getBookSetId() {
         return bookSetId;
     }
 
-    public void setBookSetId(String bookSetId) {
+    public void setBookSetId(UUID bookSetId) {
         this.bookSetId = bookSetId;
     }
 }

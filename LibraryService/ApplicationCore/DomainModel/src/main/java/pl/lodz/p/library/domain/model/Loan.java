@@ -1,10 +1,12 @@
 package pl.lodz.p.library.domain.model;
 
 import pl.lodz.p.library.domain.exceptions.LoanException;
+
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class Loan {
-    private String id;
+    private UUID id;
 
     private boolean active;
 
@@ -14,11 +16,11 @@ public class Loan {
 
     private LocalDateTime endTime;
 
-    private String clientId;
+    private UUID clientId;
 
-    private String bookSetId;
+    private UUID bookSetId;
 
-    public Loan(String clientId, String bookSetId, LocalDateTime startTime) {
+    public Loan(UUID clientId, UUID bookSetId, LocalDateTime startTime) {
         this.active = true;
         this.startTime = startTime;
         this.returnTime = null;
@@ -27,18 +29,18 @@ public class Loan {
         this.bookSetId = bookSetId;
     }
 
-    public Loan(String clientId, String bookSetId) {
+    public Loan(UUID clientId, UUID bookSetId) {
         this(clientId, bookSetId, LocalDateTime.now());
     }
 
     public Loan() {
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -86,19 +88,19 @@ public class Loan {
         this.endTime = endTime;
     }
 
-    public String getClientId() {
+    public UUID getClientId() {
         return clientId;
     }
 
-    public void setClientId(String clientId) {
+    public void setClientId(UUID clientId) {
         this.clientId = clientId;
     }
 
-    public String getBookSetId() {
+    public UUID getBookSetId() {
         return bookSetId;
     }
 
-    public void setBookSetId(String bookSetId) {
+    public void setBookSetId(UUID bookSetId) {
         this.bookSetId = bookSetId;
     }
 

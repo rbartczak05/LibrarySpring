@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import pl.lodz.p.library.adapters.mongo.documents.BookSetDoc;
 import pl.lodz.p.library.domain.model.BookSet;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class BookSetMapperTest {
@@ -12,13 +14,14 @@ class BookSetMapperTest {
 
     @Test
     void toDomain() {
+        UUID id = UUID.randomUUID();
         BookSetDoc doc = new BookSetDoc("Title", "Author", 2020, 5);
-        doc.setId("1");
+        doc.setId(id);
 
         BookSet domain = mapper.toDomain(doc);
 
         assertNotNull(domain);
-        assertEquals("1", domain.getId());
+        assertEquals(id, domain.getId());
         assertEquals("Title", domain.getTitle());
         assertEquals("Author", domain.getAuthor());
         assertEquals(2020, domain.getReleaseYear());
@@ -32,13 +35,14 @@ class BookSetMapperTest {
 
     @Test
     void toDocument() {
+        UUID id = UUID.randomUUID();
         BookSet domain = new BookSet("Title", "Author", 2020, 5);
-        domain.setId("1");
+        domain.setId(id);
 
         BookSetDoc doc = mapper.toDocument(domain);
 
         assertNotNull(doc);
-        assertEquals("1", doc.getId());
+        assertEquals(id, doc.getId());
         assertEquals("Title", doc.getTitle());
         assertEquals("Author", doc.getAuthor());
         assertEquals(2020, doc.getReleaseYear());

@@ -20,8 +20,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Map<String, String>> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         Map<String, String> errors = new HashMap<>();
-        if (ex.getCause() instanceof InvalidFormatException) {
-            InvalidFormatException iex = (InvalidFormatException) ex.getCause();
+        if (ex.getCause() instanceof InvalidFormatException iex) {
             String fieldName = iex.getPath().stream().map(ref -> ref.getFieldName()).findFirst().orElse("pole");
             if (iex.getTargetType().equals(java.time.LocalDateTime.class) || iex.getTargetType().equals(java.time.LocalDate.class)) {
                 errors.put(fieldName, "Niepoprawny format daty. Oczekiwany: yyyy-MM-dd'T'HH:mm:ss (np. 2024-01-01T12:00:00)");

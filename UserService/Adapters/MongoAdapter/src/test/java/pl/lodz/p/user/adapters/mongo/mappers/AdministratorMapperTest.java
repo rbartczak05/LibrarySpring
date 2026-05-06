@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import pl.lodz.p.user.adapters.mongo.documents.AdministratorDoc;
 import pl.lodz.p.user.domain.model.Administrator;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class AdministratorMapperTest {
@@ -13,12 +15,15 @@ class AdministratorMapperTest {
     @Test
     void toDomain() {
         AdministratorDoc doc = new AdministratorDoc("admin1", "pass", "admin@test.pl", "Jan", "Kowalski", 30, true);
-        doc.setId("1");
+        UUID id = UUID.randomUUID();
+        doc.setId(id);
+
+        assertEquals(id, doc.getId());
 
         Administrator admin = mapper.toDomain(doc);
 
         assertNotNull(admin);
-        assertEquals("1", admin.getId());
+        assertEquals(id, admin.getId());
         assertEquals("admin1", admin.getLogin());
         assertEquals("pass", admin.getPassword());
         assertEquals("admin@test.pl", admin.getEmail());
@@ -36,13 +41,16 @@ class AdministratorMapperTest {
     @Test
     void toDocument() {
         Administrator admin = new Administrator("admin1", "pass", "admin@test.pl", "Jan", "Kowalski", 30);
-        admin.setId("1");
+        UUID id = UUID.randomUUID();
+        admin.setId(id);
         admin.setActive(true);
+
+        assertEquals(id, admin.getId());
 
         AdministratorDoc doc = mapper.toDocument(admin);
 
         assertNotNull(doc);
-        assertEquals("1", doc.getId());
+        assertEquals(id, doc.getId());
         assertEquals("admin1", doc.getLogin());
         assertEquals("pass", doc.getPassword());
         assertEquals("admin@test.pl", doc.getEmail());

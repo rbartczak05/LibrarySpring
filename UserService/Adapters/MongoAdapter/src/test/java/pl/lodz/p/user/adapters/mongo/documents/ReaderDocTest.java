@@ -2,6 +2,8 @@ package pl.lodz.p.user.adapters.mongo.documents;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -10,9 +12,10 @@ class ReaderDocTest {
     @Test
     void testReaderDoc() {
         ReaderDoc doc = new ReaderDoc("reader1", "pass", "reader@test.pl", "Piotr", "Wiśniewski", 25, true);
-        doc.setId("123");
+        UUID id = UUID.randomUUID();
+        doc.setId(id);
 
-        assertEquals("123", doc.getId());
+        assertEquals(id, doc.getId());
         assertEquals("reader1", doc.getLogin());
         assertEquals("pass", doc.getPassword());
         assertEquals("reader@test.pl", doc.getEmail());

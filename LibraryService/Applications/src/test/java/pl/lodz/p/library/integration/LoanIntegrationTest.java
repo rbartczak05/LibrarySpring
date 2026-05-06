@@ -10,35 +10,36 @@ import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.startsWith;
 
 public class LoanIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void createLoanTest() {
-        String bookId = createBookSet(5);
-        String clientId = createClient(true);
+        UUID bookId = createBookSet(5);
+        UUID clientId = createClient(true);
 
         given()
-                .queryParam("clientId", clientId)
-                .queryParam("bookSetId", bookId)
+                .queryParam("clientId", clientId.toString())
+                .queryParam("bookSetId", bookId.toString())
                 .post("/loans")
                 .then()
                 .statusCode(201)
                 .body("active", equalTo(true))
-                .body("clientId", equalTo(clientId))
-                .body("bookSetId", equalTo(bookId));
+                .body("clientId", equalTo(clientId.toString()))
+                .body("bookSetId", equalTo(bookId.toString()));
     }
 
     @Test
     void createLoanFutureDateTest() {
-        String bookId = createBookSet(5);
-        String clientId = createClient(true);
+        UUID bookId = createBookSet(5);
+        UUID clientId = createClient(true);
         String futureDate = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ISO_DATE_TIME);
 
         given()
-                .queryParam("clientId", clientId)
-                .queryParam("bookSetId", bookId)
+                .queryParam("clientId", clientId.toString())
+                .queryParam("bookSetId", bookId.toString())
                 .queryParam("loanStartTime", futureDate)
                 .post("/loans")
                 .then()
@@ -48,18 +49,18 @@ public class LoanIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void endLoanTest() {
-        String bookId = createBookSet(5);
-        String clientId = createClient(true);
+        UUID bookId = createBookSet(5);
+        UUID clientId = createClient(true);
 
-        String loanId = given()
-                .queryParam("clientId", clientId)
-                .queryParam("bookSetId", bookId)
+        String loanIdStr = given()
+                .queryParam("clientId", clientId.toString())
+                .queryParam("bookSetId", bookId.toString())
                 .post("/loans")
                 .then().statusCode(201)
                 .extract().path("id");
 
         given()
-                .post("/loans/{id}/end", loanId)
+                .post("/loans/{id}/end", loanIdStr)
                 .then()
                 .statusCode(200)
                 .body("active", equalTo(false));
@@ -67,12 +68,12 @@ public class LoanIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void createLoanFailBookUnavailableTest() {
-        String bookId = createBookSet(0);
-        String clientId = createClient(true);
+        UUID bookId = createBookSet(0);
+        UUID clientId = createClient(true);
 
         given()
-                .queryParam("clientId", clientId)
-                .queryParam("bookSetId", bookId)
+                .queryParam("clientId", clientId.toString())
+                .queryParam("bookSetId", bookId.toString())
                 .post("/loans")
                 .then()
                 .statusCode(409);
@@ -80,38 +81,39 @@ public class LoanIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void createLoanFailLimitExceededTest() {
-        String bookId = createBookSet(10);
-        String clientId = createClient(true);
+        UUID bookId = createBookSet(10);
+        UUID clientId = createClient(true);
 
         for (int i = 0; i < 5; i++) {
             given()
-                    .queryParam("clientId", clientId)
-                    .queryParam("bookSetId", bookId)
+                    .queryParam("clientId", clientId.toString())
+                    .queryParam("bookSetId", bookId.toString())
                     .post("/loans")
                     .then()
                     .statusCode(201);
         }
 
         given()
-                .queryParam("clientId", clientId)
-                .queryParam("bookSetId", bookId)
+                .queryParam("clientId", clientId.toString())
+                .queryParam("bookSetId", bookId.toString())
                 .post("/loans")
                 .then()
                 .statusCode(409);
     }
 
-    private String createClient(boolean active) {
+    private UUID createClient(boolean active) {
         Client client = new Client("Anna", "Nowak", UUID.randomUUID().toString().substring(0, 8) + "@test.pl", 20);
         client.setActive(active);
         return clientPort.save(client).getId();
     }
 
-    private String createBookSet(int quantity) {
+    private UUID createBookSet(int quantity) {
         BookSetDTO dto = new BookSetDTO();
         dto.setTitle("Title");
         dto.setAuthor("Author");
         dto.setReleaseYear(2020);
         dto.setQuantity(quantity);
-        return given().contentType(ContentType.JSON).body(dto).post("/book_set").then().statusCode(201).extract().path("id");
+        String idStr = given().contentType(ContentType.JSON).body(dto).post("/book_set").then().statusCode(201).extract().path("id");
+        return UUID.fromString(idStr);
     }
 }

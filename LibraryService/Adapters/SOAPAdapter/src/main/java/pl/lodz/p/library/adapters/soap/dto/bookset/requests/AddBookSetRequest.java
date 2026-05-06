@@ -15,6 +15,7 @@ public class AddBookSetRequest {
     public BookSetDTO getBookSetDTO() {
         return bookSetDTO;
     }
+
     public void setBookSetDTO(BookSetDTO bookSetDTO) {
         this.bookSetDTO = bookSetDTO;
     }

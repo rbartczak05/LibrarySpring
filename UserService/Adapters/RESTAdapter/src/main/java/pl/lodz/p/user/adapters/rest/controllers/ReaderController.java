@@ -13,6 +13,7 @@ import pl.lodz.p.user.domain.model.User;
 import pl.lodz.p.user.ports.inbound.UserUseCase;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -36,7 +37,7 @@ public class ReaderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReaderDTO> getReaderById(@PathVariable String id) {
+    public ResponseEntity<ReaderDTO> getReaderById(@PathVariable UUID id) {
         User user = userUseCase.findUserById(id);
         ReaderDTO readerDto = UserConverter.toReaderDTO((Reader) user);
         String signature = jwtService.generateSignatureForId(id);
@@ -54,7 +55,7 @@ public class ReaderController {
 
     @PostMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ReaderDTO updateReader(@PathVariable String id, @RequestHeader(value = "If-Match", required = false) String ifMatch, @Valid @RequestBody ReaderDTO readerDTO) {
+    public ReaderDTO updateReader(@PathVariable UUID id, @RequestHeader(value = "If-Match", required = false) String ifMatch, @Valid @RequestBody ReaderDTO readerDTO) {
         if (ifMatch == null || ifMatch.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Niepoprawny nagłówek.");
         }
@@ -68,7 +69,7 @@ public class ReaderController {
 
     @PostMapping("/{id}/activate")
     @ResponseStatus(HttpStatus.OK)
-    public ReaderDTO activateReader(@PathVariable String id) {
+    public ReaderDTO activateReader(@PathVariable UUID id) {
         User user = userUseCase.findUserById(id);
         if (!(user instanceof Reader)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Użytkownik nie jest czytelnikiem. Nie można aktywować.");
@@ -78,7 +79,7 @@ public class ReaderController {
 
     @PostMapping("/{id}/deactivate")
     @ResponseStatus(HttpStatus.OK)
-    public ReaderDTO deactivateReader(@PathVariable String id) {
+    public ReaderDTO deactivateReader(@PathVariable UUID id) {
         User user = userUseCase.findUserById(id);
         if (!(user instanceof Reader)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Użytkownik nie jest czytelnikiem. Nie można de aktywować.");

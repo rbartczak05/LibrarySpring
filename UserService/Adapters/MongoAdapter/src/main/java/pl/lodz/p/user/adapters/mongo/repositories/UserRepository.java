@@ -7,9 +7,10 @@ import pl.lodz.p.user.adapters.mongo.documents.UserDoc;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface UserRepository extends MongoRepository<UserDoc, String> {
+public interface UserRepository extends MongoRepository<UserDoc, UUID> {
     Optional<UserDoc> findUserByLogin(String login);
 
     Optional<UserDoc> findUserByEmail(String email);

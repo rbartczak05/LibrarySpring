@@ -2,6 +2,8 @@ package pl.lodz.p.user.adapters.mongo.documents;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -10,9 +12,10 @@ class AdministratorDocTest {
     @Test
     void testAdministratorDoc() {
         AdministratorDoc doc = new AdministratorDoc("admin1", "pass", "admin@test.pl", "Jan", "Kowalski", 30, true);
-        doc.setId("123");
+        UUID id = UUID.randomUUID();
+        doc.setId(id);
 
-        assertEquals("123", doc.getId());
+        assertEquals(id, doc.getId());
         assertEquals("admin1", doc.getLogin());
         assertEquals("pass", doc.getPassword());
         assertEquals("admin@test.pl", doc.getEmail());

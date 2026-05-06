@@ -4,7 +4,8 @@ import pl.lodz.p.library.adapters.soap.dto.client.ClientDTO;
 import pl.lodz.p.library.domain.model.Client;
 
 public class ClientSoapConverter {
-    private ClientSoapConverter() {}
+    private ClientSoapConverter() {
+    }
 
     public static ClientDTO toDTO(Client client) {
         if (client == null) return null;

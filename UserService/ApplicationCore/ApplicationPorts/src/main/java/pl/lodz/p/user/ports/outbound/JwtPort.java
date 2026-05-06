@@ -11,7 +11,7 @@ public interface JwtPort {
 
     boolean isTokenValid(String token, UserDetails userDetails);
 
-    String generateSignatureForId(String id);
+    String generateSignatureForId(UUID id);
 
-    boolean verifySignature(String id, String token);
+    boolean verifySignature(UUID id, String token);
 }

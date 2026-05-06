@@ -1,7 +1,9 @@
 package pl.lodz.p.library.domain.model;
 
+import java.util.UUID;
+
 public class BookSet {
-    private String id;
+    private UUID id;
 
     private String title;
 
@@ -21,11 +23,11 @@ public class BookSet {
     public BookSet() {
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

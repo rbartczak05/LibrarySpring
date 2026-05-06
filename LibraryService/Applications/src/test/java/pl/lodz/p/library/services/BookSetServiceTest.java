@@ -45,7 +45,7 @@ class BookSetServiceTest extends BaseServiceTest {
 
     @Test
     void findBookSetByIdFailNotFoundTest() {
-        Assertions.assertThrows(BookSetException.class, () -> bookSetService.findBookSetById(UUID.randomUUID().toString()));
+        Assertions.assertThrows(BookSetException.class, () -> bookSetService.findBookSetById(UUID.randomUUID()));
     }
 
     @Test

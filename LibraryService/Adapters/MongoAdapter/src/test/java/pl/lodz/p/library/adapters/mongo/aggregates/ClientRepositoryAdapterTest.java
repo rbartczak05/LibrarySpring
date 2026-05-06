@@ -13,6 +13,7 @@ import pl.lodz.p.library.domain.model.Client;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,13 +33,15 @@ class ClientRepositoryAdapterTest {
 
     @Test
     void findById() {
+        UUID id = UUID.randomUUID();
         ClientDoc doc = new ClientDoc("Jan", "Kowalski", "jan@test.pl", 20);
-        doc.setId("1");
-        when(repository.findById("1")).thenReturn(Optional.of(doc));
+        doc.setId(id);
+        when(repository.findById(id)).thenReturn(Optional.of(doc));
 
-        Optional<Client> result = adapter.findById("1");
+        Optional<Client> result = adapter.findById(id);
+
         assertTrue(result.isPresent());
-        assertEquals("1", result.get().getId());
+        assertEquals(id, result.get().getId());
         assertEquals("Jan", result.get().getFirstName());
     }
 
@@ -48,26 +51,31 @@ class ClientRepositoryAdapterTest {
                 new ClientDoc("Jan", "Kowalski", "jan@test.pl", 20),
                 new ClientDoc("Anna", "Nowak", "anna@test.pl", 30)
         ));
+
         List<Client> result = adapter.findAll();
+
         assertEquals(2, result.size());
     }
 
     @Test
     void save() {
+        UUID id = UUID.randomUUID();
         Client client = new Client("Jan", "Kowalski", "jan@test.pl", 20);
         ClientDoc doc = new ClientDoc("Jan", "Kowalski", "jan@test.pl", 20);
-        doc.setId("1");
+        doc.setId(id);
 
         when(repository.save(any(ClientDoc.class))).thenReturn(doc);
 
         Client result = adapter.save(client);
+
         assertNotNull(result);
-        assertEquals("1", result.getId());
+        assertEquals(id, result.getId());
     }
 
     @Test
     void deleteById() {
-        adapter.deleteById("1");
-        verify(repository, times(1)).deleteById("1");
+        UUID id = UUID.randomUUID();
+        adapter.deleteById(id);
+        verify(repository, times(1)).deleteById(id);
     }
 }

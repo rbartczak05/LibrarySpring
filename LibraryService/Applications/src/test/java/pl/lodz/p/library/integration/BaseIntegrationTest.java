@@ -34,9 +34,12 @@ public abstract class BaseIntegrationTest {
     @LocalServerPort
     protected int port;
 
-    @Autowired protected ClientPort clientPort;
-    @Autowired protected BookSetPort bookSetPort;
-    @Autowired protected LoanPort loanPort;
+    @Autowired
+    protected ClientPort clientPort;
+    @Autowired
+    protected BookSetPort bookSetPort;
+    @Autowired
+    protected LoanPort loanPort;
 
     @Value("${jwt.secret}")
     private String secretKey;

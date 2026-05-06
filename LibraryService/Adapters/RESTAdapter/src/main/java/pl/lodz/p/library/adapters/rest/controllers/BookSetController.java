@@ -9,6 +9,7 @@ import pl.lodz.p.library.domain.model.BookSet;
 import pl.lodz.p.library.ports.inbound.BookSetUseCase;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -26,7 +27,7 @@ public class BookSetController {
     }
 
     @GetMapping("/{id}")
-    public BookSetDTO getBookSetByID(@PathVariable String id) {
+    public BookSetDTO getBookSetByID(@PathVariable UUID id) {
         return BookSetConverter.toDTO(bookSetUseCase.findBookSetById(id));
     }
 
@@ -66,14 +67,14 @@ public class BookSetController {
 
     @PostMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public BookSetDTO updateBookSet(@PathVariable String id, @Valid @RequestBody BookSetDTO bookSetDTO) {
+    public BookSetDTO updateBookSet(@PathVariable UUID id, @Valid @RequestBody BookSetDTO bookSetDTO) {
         BookSet bookSetUpdates = BookSetConverter.fromDTO(bookSetDTO);
         return BookSetConverter.toDTO(bookSetUseCase.updateBookSet(id, bookSetUpdates));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteBookSet(@PathVariable String id) {
+    public void deleteBookSet(@PathVariable UUID id) {
         bookSetUseCase.deleteBookSet(id);
     }
 }

@@ -7,10 +7,10 @@ import pl.lodz.p.library.ports.inbound.ClientUseCase;
 import pl.lodz.p.library.ports.outbound.ClientPort;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ClientService implements ClientUseCase {
-
     private final ClientPort clientPort;
 
     public ClientService(ClientPort clientPort) {
@@ -18,7 +18,7 @@ public class ClientService implements ClientUseCase {
     }
 
     @Override
-    public Client findClientById(String id) {
+    public Client findClientById(UUID id) {
         return clientPort.findById(id)
                 .orElseThrow(() -> new ClientException("Client with id " + id + " not found."));
     }
@@ -34,7 +34,7 @@ public class ClientService implements ClientUseCase {
     }
 
     @Override
-    public void deleteClient(String id) {
+    public void deleteClient(UUID id) {
         clientPort.deleteById(id);
     }
 }

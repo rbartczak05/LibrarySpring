@@ -2,9 +2,11 @@ package pl.lodz.p.library.domain;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pl.lodz.p.library.domain.exceptions.LoanException;
 import pl.lodz.p.library.domain.exceptions.ClientException;
-import pl.lodz.p.library.domain.model.*;
+import pl.lodz.p.library.domain.exceptions.LoanException;
+import pl.lodz.p.library.domain.model.BookSet;
+import pl.lodz.p.library.domain.model.Client;
+import pl.lodz.p.library.domain.model.Loan;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -43,10 +45,10 @@ class ModelTest {
     @Test
     void loanConstructorTest() {
         Client client = new Client("Jan", "Kowalski", "test@gmail.com", 25);
-        client.setId(UUID.randomUUID().toString());
+        client.setId(UUID.randomUUID());
 
         BookSet book = new BookSet("Testowy Tytuł", "Testowy Autor", 2020, 10);
-        book.setId(UUID.randomUUID().toString());
+        book.setId(UUID.randomUUID());
 
         LocalDateTime before = LocalDateTime.now();
         Loan loan = new Loan(client.getId(), book.getId());
@@ -70,7 +72,7 @@ class ModelTest {
 
     @Test
     void loanSetReturnTimeFailTest() {
-        Loan loan = new Loan(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        Loan loan = new Loan(UUID.randomUUID(), UUID.randomUUID());
         LocalDateTime startTime = loan.getStartTime();
         LocalDateTime beforeStart = startTime.minusDays(1);
 
@@ -79,7 +81,7 @@ class ModelTest {
 
     @Test
     void loanSetEndTimeFailTest() {
-        Loan loan = new Loan(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        Loan loan = new Loan(UUID.randomUUID(), UUID.randomUUID());
         LocalDateTime startTime = loan.getStartTime();
         LocalDateTime beforeStart = startTime.minusDays(1);
 

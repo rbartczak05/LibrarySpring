@@ -15,6 +15,7 @@ import pl.lodz.p.library.domain.model.Client;
 import pl.lodz.p.library.ports.inbound.ClientUseCase;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -37,17 +38,19 @@ public class ClientControllerTest {
 
     private Client client;
     private ClientDTO clientDTO;
+    private UUID clientId;
 
     @BeforeEach
     void setUp() {
         RestAssuredMockMvc.mockMvc(mockMvc);
+        clientId = UUID.randomUUID();
 
         client = new Client("Jan", "Kowalski", "jan@test.pl", 25);
-        client.setId("1");
+        client.setId(clientId);
         client.setActive(true);
 
         clientDTO = new ClientDTO();
-        clientDTO.setId("1");
+        clientDTO.setId(clientId);
         clientDTO.setFirstName("Jan");
         clientDTO.setLastName("Kowalski");
         clientDTO.setEmail("jan@test.pl");
@@ -72,11 +75,11 @@ public class ClientControllerTest {
     @Test
     @WithMockUser
     void getClientById_ShouldReturnClient() {
-        when(clientUseCase.findClientById("1")).thenReturn(client);
+        when(clientUseCase.findClientById(clientId)).thenReturn(client);
 
         given()
                 .when()
-                .get("/clients/1")
+                .get("/clients/" + clientId.toString())
                 .then()
                 .status(org.springframework.http.HttpStatus.OK)
                 .body("firstName", equalTo("Jan"));
@@ -102,7 +105,7 @@ public class ClientControllerTest {
     void deleteClient_ShouldReturnOk() {
         given()
                 .when()
-                .delete("/clients/1")
+                .delete("/clients/" + clientId.toString())
                 .then()
                 .status(org.springframework.http.HttpStatus.OK);
     }

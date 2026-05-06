@@ -11,6 +11,12 @@ import pl.lodz.p.library.adapters.soap.dto.bookset.BookSetDTO;
 public class GetBookSetByIdResponse {
     @XmlElement(required = true)
     private BookSetDTO bookSet;
-    public BookSetDTO getBookSetDTO() { return bookSet; }
-    public void setBookSetDTO(BookSetDTO bookSetDTO) { this.bookSet = bookSetDTO; }
+
+    public BookSetDTO getBookSetDTO() {
+        return bookSet;
+    }
+
+    public void setBookSetDTO(BookSetDTO bookSetDTO) {
+        this.bookSet = bookSetDTO;
+    }
 }

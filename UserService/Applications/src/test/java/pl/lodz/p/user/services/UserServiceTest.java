@@ -37,7 +37,7 @@ class UserServiceTest extends BaseServiceTest {
 
     @Test
     void findUserByIdFailNotFoundTest() {
-        Assertions.assertThrows(UserException.class, () -> userService.findUserById(UUID.randomUUID().toString()));
+        Assertions.assertThrows(UserException.class, () -> userService.findUserById(UUID.randomUUID()));
     }
 
     @Test

@@ -17,6 +17,7 @@ public class GetAllLoansResponse {
     public List<LoanDTO> getLoans() {
         return loans;
     }
+
     public void setLoans(List<LoanDTO> loans) {
         this.loans = loans;
     }

@@ -5,6 +5,7 @@ import pl.lodz.p.library.adapters.mongo.documents.LoanDoc;
 import pl.lodz.p.library.domain.model.Loan;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,12 +15,16 @@ class LoanMapperTest {
 
     @Test
     void toDomain() {
+        UUID id = UUID.randomUUID();
+        UUID clientId = UUID.randomUUID();
+        UUID bookSetId = UUID.randomUUID();
+
         LocalDateTime start = LocalDateTime.of(2023, 1, 1, 10, 0);
         LocalDateTime end = LocalDateTime.of(2023, 2, 1, 10, 0);
         LocalDateTime returned = LocalDateTime.of(2023, 1, 15, 10, 0);
 
-        LoanDoc doc = new LoanDoc("client1", "book1", start);
-        doc.setId("1");
+        LoanDoc doc = new LoanDoc(clientId, bookSetId, start);
+        doc.setId(id);
         doc.setEndTime(end);
         doc.setReturnTime(returned);
         doc.setActive(false);
@@ -27,9 +32,9 @@ class LoanMapperTest {
         Loan loan = mapper.toDomain(doc);
 
         assertNotNull(loan);
-        assertEquals("1", loan.getId());
-        assertEquals("client1", loan.getClientId());
-        assertEquals("book1", loan.getBookSetId());
+        assertEquals(id, loan.getId());
+        assertEquals(clientId, loan.getClientId());
+        assertEquals(bookSetId, loan.getBookSetId());
         assertEquals(start, loan.getStartTime());
         assertEquals(end, loan.getEndTime());
         assertEquals(returned, loan.getReturnTime());
@@ -43,12 +48,16 @@ class LoanMapperTest {
 
     @Test
     void toDocument() {
+        UUID id = UUID.randomUUID();
+        UUID clientId = UUID.randomUUID();
+        UUID bookSetId = UUID.randomUUID();
+
         LocalDateTime start = LocalDateTime.of(2023, 1, 1, 10, 0);
         LocalDateTime end = LocalDateTime.of(2023, 2, 1, 10, 0);
         LocalDateTime returned = LocalDateTime.of(2023, 1, 15, 10, 0);
 
-        Loan loan = new Loan("client1", "book1", start);
-        loan.setId("1");
+        Loan loan = new Loan(clientId, bookSetId, start);
+        loan.setId(id);
         loan.setEndTime(end);
         loan.setReturnTime(returned);
         loan.setActive(false);
@@ -56,9 +65,9 @@ class LoanMapperTest {
         LoanDoc doc = mapper.toDocument(loan);
 
         assertNotNull(doc);
-        assertEquals("1", doc.getId());
-        assertEquals("client1", doc.getClientId());
-        assertEquals("book1", doc.getBookSetId());
+        assertEquals(id, doc.getId());
+        assertEquals(clientId, doc.getClientId());
+        assertEquals(bookSetId, doc.getBookSetId());
         assertEquals(start, doc.getStartTime());
         assertEquals(end, doc.getEndTime());
         assertEquals(returned, doc.getReturnTime());

@@ -10,6 +10,12 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 public class GetClientByLoginRequest {
     @XmlElement(required = true)
     private String login;
-    public String getLogin() { return login; }
-    public void setLogin(String login) { this.login = login; }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
 }

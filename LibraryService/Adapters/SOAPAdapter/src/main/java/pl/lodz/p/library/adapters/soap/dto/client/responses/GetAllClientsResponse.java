@@ -13,6 +13,12 @@ import java.util.List;
 public class GetAllClientsResponse {
     @XmlElement(name = "client", required = true)
     private List<ClientDTO> clients;
-    public List<ClientDTO> getClients() { return clients; }
-    public void setClients(List<ClientDTO> clients) { this.clients = clients; }
+
+    public List<ClientDTO> getClients() {
+        return clients;
+    }
+
+    public void setClients(List<ClientDTO> clients) {
+        this.clients = clients;
+    }
 }

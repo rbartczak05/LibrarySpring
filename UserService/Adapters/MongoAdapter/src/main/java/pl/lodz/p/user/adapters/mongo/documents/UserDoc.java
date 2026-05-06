@@ -3,10 +3,12 @@ package pl.lodz.p.user.adapters.mongo.documents;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.UUID;
+
 @Document(collection = "users")
 public abstract class UserDoc {
     @Id
-    private String id;
+    private UUID id;
     private String login;
     private String password;
     private String email;
@@ -30,11 +32,11 @@ public abstract class UserDoc {
     public UserDoc() {
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

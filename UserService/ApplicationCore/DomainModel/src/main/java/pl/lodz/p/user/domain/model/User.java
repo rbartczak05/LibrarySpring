@@ -1,7 +1,9 @@
 package pl.lodz.p.user.domain.model;
 
+import java.util.UUID;
+
 public abstract class User {
-    private String id;
+    private UUID id;
 
     private String login;
 
@@ -34,11 +36,11 @@ public abstract class User {
     public User() {
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

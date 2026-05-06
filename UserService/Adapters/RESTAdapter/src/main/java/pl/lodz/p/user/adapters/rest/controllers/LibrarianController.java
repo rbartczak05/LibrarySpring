@@ -12,6 +12,7 @@ import pl.lodz.p.user.domain.model.User;
 import pl.lodz.p.user.ports.inbound.UserUseCase;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -35,7 +36,7 @@ public class LibrarianController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LibrarianDTO> getLibrarianById(@PathVariable String id) {
+    public ResponseEntity<LibrarianDTO> getLibrarianById(@PathVariable UUID id) {
         User user = userUseCase.findUserById(id);
         LibrarianDTO librarianDTO = UserConverter.toLibrarianDTO((Librarian) user);
         String signature = jwtService.generateSignatureForId(id);

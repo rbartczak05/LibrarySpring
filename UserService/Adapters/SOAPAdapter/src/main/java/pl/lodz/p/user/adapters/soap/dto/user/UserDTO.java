@@ -4,10 +4,12 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlType;
 
+import java.util.UUID;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "userDTO")
 public class UserDTO {
-    private String id;
+    private UUID id;
     private String login;
     private String email;
     private String firstName;
@@ -16,11 +18,11 @@ public class UserDTO {
     private boolean active;
     private String accessLevel;
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

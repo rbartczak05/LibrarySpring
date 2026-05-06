@@ -13,6 +13,12 @@ import java.util.List;
 public class GetAllBookSetsResponse {
     @XmlElement(name = "bookSet", required = true)
     List<BookSetDTO> bookSets;
-    public List<BookSetDTO> getBookSets() { return bookSets; }
-    public void setBookSets(List<BookSetDTO> bookSets) { this.bookSets = bookSets; }
+
+    public List<BookSetDTO> getBookSets() {
+        return bookSets;
+    }
+
+    public void setBookSets(List<BookSetDTO> bookSets) {
+        this.bookSets = bookSets;
+    }
 }

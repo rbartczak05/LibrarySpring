@@ -10,10 +10,11 @@ import org.springframework.hateoas.server.core.Relation;
 import pl.lodz.p.library.domain.exceptions.LoanException;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Relation(collectionRelation = "loans", itemRelation = "loan")
 public class LoanDTO extends RepresentationModel<LoanDTO> {
-    private String id;
+    private UUID id;
 
     @NotNull(message = "Stan wypożyczenia nie może być pusty.")
     private boolean active;
@@ -34,15 +35,15 @@ public class LoanDTO extends RepresentationModel<LoanDTO> {
     private LocalDateTime endTime;
 
     @NotBlank(message = "ID klienta jest wymagane do utworzenia wypożyczenia.")
-    private String clientId;
+    private UUID clientId;
 
     @NotBlank(message = "ID książki jest wymagane do utworzenia wypożyczenia.")
-    private String bookSetId;
+    private UUID bookSetId;
 
     public LoanDTO() {
     }
 
-    public LoanDTO(String id, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime returnTime, String bookSetId, String clientId) {
+    public LoanDTO(UUID id, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime returnTime, UUID bookSetId, UUID clientId) {
         this.id = id;
         this.active = true;
         this.startTime = startTime;
@@ -52,11 +53,11 @@ public class LoanDTO extends RepresentationModel<LoanDTO> {
         this.bookSetId = bookSetId;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -104,19 +105,19 @@ public class LoanDTO extends RepresentationModel<LoanDTO> {
         this.endTime = endTime;
     }
 
-    public String getClientId() {
+    public UUID getClientId() {
         return clientId;
     }
 
-    public void setClientId(String clientId) {
+    public void setClientId(UUID clientId) {
         this.clientId = clientId;
     }
 
-    public String getBookSetId() {
+    public UUID getBookSetId() {
         return bookSetId;
     }
 
-    public void setBookSetId(String bookSetId) {
+    public void setBookSetId(UUID bookSetId) {
         this.bookSetId = bookSetId;
     }
 }

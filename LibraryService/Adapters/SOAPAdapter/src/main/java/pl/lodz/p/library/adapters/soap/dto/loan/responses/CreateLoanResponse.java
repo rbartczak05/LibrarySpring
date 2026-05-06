@@ -11,6 +11,12 @@ import pl.lodz.p.library.adapters.soap.dto.loan.LoanDTO;
 public class CreateLoanResponse {
     @XmlElement(required = true)
     private LoanDTO loan;
-    public LoanDTO getLoanDTO() { return loan; }
-    public void setLoanDTO(LoanDTO loanDTO) { this.loan = loanDTO; }
+
+    public LoanDTO getLoanDTO() {
+        return loan;
+    }
+
+    public void setLoanDTO(LoanDTO loanDTO) {
+        this.loan = loanDTO;
+    }
 }

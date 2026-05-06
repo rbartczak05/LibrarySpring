@@ -5,34 +5,41 @@ import org.springframework.stereotype.Component;
 import pl.lodz.p.library.domain.model.BookSet;
 import pl.lodz.p.library.domain.model.Client;
 import pl.lodz.p.library.ports.inbound.BookSetUseCase;
+import pl.lodz.p.library.ports.inbound.ClientUseCase;
 import pl.lodz.p.library.ports.inbound.LoanUseCase;
-import pl.lodz.p.library.ports.outbound.ClientPort;
+
+import java.util.UUID;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
     private final BookSetUseCase bookSetUseCase;
     private final LoanUseCase loanUseCase;
-    private final ClientPort clientPort;
+    private final ClientUseCase clientUseCase;
 
-    public DataInitializer(BookSetUseCase bookSetUseCase, LoanUseCase loanUseCase, ClientPort clientPort) {
+    public DataInitializer(BookSetUseCase bookSetUseCase, LoanUseCase loanUseCase, ClientUseCase clientUseCase) {
         this.bookSetUseCase = bookSetUseCase;
         this.loanUseCase = loanUseCase;
-        this.clientPort = clientPort;
+        this.clientUseCase = clientUseCase;
     }
 
     @Override
     public void run(String... args) {
+        if (!clientUseCase.findAllClients().isEmpty()) {
+            return;
+        }
+
         Client jan = new Client("Jan", "Kowalski", "jan@test.pl", 25);
         jan.setActive(true);
-        jan = clientPort.save(jan);
+        jan = clientUseCase.addClient(jan);
 
         Client anna = new Client("Anna", "Nowak", "anna@test.pl", 30);
         anna.setActive(true);
-        anna = clientPort.save(anna);
+        anna = clientUseCase.addClient(anna);
 
         BookSet book1 = new BookSet("Wiedźmin", "Andrzej Sapkowski", 1993, 10);
-        BookSet book2 = new BookSet("Solaris", "Stanisław Lem", 1961, 5);
         book1 = bookSetUseCase.addBookSet(book1);
+
+        BookSet book2 = new BookSet("Solaris", "Stanisław Lem", 1961, 5);
         book2 = bookSetUseCase.addBookSet(book2);
 
         loanUseCase.createLoan(jan.getId(), book1.getId());

@@ -13,6 +13,7 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Service
@@ -34,13 +35,13 @@ public class JwtService implements JwtPort {
         return createToken(new HashMap<>(), userDetails.getUsername(), REFRESH_TOKEN_EXPIRATION);
     }
 
-    public String generateSignatureForId(String id) {
+    public String generateSignatureForId(UUID id) {
         return Jwts.builder().subject(id)
                 .signWith(getSignInKey(), Jwts.SIG.HS256)
                 .compact();
     }
 
-    public boolean verifySignature(String id, String token) {
+    public boolean verifySignature(UUID id, String token) {
         try {
             String extractedId = extractUsername(token);
             return extractedId.equals(id);
