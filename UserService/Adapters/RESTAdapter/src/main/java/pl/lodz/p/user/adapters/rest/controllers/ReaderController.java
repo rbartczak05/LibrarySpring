@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/readers")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ReaderController {
     private final UserUseCase userUseCase;
     private final JwtService jwtService;

@@ -1,38 +1,52 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:8080',
     headers: {
         'Content-Type': 'application/json',
     },
 });
 
-api.interceptors.response.use(
-    (response) => {
-        return response;
+api.interceptors.request.use(
+    (config) => {
+        const url = config.url || '';
+        if (url.startsWith('/auth') || url.startsWith('/readers') || url.startsWith('/admins') || url.startsWith('/librarians')) {
+            config.baseURL = 'http://localhost:8081';
+        } else {
+            config.baseURL = 'http://localhost:8080';
+        }
+
+        const token = sessionStorage.getItem('token');
+        if (token) {
+            config.headers['Authorization'] = `Bearer ${token}`;
+        }
+        return config;
     },
+    (error) => Promise.reject(error)
+);
+
+api.interceptors.response.use(
+    (response) => response,
     async (error) => {
         const originalRequest = error.config;
 
         if (error.response && (error.response.status === 401 || error.response.status === 403) && !originalRequest._retry) {
             originalRequest._retry = true;
-
             const refreshToken = sessionStorage.getItem('refreshToken');
 
             if (refreshToken) {
                 try {
-                    const response = await axios.post('http://localhost:8080/auth/refresh', {
+                    const response = await axios.post('http://localhost:8081/auth/refresh', {
                         refreshToken: refreshToken
                     });
 
-                    const {token} = response.data;
+                    const {accessToken} = response.data;
 
-                    sessionStorage.setItem('token', token);
-
-                    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                    originalRequest.headers['Authorization'] = `Bearer ${token}`;
+                    sessionStorage.setItem('token', accessToken);
+                    api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+                    originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
 
                     return api(originalRequest);
+                    // eslint-disable-next-line no-unused-vars
                 } catch (refreshError) {
                     sessionStorage.removeItem('token');
                     sessionStorage.removeItem('refreshToken');
@@ -45,17 +59,6 @@ api.interceptors.response.use(
         }
         return Promise.reject(error);
     }
-);
-
-api.interceptors.request.use(
-    (config) => {
-        const token = sessionStorage.getItem('token');
-        if (token) {
-            config.headers['Authorization'] = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => Promise.reject(error)
 );
 
 export default api;

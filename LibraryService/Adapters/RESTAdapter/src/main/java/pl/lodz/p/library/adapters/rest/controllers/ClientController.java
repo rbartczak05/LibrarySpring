@@ -19,6 +19,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/clients")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ClientController {
 
     private final ClientUseCase clientUseCase;

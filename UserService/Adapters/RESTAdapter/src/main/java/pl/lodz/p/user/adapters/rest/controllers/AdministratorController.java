@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/admins")
+@CrossOrigin(origins = "http://localhost:5173")
 public class AdministratorController {
     private final UserUseCase userUseCase;
     private final JwtService jwtService;

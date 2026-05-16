@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/librarians")
+@CrossOrigin(origins = "http://localhost:5173")
 public class LibrarianController {
     private final UserUseCase userUseCase;
     private final JwtService jwtService;

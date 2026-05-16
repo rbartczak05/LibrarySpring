@@ -25,6 +25,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/loans")
+@CrossOrigin(origins = "http://localhost:5173")
 public class LoanController {
     private final LoanUseCase loanUseCase;
     private final ClientUseCase clientUseCase;

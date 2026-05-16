@@ -24,9 +24,11 @@ export const AuthProvider = ({children}) => {
         if (token) {
             try {
                 const decoded = jwtDecode(token);
+                // eslint-disable-next-line react-hooks/set-state-in-effect
                 setUser({login: decoded.sub, role: decoded.role});
                 api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            } catch (e) {
+            } catch {
+                // eslint-disable-next-line react-hooks/immutability
                 logout();
             }
         } else {
@@ -38,7 +40,7 @@ export const AuthProvider = ({children}) => {
     const login = async (loginData) => {
         const res = await api.post('/auth/login', loginData);
 
-        const newToken = res.data.token;
+        const newToken = res.data.accessToken;
         const newRefreshToken = res.data.refreshToken;
 
         sessionStorage.setItem('token', newToken);
@@ -64,4 +66,5 @@ export const AuthProvider = ({children}) => {
     );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);

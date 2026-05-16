@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/book_set")
+@CrossOrigin(origins = "http://localhost:5173")
 public class BookSetController {
     private final BookSetUseCase bookSetUseCase;
 
