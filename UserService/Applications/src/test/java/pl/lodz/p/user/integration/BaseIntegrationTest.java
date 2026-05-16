@@ -13,20 +13,40 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.containers.RabbitMQContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.user.adapters.rest.security.JwtService;
 import pl.lodz.p.user.domain.model.Administrator;
 import pl.lodz.p.user.ports.inbound.UserUseCase;
 import pl.lodz.p.user.ports.outbound.UserPort;
 
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.util.Base64;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 public abstract class BaseIntegrationTest {
 
     static final MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest");
+    static final RabbitMQContainer rabbitMQContainer = new RabbitMQContainer("rabbitmq:3-management");
+
+    static String privateKeyBase64;
+    static String publicKeyBase64;
 
     static {
         mongoDBContainer.start();
+        rabbitMQContainer.start();
+
+        try {
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+            keyGen.initialize(2048);
+            KeyPair pair = keyGen.generateKeyPair();
+            privateKeyBase64 = Base64.getEncoder().encodeToString(pair.getPrivate().getEncoded());
+            publicKeyBase64 = Base64.getEncoder().encodeToString(pair.getPublic().getEncoded());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @LocalServerPort
@@ -46,6 +66,11 @@ public abstract class BaseIntegrationTest {
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
+        registry.add("spring.rabbitmq.host", rabbitMQContainer::getHost);
+        registry.add("spring.rabbitmq.port", rabbitMQContainer::getAmqpPort);
+        registry.add("jwt.private.key", () -> privateKeyBase64);
+        registry.add("jwt.public.key", () -> publicKeyBase64);
+        registry.add("jwt.secret", () -> "fallback-secret");
     }
 
     @BeforeEach

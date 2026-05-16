@@ -12,5 +12,7 @@ public interface ClientUseCase {
 
     Client addClient(Client client);
 
+    Client registerClientFromEvent(UUID id, String firstName, String lastName, String email, int age);
+
     void deleteClient(UUID id);
 }

@@ -1,6 +1,7 @@
 package pl.lodz.p.user.adapters.mongo.documents;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.UUID;
@@ -9,8 +10,10 @@ import java.util.UUID;
 public abstract class UserDoc {
     @Id
     private UUID id;
+    @Indexed(unique = true)
     private String login;
     private String password;
+    @Indexed(unique = true)
     private String email;
     private String firstName;
     private String lastName;

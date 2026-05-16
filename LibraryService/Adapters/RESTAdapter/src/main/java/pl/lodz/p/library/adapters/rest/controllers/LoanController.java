@@ -1,5 +1,6 @@
 package pl.lodz.p.library.adapters.rest.controllers;
 
+import io.micrometer.core.annotation.Timed;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.hateoas.CollectionModel;
@@ -45,6 +46,7 @@ public class LoanController {
     }
 
     @GetMapping
+    @Timed(value = "loans.get.all.time", description = "Time taken to fetch all loans")
     public CollectionModel<LoanDTO> getAllLoans() {
         List<LoanDTO> loans = loanUseCase.findAllLoans().stream()
                 .map(LoanConverter::toDTO)
@@ -132,12 +134,14 @@ public class LoanController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Timed(value = "loans.create.time", description = "Time taken to create a loan")
     public LoanDTO createLoan(@RequestParam UUID clientId, @RequestParam UUID bookSetId, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime loanStartTime) {
         return LoanConverter.toDTO(loanUseCase.createLoan(clientId, bookSetId, loanStartTime));
     }
 
     @PostMapping("/me")
     @ResponseStatus(HttpStatus.CREATED)
+    @Timed(value = "loans.create.me.time", description = "Time taken to create a loan for current user")
     public LoanDTO createMyLoan(@RequestParam UUID bookSetId) {
         String currentClientId = SecurityContextHolder.getContext().getAuthentication().getName();
         Client client = clientUseCase.findClientById(UUID.fromString(currentClientId));
@@ -153,6 +157,7 @@ public class LoanController {
 
     @PostMapping("/{id}/end")
     @ResponseStatus(HttpStatus.OK)
+    @Timed(value = "loans.end.time", description = "Time taken to end a loan")
     public LoanDTO endLoan(@PathVariable UUID id) {
         return LoanConverter.toDTO(loanUseCase.endLoan(id));
     }

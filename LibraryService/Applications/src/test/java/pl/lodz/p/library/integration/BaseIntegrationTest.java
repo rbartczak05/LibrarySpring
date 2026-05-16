@@ -1,24 +1,26 @@
 package pl.lodz.p.library.integration;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.containers.RabbitMQContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.library.ports.outbound.BookSetPort;
 import pl.lodz.p.library.ports.outbound.ClientPort;
 import pl.lodz.p.library.ports.outbound.LoanPort;
 
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.util.Base64;
 import java.util.Date;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -26,9 +28,24 @@ import java.util.Date;
 public abstract class BaseIntegrationTest {
 
     static final MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest");
+    static final RabbitMQContainer rabbitMQContainer = new RabbitMQContainer("rabbitmq:3-management");
+
+    static PrivateKey testPrivateKey;
+    static String publicKeyBase64;
 
     static {
         mongoDBContainer.start();
+        rabbitMQContainer.start();
+
+        try {
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+            keyGen.initialize(2048);
+            KeyPair pair = keyGen.generateKeyPair();
+            testPrivateKey = pair.getPrivate();
+            publicKeyBase64 = Base64.getEncoder().encodeToString(pair.getPublic().getEncoded());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @LocalServerPort
@@ -41,12 +58,13 @@ public abstract class BaseIntegrationTest {
     @Autowired
     protected LoanPort loanPort;
 
-    @Value("${jwt.secret}")
-    private String secretKey;
-
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
+        registry.add("spring.rabbitmq.host", rabbitMQContainer::getHost);
+        registry.add("spring.rabbitmq.port", rabbitMQContainer::getAmqpPort);
+        registry.add("jwt.public.key", () -> publicKeyBase64);
+        registry.add("jwt.secret", () -> "fallback-secret");
     }
 
     @BeforeEach
@@ -64,7 +82,7 @@ public abstract class BaseIntegrationTest {
                 .claim("role", "ROLE_ADMIN")
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
-                .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey)))
+                .signWith(testPrivateKey, Jwts.SIG.RS256)
                 .compact();
 
         RestAssured.requestSpecification = new RequestSpecBuilder()
@@ -75,8 +93,5 @@ public abstract class BaseIntegrationTest {
     @AfterEach
     void tearDown() {
         RestAssured.reset();
-        loanPort.deleteAll();
-        clientPort.deleteAll();
-        bookSetPort.deleteAll();
     }
 }

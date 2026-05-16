@@ -3,25 +3,27 @@ package pl.lodz.p.library.adapters.rest.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.library.ports.outbound.JwtPort;
 
-import javax.crypto.SecretKey;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Date;
 import java.util.UUID;
 import java.util.function.Function;
 
 @Service
 public class JwtService implements JwtPort {
-    @Value("${jwt.secret}")
-    private String SECRET_KEY;
+
+    @Value("${jwt.public.key}")
+    private String publicKeyStr;
 
     public boolean verifySignature(UUID id, String token) {
         try {
             String extractedId = extractUsername(token);
-            return extractedId.equals(id);
+            return extractedId.equals(String.valueOf(id));
         } catch (Exception e) {
             return false;
         }
@@ -37,7 +39,7 @@ public class JwtService implements JwtPort {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser().verifyWith(getSignInKey()).build().parseSignedClaims(token).getPayload();
+        return Jwts.parser().verifyWith(getPublicKey()).build().parseSignedClaims(token).getPayload();
     }
 
     public boolean isTokenValid(String token) {
@@ -52,8 +54,13 @@ public class JwtService implements JwtPort {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    private SecretKey getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
-        return Keys.hmacShaKeyFor(keyBytes);
+    private PublicKey getPublicKey() {
+        try {
+            byte[] keyBytes = Decoders.BASE64.decode(publicKeyStr);
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
+            return KeyFactory.getInstance("RSA").generatePublic(spec);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

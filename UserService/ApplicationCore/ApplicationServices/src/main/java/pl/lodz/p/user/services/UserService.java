@@ -1,11 +1,14 @@
 package pl.lodz.p.user.services;
 
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.user.domain.exceptions.UserException;
+import pl.lodz.p.user.domain.model.Reader;
 import pl.lodz.p.user.domain.model.User;
 import pl.lodz.p.user.ports.inbound.UserUseCase;
+import pl.lodz.p.user.ports.outbound.EventPublisherPort;
 import pl.lodz.p.user.ports.outbound.UserPort;
 
 import java.lang.reflect.Field;
@@ -15,10 +18,12 @@ import java.util.UUID;
 @Service
 public class UserService implements UserUseCase {
     private final UserPort userPort;
+    EventPublisherPort eventPublisherPort;
 
     @Autowired
-    public UserService(UserPort userPort) {
+    public UserService(UserPort userPort, EventPublisherPort eventPublisherPort) {
         this.userPort = userPort;
+        this.eventPublisherPort = eventPublisherPort;
     }
 
     public User findUserById(UUID id) {
@@ -59,12 +64,19 @@ public class UserService implements UserUseCase {
         }
     }
 
+    @Timed(value = "user.service.add.time", description = "Czas dodawania użytkownika")
     @Transactional
     public User addUser(User user) {
         if (user.getId() == null) {
             user.setId(UUID.randomUUID());
         }
-        return userPort.addUser(user).orElseThrow(() -> new UserException("Nie udało się dodać użytkownika"));
+        User savedUser = userPort.addUser(user).orElseThrow(() -> new UserException("Nie udało się dodać użytkownika"));
+
+        if (savedUser instanceof Reader) {
+            eventPublisherPort.publishUserCreatedEvent(savedUser);
+        }
+
+        return savedUser;
     }
 
     @Transactional
