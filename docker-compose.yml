@@ -11,8 +11,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - microservices-network
 
   # Instancja bazy danych MongoDB
   mongodb:
@@ -27,52 +25,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    networks:
-      - microservices-network
-
-  # Aplikacja UserService
-  user-service:
-    build:
-      context: ./UserService
-      dockerfile: Dockerfile
-    container_name: user_service
-    ports:
-      - "8081:8081"
-    environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/user_db
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
-    depends_on:
-      mongodb:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    networks:
-      - microservices-network
-
-  # Aplikacja LibraryService
-  library-service:
-    build:
-      context: ./LibraryService
-      dockerfile: Dockerfile
-    container_name: library_service
-    ports:
-      - "8080:8080"
-    environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/library_db
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
-    depends_on:
-      mongodb:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    networks:
-      - microservices-network
-
-networks:
-  microservices-network:
-    driver: bridge
 
 volumes:
   mongodb_data:
