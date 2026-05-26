@@ -1,4 +1,4 @@
-package pl.lodz.p.library.mq;
+package pl.lodz.p.library.adapters.rabbitmq;
 
 import java.util.UUID;
 

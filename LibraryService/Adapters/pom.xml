@@ -15,12 +15,18 @@
         <module>MongoAdapter</module>
         <module>RESTAdapter</module>
         <module>SOAPAdapter</module>
+        <module>RabbitMQAdapter</module>
     </modules>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>pl.lodz.p.library</groupId>
+            <artifactId>ApplicationPorts</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

@@ -12,6 +12,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.containers.RabbitMQContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.library.ports.outbound.BookSetPort;
 import pl.lodz.p.library.ports.outbound.ClientPort;
@@ -27,7 +28,8 @@ import java.util.Date;
 @Testcontainers
 public abstract class BaseIntegrationTest {
 
-    static final MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest");
+    static final MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:8.3.2")
+            .waitingFor(Wait.forListeningPort());
     static final RabbitMQContainer rabbitMQContainer = new RabbitMQContainer("rabbitmq:3-management");
 
     static PrivateKey testPrivateKey;

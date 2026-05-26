@@ -13,13 +13,26 @@ services:
       retries: 5
 
   # Instancja bazy danych MongoDB
-  mongodb:
+  mongodb-user:
     image: mongo:8.3.2
-    container_name: library_mongodb
+    container_name: library_mongodb_user
     ports:
       - "27017:27017"
     volumes:
-      - mongodb_data:/data/db # Wolumen do trzymania danych
+      - mongodb_data1:/data/db # Wolumen do trzymania danych
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mongodb-library:
+    image: mongo:8.3.2
+    container_name: library_mongodb_library
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongodb_data2:/data/db
     healthcheck:
       test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
       interval: 5s
@@ -27,4 +40,5 @@ services:
       retries: 5
 
 volumes:
-  mongodb_data:
+  mongodb_data1:
+  mongodb_data2:

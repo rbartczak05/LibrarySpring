@@ -15,6 +15,7 @@
         <module>MongoAdapter</module>
         <module>RESTAdapter</module>
         <module>SOAPAdapter</module>
+        <module>RabbitMQAdapter</module>
     </modules>
 
     <dependencies>

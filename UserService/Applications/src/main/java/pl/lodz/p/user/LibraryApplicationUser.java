@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
         "pl.lodz.p.user.adapters.rest",
         "pl.lodz.p.user.adapters.mongo",
         "pl.lodz.p.user.adapters.soap",
+        "pl.lodz.p.user.adapters.rabbitmq",
         "pl.lodz.p.user.services"
 })
 @EnableMongoRepositories(basePackages = "pl.lodz.p.user.adapters.mongo.repositories")

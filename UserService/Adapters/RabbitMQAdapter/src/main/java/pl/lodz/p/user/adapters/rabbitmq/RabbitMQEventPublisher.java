@@ -1,8 +1,9 @@
-package pl.lodz.p.user.mq;
+package pl.lodz.p.user.adapters.rabbitmq;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 import pl.lodz.p.user.domain.model.User;
+import pl.lodz.p.user.adapters.rabbitmq.UserCreatedEvent;
 import pl.lodz.p.user.ports.outbound.EventPublisherPort;
 
 @Component
@@ -20,8 +21,9 @@ public class RabbitMQEventPublisher implements EventPublisherPort {
                 user.getId(),
                 user.getEmail(),
                 user.getFirstName(),
-                user.getLastName()
+                user.getLastName(),
+                user.getAge()
         );
-        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, RabbitMQConfig.READER_ROUTING_KEY, event);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.USER_CREATED_EXCHANGE, "", event); //Fanout zignoruje routingKey
     }
 }

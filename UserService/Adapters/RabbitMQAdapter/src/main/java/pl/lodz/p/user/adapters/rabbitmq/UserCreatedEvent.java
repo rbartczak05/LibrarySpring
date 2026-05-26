@@ -1,4 +1,4 @@
-package pl.lodz.p.user.mq;
+package pl.lodz.p.user.adapters.rabbitmq;
 
 import java.util.UUID;
 
@@ -7,15 +7,17 @@ public class UserCreatedEvent {
     private String email;
     private String firstName;
     private String lastName;
+    private int age;
 
     public UserCreatedEvent() {
     }
 
-    public UserCreatedEvent(UUID id, String email, String firstName, String lastName) {
+    public UserCreatedEvent(UUID id, String email, String firstName, String lastName, int age) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.age = age;
     }
 
     public UUID getId() {
@@ -48,5 +50,13 @@ public class UserCreatedEvent {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 }
