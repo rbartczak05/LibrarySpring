@@ -15,7 +15,7 @@ public class RabbitMQEventListener {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    @RabbitListener(queues = RabbitMQConfig.LIBRARY_SERVICE_CREATED_QUEUE)
+    @RabbitListener(queues = RabbitMQConfig.USER_CREATED_QUEUE)
     public void handleUserCreated(UserCreatedEvent event) {
         try {
             clientUseCase.registerClientFromEvent(
@@ -25,16 +25,16 @@ public class RabbitMQEventListener {
                     event.getEmail(),
                     event.getAge()
             );
-            System.out.println("Klient utworzony pomyślnie dla ID: " + event.getId());
+            System.out.println("Klient utworzony pomyslnie dla ID: " + event.getId());
 
         } catch (Exception e) {
-            System.err.println("Błąd tworzenia klienta - inicjuję sagę kompensacyjną: " + e.getMessage());
+            System.err.println("Blad tworzenia klienta - inicjuje sage kompensacyjna: " + e.getMessage());
 
-            ClientCreationRejectedEvent rejection =
-                    new ClientCreationRejectedEvent(event.getId(), e.getMessage());
+            ClientCreationRejectedEvent rejection = new ClientCreationRejectedEvent(event.getId(), e.getMessage());
+
             rabbitTemplate.convertAndSend(
-                    RabbitMQConfig.USER_COMPENSATE_EXCHANGE,
-                    RabbitMQConfig.USER_COMPENSATE_ROUTING_KEY,
+                    RabbitMQConfig.EXCHANGE_NAME,
+                    RabbitMQConfig.USER_COMPENSATION_ROUTING_KEY,
                     rejection
             );
         }

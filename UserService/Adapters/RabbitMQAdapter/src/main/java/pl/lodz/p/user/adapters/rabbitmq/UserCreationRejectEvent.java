@@ -6,9 +6,10 @@ public class UserCreationRejectEvent {
     private UUID userId;
     private String reason;
 
-    public ClientCreationRejectedEvent() {}
+    public UserCreationRejectEvent() {
+    }
 
-    public ClientCreationRejectedEvent(UUID userId, String reason) {
+    public UserCreationRejectEvent(UUID userId, String reason) {
         this.userId = userId;
         this.reason = reason;
     }
@@ -16,12 +17,15 @@ public class UserCreationRejectEvent {
     public UUID getUserId() {
         return userId;
     }
+
     public void setUserId(UUID userId) {
         this.userId = userId;
     }
+
     public String getReason() {
         return reason;
     }
+
     public void setReason(String reason) {
         this.reason = reason;
     }

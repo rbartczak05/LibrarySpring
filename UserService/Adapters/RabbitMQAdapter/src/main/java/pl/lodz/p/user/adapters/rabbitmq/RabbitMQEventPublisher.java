@@ -3,7 +3,6 @@ package pl.lodz.p.user.adapters.rabbitmq;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 import pl.lodz.p.user.domain.model.User;
-import pl.lodz.p.user.adapters.rabbitmq.UserCreatedEvent;
 import pl.lodz.p.user.ports.outbound.EventPublisherPort;
 
 @Component
@@ -24,6 +23,6 @@ public class RabbitMQEventPublisher implements EventPublisherPort {
                 user.getLastName(),
                 user.getAge()
         );
-        rabbitTemplate.convertAndSend(RabbitMQConfig.USER_CREATED_EXCHANGE, "", event); //Fanout zignoruje routingKey
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, "user.created.key", event);
     }
 }

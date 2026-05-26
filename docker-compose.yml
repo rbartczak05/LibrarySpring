@@ -1,25 +1,23 @@
 services:
-  # Broker wiadomości RabbitMQ
   rabbitmq:
     image: rabbitmq:3-management
     container_name: library_rabbitmq
     ports:
-      - "5672:5672"   # Port komunikacyjny AMQP
-      - "15672:15672" # Panel administracyjny UI
+      - "5672:5672"
+      - "15672:15672"
     healthcheck:
       test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # Instancja bazy danych MongoDB
   mongodb-user:
     image: mongo:8.3.2
     container_name: library_mongodb_user
     ports:
       - "27017:27017"
     volumes:
-      - mongodb_data1:/data/db # Wolumen do trzymania danych
+      - mongodb_data1:/data/db
     healthcheck:
       test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
       interval: 5s
@@ -38,6 +36,40 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  user-service:
+    build:
+      context: ./UserService
+      dockerfile: Dockerfile
+    container_name: library_user_service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb-user:27017/user_db
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongodb-user:
+        condition: service_healthy
+
+  library-service:
+    build:
+      context: ./LibraryService
+      dockerfile: Dockerfile
+    container_name: library_library_service
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb-library:27017/library_db
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongodb-library:
+        condition: service_healthy
 
 volumes:
   mongodb_data1:

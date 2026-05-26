@@ -5,20 +5,20 @@ import org.springframework.stereotype.Component;
 import pl.lodz.p.user.ports.inbound.UserUseCase;
 
 @Component
-public class RabbitMQFaultEventListener {
+public class RabbitMQCompensationListener {
     private final UserUseCase userUseCase;
 
-    public RabbitMQFaultEventListener(UserUseCase userUseCase) {
+    public RabbitMQCompensationListener(UserUseCase userUseCase) {
         this.userUseCase = userUseCase;
     }
 
     @RabbitListener(queues = RabbitMQConfig.USER_COMPENSATION_QUEUE)
-    public void handleUserCreationRejected(UserCreationRejectEvent event) {
-        System.err.println("Otrzymano sygnal kompensacji. Cofam utworzenie uzytkownika o ID: " + event.getUserId() + " Powod: " + event.getReason());
+    public void handleClientCreationRejected(UserCreationRejectEvent event) {
+        System.err.println("Kompensata: dezaktywuje usera " + event.getUserId() + " - powod: " + event.getReason());
         try {
             userUseCase.deactivateUser(event.getUserId());
         } catch (Exception e) {
-            System.err.println("Blad podczas kompensacji: " + e.getMessage());
+            System.err.println("Kompensata nie powiodla sie dla " + event.getUserId() + ": " + e.getMessage());
         }
     }
 }

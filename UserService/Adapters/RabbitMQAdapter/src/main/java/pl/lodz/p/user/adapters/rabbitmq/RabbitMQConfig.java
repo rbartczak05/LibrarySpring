@@ -1,8 +1,9 @@
 package pl.lodz.p.user.adapters.rabbitmq;
 
-import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -10,29 +11,27 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
-    public static final String USER_CREATED_EVENT_TOPIC = "user-created-topic";
-    public static final String USER_CREATED_EVENT_QUEUE = "user-created-event-queue";
-    public static final String USER_COMPENSATION_KEY = "user.compensation.key";
+    public static final String EXCHANGE_NAME = "library-system-exchange";
+    public static final String USER_COMPENSATION_QUEUE = "user-compensation-queue";
+    public static final String USER_COMPENSATION_ROUTING_KEY = "user.compensation.key";
 
     @Bean
-    public TopicExchange userCreatedEventsTopicExchange() {
-        return new TopicExchange(USER_CREATED_EVENT_TOPIC);
+    public TopicExchange systemExchange() {
+        return new TopicExchange(EXCHANGE_NAME);
     }
 
     @Bean
     public Queue userCompensationQueue() {
-        return new Queue(USER_CREATED_EVENT_QUEUE, true);
+        return new Queue(USER_COMPENSATION_QUEUE, true);
     }
 
     @Bean
-    public Binding compensationBinding(Queue userCompensationQueue, TopicExchange userCreatedEventsTopicExchange) {
-        return BindingBuilder.bind(userCompensationQueue).to(userCreatedEventsTopicExchange).with(USER_CREATED_EVENT_QUEUE);
+    public Binding compensationBinding(Queue userCompensationQueue, TopicExchange systemExchange) {
+        return BindingBuilder.bind(userCompensationQueue).to(systemExchange).with(USER_COMPENSATION_ROUTING_KEY);
     }
 
     @Bean
     public MessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();
     }
-
-
 }
