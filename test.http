@@ -70,7 +70,7 @@ Content-Type: application/json
 }
 
 ###
-@adminToken = WKLEJ_TUTAJ_ADMIN_TOKEN
+@adminToken =
 
 ###
 GET {{userBase}}/readers
@@ -85,7 +85,7 @@ GET {{userBase}}/admins
 Authorization: Bearer {{adminToken}}
 
 ###
-@readerId = WKLEJ_TUTAJ_ID_CZYTELNIKA
+@readerId =
 
 GET {{userBase}}/readers/{{readerId}}
 Authorization: Bearer {{adminToken}}
@@ -112,7 +112,7 @@ Authorization: Bearer {{adminToken}}
 }
 
 ###
-@bookSetId = WKLEJ_TUTAJ_ID_KSIAZKI
+@bookSetId =
 
 ###
 GET {{libraryBase}}/book_set
@@ -149,7 +149,7 @@ GET {{libraryBase}}/clients
 Authorization: Bearer {{adminToken}}
 
 ###
-@clientId = WKLEJ_TUTAJ_ID_KLIENTA
+@clientId =
 
 ###
 GET {{libraryBase}}/clients/{{clientId}}
@@ -169,7 +169,7 @@ Authorization: Bearer {{adminToken}}
 }
 
 ###
-@loanId = WKLEJ_TUTAJ_ID_WYPOZYCZENIA
+@loanId =
 
 ###
 POST {{libraryBase}}/loans/me

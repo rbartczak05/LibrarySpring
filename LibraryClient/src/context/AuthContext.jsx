@@ -40,7 +40,7 @@ export const AuthProvider = ({children}) => {
     const login = async (loginData) => {
         const res = await api.post('/auth/login', loginData);
 
-        const newToken = res.data.accessToken;
+        const newToken = res.data.token;
         const newRefreshToken = res.data.refreshToken;
 
         sessionStorage.setItem('token', newToken);

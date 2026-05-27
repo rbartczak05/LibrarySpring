@@ -3,42 +3,87 @@ package pl.lodz.p.user.migrations;
 import io.mongock.api.annotations.ChangeUnit;
 import io.mongock.api.annotations.Execution;
 import io.mongock.api.annotations.RollbackExecution;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import pl.lodz.p.user.adapters.mongo.documents.AdministratorDoc;
-import pl.lodz.p.user.adapters.mongo.documents.LibrarianDoc;
-import pl.lodz.p.user.adapters.mongo.documents.ReaderDoc;
-import pl.lodz.p.user.adapters.mongo.repositories.UserRepository;
+import org.bson.Document;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
+import java.util.List;
 import java.util.UUID;
 
-@ChangeUnit(id = "setup-initial-users", order = "001", author = "system")
+@ChangeUnit(id = "user-init-1", order = "001", author = "system")
 public class InitialUserSetup {
 
     @Execution
-    public void execution(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        AdministratorDoc admin = new AdministratorDoc(
-                "admin", passwordEncoder.encode("admin123!"), "admin@root.pl", "Adam", "Administrator", 35, true);
-        admin.setId(UUID.randomUUID());
-        userRepository.save(admin);
+    public void seedDatabase(MongoTemplate mongoTemplate) {
+        long count = mongoTemplate.getCollection("users").countDocuments();
+        if (count == 0) {
+            Document admin1 = new Document("_id", UUID.randomUUID())
+                    .append("login", "admin1")
+                    .append("password", "$2a$12$gNM5hxyqzCqUHlr.cfAbQuCdhq5sQ6B7y3dgIAkm1aLIML6MRYi2K")
+                    .append("email", "admin1@library.com")
+                    .append("firstName", "Jan")
+                    .append("lastName", "Kowalski")
+                    .append("age", 35)
+                    .append("active", true)
+                    .append("_class", "pl.lodz.p.user.adapters.mongo.documents.AdministratorDoc");
 
-        LibrarianDoc librarian = new LibrarianDoc(
-                "bibliotekarz", passwordEncoder.encode("biblio123!"), "biblioteka@example.com", "Anna", "Kowalska", 40, true);
-        librarian.setId(UUID.randomUUID());
-        userRepository.save(librarian);
+            Document admin2 = new Document("_id", UUID.randomUUID())
+                    .append("login", "admin2")
+                    .append("password", "$2a$12$gNM5hxyqzCqUHlr.cfAbQuCdhq5sQ6B7y3dgIAkm1aLIML6MRYi2K")
+                    .append("email", "admin2@library.com")
+                    .append("firstName", "Anna")
+                    .append("lastName", "Nowak")
+                    .append("age", 42)
+                    .append("active", true)
+                    .append("_class", "pl.lodz.p.user.adapters.mongo.documents.AdministratorDoc");
 
-        ReaderDoc reader1 = new ReaderDoc(
-                "jan_nowak", passwordEncoder.encode("Password123!"), "jan.nowak@example.com", "Jan", "Nowak", 25, true);
-        reader1.setId(UUID.fromString("e976b5e1-cf61-4daf-9c2f-9979f6b54015"));
-        userRepository.save(reader1);
+            Document lib1 = new Document("_id", UUID.randomUUID())
+                    .append("login", "lib1")
+                    .append("password", "$2a$12$gNM5hxyqzCqUHlr.cfAbQuCdhq5sQ6B7y3dgIAkm1aLIML6MRYi2K")
+                    .append("email", "lib1@library.com")
+                    .append("firstName", "Piotr")
+                    .append("lastName", "Zalewski")
+                    .append("age", 28)
+                    .append("active", true)
+                    .append("_class", "pl.lodz.p.user.adapters.mongo.documents.LibrarianDoc");
 
-        ReaderDoc reader2 = new ReaderDoc(
-                "piotr_z", passwordEncoder.encode("Piotr123!"), "piotr.z@example.com", "Piotr", "Zieliński", 30, true);
-        reader2.setId(UUID.randomUUID());
-        userRepository.save(reader2);
+            Document lib2 = new Document("_id", UUID.randomUUID())
+                    .append("login", "lib2")
+                    .append("password", "$2a$12$gNM5hxyqzCqUHlr.cfAbQuCdhq5sQ6B7y3dgIAkm1aLIML6MRYi2K")
+                    .append("email", "lib2@library.com")
+                    .append("firstName", "Katarzyna")
+                    .append("lastName", "Wiśniewska")
+                    .append("age", 31)
+                    .append("active", true)
+                    .append("_class", "pl.lodz.p.user.adapters.mongo.documents.LibrarianDoc");
+
+            UUID reader1Id = UUID.fromString("11111111-1111-1111-1111-111111111111");
+            Document reader1 = new Document("_id", reader1Id)
+                    .append("login", "reader1")
+                    .append("password", "$2a$12$gNM5hxyqzCqUHlr.cfAbQuCdhq5sQ6B7y3dgIAkm1aLIML6MRYi2K")
+                    .append("email", "reader1@library.com")
+                    .append("firstName", "Michał")
+                    .append("lastName", "Wójcik")
+                    .append("age", 22)
+                    .append("active", true)
+                    .append("_class", "pl.lodz.p.user.adapters.mongo.documents.ReaderDoc");
+
+            UUID reader2Id = UUID.fromString("22222222-2222-2222-2222-222222222222");
+            Document reader2 = new Document("_id", reader2Id)
+                    .append("login", "reader2")
+                    .append("password", "$2a$12$gNM5hxyqzCqUHlr.cfAbQuCdhq5sQ6B7y3dgIAkm1aLIML6MRYi2K")
+                    .append("email", "reader2@library.com")
+                    .append("firstName", "Agnieszka")
+                    .append("lastName", "Kamińska")
+                    .append("age", 25)
+                    .append("active", true)
+                    .append("_class", "pl.lodz.p.user.adapters.mongo.documents.ReaderDoc");
+
+            mongoTemplate.getCollection("users").insertMany(List.of(admin1, admin2, lib1, lib2, reader1, reader2));
+        }
     }
 
     @RollbackExecution
-    public void rollback() {
-
+    public void rollback(MongoTemplate mongoTemplate) {
+        mongoTemplate.getCollection("users").drop();
     }
 }

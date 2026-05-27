@@ -1,0 +1,64 @@
+@userService = http://localhost:8081
+@libraryService = http://localhost:8080
+@adminLogin = admin1
+@adminPassword = 123123123
+
+###
+
+POST {{userService}}/auth/login
+Content-Type: application/json
+
+{
+  "login": "{{adminLogin}}",
+  "password": "{{adminPassword}}"
+}
+> {%
+    client.global.set("adminToken", response.body.token);
+%}
+
+###
+
+GET {{userService}}/readers
+Authorization: Bearer {{adminToken}}
+
+###
+
+POST {{userService}}/readers
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "login": "nowy_testowy_czytelnik",
+  "password": "Password123!",
+  "email": "testowy@library.com",
+  "firstName": "Anna",
+  "lastName": "Kowalska",
+  "age": 28
+}
+> {%
+    client.global.set("newReaderId", response.body.id);
+%}
+
+###
+
+GET {{libraryService}}/book_set
+Authorization: Bearer {{adminToken}}
+
+###
+
+POST {{libraryService}}/loans?clientId=11111111-1111-1111-1111-111111111111&
+    bookSetId=33333333-3333-3333-3333-333333333333
+Authorization: Bearer {{adminToken}}
+> {%
+    client.global.set("newLoanId", response.body.id);
+%}
+
+###
+
+GET {{libraryService}}/loans
+Authorization: Bearer {{adminToken}}
+
+###
+
+POST {{libraryService}}/loans/{{newLoanId}}/end
+Authorization: Bearer {{adminToken}}

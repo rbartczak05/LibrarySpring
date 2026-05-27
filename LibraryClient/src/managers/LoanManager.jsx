@@ -3,7 +3,7 @@ import api from '../api';
 
 const LoanManager = ({myLoansOnly = false}) => {
     const [loans, setLoans] = useState([]);
-    const [newLoan, setNewLoan] = useState({readerId: '', bookSetId: ''});
+    const [newLoan, setNewLoan] = useState({clientId: '', bookSetId: ''});
 
     useEffect(() => {
         loadLoans();
@@ -26,13 +26,13 @@ const LoanManager = ({myLoansOnly = false}) => {
 
         api.post('/loans', null, {
             params: {
-                readerId: newLoan.readerId,
+                clientId: newLoan.clientId,
                 bookSetId: newLoan.bookSetId
             }
         })
             .then(() => {
                 alert("Wypożyczono pomyślnie!");
-                setNewLoan({readerId: '', bookSetId: ''});
+                setNewLoan({clientId: '', bookSetId: ''});
                 loadLoans();
             })
             .catch(err => {
@@ -76,8 +76,8 @@ const LoanManager = ({myLoansOnly = false}) => {
                         <input
                             type="text"
                             placeholder="Podaj ID Czytelnika"
-                            value={newLoan.readerId}
-                            onChange={e => setNewLoan({...newLoan, readerId: e.target.value})}
+                            value={newLoan.clientId}
+                            onChange={e => setNewLoan({...newLoan, clientId: e.target.value})}
                             required
                             minLength="1"
                         />
@@ -110,7 +110,7 @@ const LoanManager = ({myLoansOnly = false}) => {
                 {loans.map(loan => (
                     <tr key={loan.id}>
                         <td><small>{loan.id}</small></td>
-                        {!myLoansOnly && <td><small>{loan.readerId}</small></td>}
+                        {!myLoansOnly && <td><small>{loan.clientId}</small></td>}
                         <td><small>{loan.bookSetId}</small></td>
                         <td>{new Date(loan.startTime).toLocaleString()}</td>
                         <td>{loan.returnTime ? new Date(loan.returnTime).toLocaleString() : '-'}</td>

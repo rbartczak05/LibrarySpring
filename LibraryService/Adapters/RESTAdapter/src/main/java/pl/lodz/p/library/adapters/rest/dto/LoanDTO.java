@@ -2,7 +2,6 @@ package pl.lodz.p.library.adapters.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.hateoas.RepresentationModel;
@@ -34,10 +33,10 @@ public class LoanDTO extends RepresentationModel<LoanDTO> {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endTime;
 
-    @NotBlank(message = "ID klienta jest wymagane do utworzenia wypożyczenia.")
+    @NotNull(message = "ID klienta jest wymagane do utworzenia wypożyczenia.")
     private UUID clientId;
 
-    @NotBlank(message = "ID książki jest wymagane do utworzenia wypożyczenia.")
+    @NotNull(message = "ID książki jest wymagane do utworzenia wypożyczenia.")
     private UUID bookSetId;
 
     public LoanDTO() {
