@@ -1,0 +1,236 @@
+
+@userBase    = http://localhost:8081
+@libraryBase = http://localhost:8080
+
+GET {{userBase}}/actuator/health
+
+###
+GET {{libraryBase}}/actuator/health
+
+###
+GET {{userBase}}/actuator/prometheus
+
+###
+GET {{libraryBase}}/actuator/prometheus
+
+
+###
+POST {{userBase}}/auth/register
+Content-Type: application/json
+
+{
+  "login": "jan.kowalski2",
+  "password": "Haslo123!",
+  "email": "jan.kowalski2@example.com",
+  "firstName": "Jan",
+  "lastName": "Kowalski",
+  "age": 30
+}
+
+###
+POST {{userBase}}/auth/login
+Content-Type: application/json
+
+{
+  "login": "jan.kowalski",
+  "password": "Haslo123!"
+}
+
+###
+@readerToken ="eyJhbGciOiJSUzI1NiJ9.eyJyb2xlIjoiUk9MRV9SRUFERVIiLCJzdWIiOiJjYzdiODU1Ny04OGUxLTRkYmItYWY5My01ZDVjM2E3M2RmZTEiLCJpYXQiOjE3Nzk4NDQ5NTAsImV4cCI6MTc3OTg0NTg1MH0.v6yr-ospdK-yR1bLHp9l8nAOS5c0y0_txgrG7M4yzfMAmHeApvvEPRTg-7Yf4zShz6q3T8LnbPCGEYq5n3vKOTwqTXVFoNE4go-3TZj70cqSpBMrlJJMiaKfasYXLSdA1VzwNfoSSd7vtYOzLA78o8nDF1CIptgawlKE2-KnQLXMTWcKO4XyJ5ZizxbmAzKKgkSI-9acM2ycCu33PoinoPcrBEAbc2PZ-9xNrLwhrIvfQJTctCKwxFjIvQMP-ijscvY3w-pTwmuaBTqTeWu2sEHMl1cxEJhVl8Kn8GfH4DfWmjvWYrAtfbkk_YbfGv0PFZp55sWwqdDxoDGis985HA"
+
+
+###
+POST {{userBase}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJjYzdiODU1Ny04OGUxLTRkYmItYWY5My01ZDVjM2E3M2RmZTEiLCJpYXQiOjE3Nzk4NDQ5NTEsImV4cCI6MTc4MDQ0OTc1MX0.HKxw-0g1UrqOveJJQDPikngu23rCURfXndsyIlxtSsl1WsWmMYBT5zy2aVx71eysSlHomxg1hSFsfcxzfllH3Zgimg4vpQRmovCWngq3_6OIBQqcFOoRqMV-HsPO5EapCEu-em7-V1B5p9mmRt27NnmYfwBkH_J5DyjfgEcVdD-lnkA9yIp0nAbnq1s6CJjGBJidjKo_UYJr0aqSjYB5eJXUIdPB9VT3gYM-jCKdWKy0aVFlD-407eh1ToQcD1KjL2wVlpNXfF42OIZ7hl2sY5K22BTF-g_4wgz2oCoHGwILaM7k27U_em2gFLnFtEuJdA44Wi-rgYEIkwfHbuyJcw"
+}
+
+###
+POST {{userBase}}/auth/change-password
+Content-Type: application/json
+Authorization: Bearer {{readerToken}}
+
+{
+  "login": "jan.kowalski",
+  "oldPassword": "Haslo123!",
+  "newPassword": "NoweHaslo456!"
+}
+
+
+###
+POST {{userBase}}/auth/login
+Content-Type: application/json
+
+{
+  "login": "admin",
+  "password": "admin"
+}
+
+###
+@adminToken = WKLEJ_TUTAJ_ADMIN_TOKEN
+
+###
+GET {{userBase}}/readers
+Authorization: Bearer {{adminToken}}
+
+###
+GET {{userBase}}/librarians
+Authorization: Bearer {{adminToken}}
+
+###
+GET {{userBase}}/admins
+Authorization: Bearer {{adminToken}}
+
+###
+@readerId = WKLEJ_TUTAJ_ID_CZYTELNIKA
+
+GET {{userBase}}/readers/{{readerId}}
+Authorization: Bearer {{adminToken}}
+
+###
+POST {{userBase}}/readers/{{readerId}}/deactivate
+Authorization: Bearer {{adminToken}}
+
+###
+POST {{userBase}}/readers/{{readerId}}/activate
+Authorization: Bearer {{adminToken}}
+
+
+###
+POST {{libraryBase}}/book_set
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "title": "Wiedźmin: Ostatnie życzenie",
+  "author": "Andrzej Sapkowski",
+  "releaseYear": 1993,
+  "quantity": 5
+}
+
+###
+@bookSetId = WKLEJ_TUTAJ_ID_KSIAZKI
+
+###
+GET {{libraryBase}}/book_set
+Authorization: Bearer {{adminToken}}
+
+###
+GET {{libraryBase}}/book_set/{{bookSetId}}
+Authorization: Bearer {{adminToken}}
+
+###
+GET {{libraryBase}}/book_set/title/Wiedźmin:+Ostatnie+życzenie
+Authorization: Bearer {{adminToken}}
+
+###
+GET {{libraryBase}}/book_set/available/true
+Authorization: Bearer {{adminToken}}
+
+###
+POST {{libraryBase}}/book_set/{{bookSetId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "title": "Wiedźmin: Ostatnie życzenie",
+  "author": "Andrzej Sapkowski",
+  "releaseYear": 1993,
+  "quantity": 10
+}
+
+
+###
+
+GET {{libraryBase}}/clients
+Authorization: Bearer {{adminToken}}
+
+###
+@clientId = WKLEJ_TUTAJ_ID_KLIENTA
+
+###
+GET {{libraryBase}}/clients/{{clientId}}
+Authorization: Bearer {{adminToken}}
+
+###
+@readerTokenLib = {{readerToken}}
+
+###
+POST {{libraryBase}}/loans
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "clientId": "{{clientId}}",
+  "bookSetId": "{{bookSetId}}"
+}
+
+###
+@loanId = WKLEJ_TUTAJ_ID_WYPOZYCZENIA
+
+###
+POST {{libraryBase}}/loans/me
+Content-Type: application/json
+Authorization: Bearer {{readerTokenLib}}
+
+{
+  "bookSetId": "{{bookSetId}}"
+}
+
+###
+GET {{libraryBase}}/loans
+Authorization: Bearer {{adminToken}}
+
+###
+GET {{libraryBase}}/loans/me
+Authorization: Bearer {{readerTokenLib}}
+
+###
+GET {{libraryBase}}/loans/{{loanId}}
+Authorization: Bearer {{adminToken}}
+
+###
+GET {{libraryBase}}/loans/client_id/{{clientId}}
+Authorization: Bearer {{adminToken}}
+
+###
+POST {{libraryBase}}/loans/{{loanId}}/end
+Authorization: Bearer {{adminToken}}
+
+###
+DELETE {{libraryBase}}/loans/{{loanId}}
+Authorization: Bearer {{adminToken}}
+
+
+###
+
+POST {{userBase}}/auth/register
+Content-Type: application/json
+
+{
+  "login": "saga.test",
+  "password": "Test123!",
+  "email": "saga.test@example.com",
+  "firstName": "Saga",
+  "lastName": "Test",
+  "age": 25
+}
+
+###
+GET {{userBase}}/readers
+Authorization: Bearer {{adminToken}}
+
+###
+GET {{libraryBase}}/clients
+Authorization: Bearer {{adminToken}}
+
+###
+DELETE {{libraryBase}}/book_set/{{bookSetId}}
+Authorization: Bearer {{adminToken}}
+
+###
+DELETE {{userBase}}/readers/{{readerId}}
+Authorization: Bearer {{adminToken}}

@@ -1,24 +1,31 @@
 package pl.lodz.p.user.adapters.rabbitmq;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
-import pl.lodz.p.user.ports.inbound.UserUseCase;
+import pl.lodz.p.user.ports.outbound.UserPort;
 
 @Component
 public class RabbitMQCompensationListener {
-    private final UserUseCase userUseCase;
+    private static final Logger LOGGER = LoggerFactory.getLogger(RabbitMQCompensationListener.class);
 
-    public RabbitMQCompensationListener(UserUseCase userUseCase) {
-        this.userUseCase = userUseCase;
+    private final UserPort userPort;
+
+    public RabbitMQCompensationListener(UserPort userPort) {
+        this.userPort = userPort;
     }
 
-    @RabbitListener(queues = RabbitMQConfig.USER_COMPENSATION_QUEUE)
+    @RabbitListener(queues = RabbitMQConfig.USER_COMPENSATE_QUEUE)
     public void handleClientCreationRejected(UserCreationRejectEvent event) {
-        System.err.println("Kompensata: dezaktywuje usera " + event.getUserId() + " - powod: " + event.getReason());
+        LOGGER.warn("Kompensacja – otrzymano REJECT dla userId: {}. Powód: {}",
+                event.getUserId(), event.getReason());
         try {
-            userUseCase.deactivateUser(event.getUserId());
+            userPort.deleteUser(event.getUserId());
+            LOGGER.info("Kompensacja zakończona – user {} usunięty.", event.getUserId());
         } catch (Exception e) {
-            System.err.println("Kompensata nie powiodla sie dla " + event.getUserId() + ": " + e.getMessage());
+            LOGGER.error("Błąd podczas kompensacji transakcji dla userId {}: {}",
+                    event.getUserId(), e.getMessage());
         }
     }
 }

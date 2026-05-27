@@ -23,6 +23,6 @@ public class RabbitMQEventPublisher implements EventPublisherPort {
                 user.getLastName(),
                 user.getAge()
         );
-        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, "user.created.key", event);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.USER_CREATED_EXCHANGE, RabbitMQConfig.USER_CREATED_KEY, event);
     }
 }

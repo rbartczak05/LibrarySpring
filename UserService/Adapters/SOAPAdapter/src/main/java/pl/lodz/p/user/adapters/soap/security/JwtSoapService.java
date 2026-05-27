@@ -3,13 +3,16 @@ package pl.lodz.p.user.adapters.soap.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.user.ports.outbound.JwtPort;
 
-import javax.crypto.SecretKey;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,11 +22,14 @@ import java.util.function.Function;
 @Service
 public class JwtSoapService implements JwtPort {
 
-    @Value("${jwt.secret}")
-    private String secretKey;
+    private static final long ACCESS_TOKEN_EXPIRATION  = 1000L * 60 * 15;
+    private static final long REFRESH_TOKEN_EXPIRATION = 1000L * 60 * 60 * 24 * 7;
 
-    private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 15;
-    private static final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 7;
+    @Value("${jwt.private.key}")
+    private String privateKeyStr;
+
+    @Value("${jwt.public.key}")
+    private String publicKeyStr;
 
     @Override
     public String generateAccessToken(UserDetails userDetails) {
@@ -39,15 +45,16 @@ public class JwtSoapService implements JwtPort {
 
     @Override
     public String generateSignatureForId(UUID id) {
-        return Jwts.builder().subject(String.valueOf(id))
-                .signWith(getSignInKey(), Jwts.SIG.HS256)
+        return Jwts.builder()
+                .subject(String.valueOf(id))
+                .signWith(getPrivateKey(), Jwts.SIG.RS256)
                 .compact();
     }
 
     @Override
     public boolean verifySignature(UUID id, String token) {
         try {
-            return extractUsername(token).equals(id);
+            return extractUsername(token).equals(String.valueOf(id));
         } catch (Exception e) {
             return false;
         }
@@ -69,16 +76,19 @@ public class JwtSoapService implements JwtPort {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .verifyWith(getSignInKey())
-                .build().parseSignedClaims(token).getPayload();
+                .verifyWith(getPublicKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     private String createToken(Map<String, Object> claims, String subject, long expiration) {
-        return Jwts.builder().claims(claims)
+        return Jwts.builder()
+                .claims(claims)
                 .subject(subject)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(getSignInKey(), Jwts.SIG.HS256)
+                .signWith(getPrivateKey(), Jwts.SIG.RS256)
                 .compact();
     }
 
@@ -86,7 +96,21 @@ public class JwtSoapService implements JwtPort {
         return extractClaim(token, Claims::getExpiration).before(new Date());
     }
 
-    private SecretKey getSignInKey() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+    private PrivateKey getPrivateKey() {
+        try {
+            byte[] keyBytes = Decoders.BASE64.decode(privateKeyStr);
+            return KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(keyBytes));
+        } catch (Exception e) {
+            throw new RuntimeException("Nie można wczytać klucza prywatnego RSA", e);
+        }
+    }
+
+    private PublicKey getPublicKey() {
+        try {
+            byte[] keyBytes = Decoders.BASE64.decode(publicKeyStr);
+            return KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(keyBytes));
+        } catch (Exception e) {
+            throw new RuntimeException("Nie można wczytać klucza publicznego RSA", e);
+        }
     }
 }

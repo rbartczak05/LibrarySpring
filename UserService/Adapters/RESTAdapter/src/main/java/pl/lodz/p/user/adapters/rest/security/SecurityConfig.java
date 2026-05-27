@@ -32,6 +32,7 @@ public class SecurityConfig {
                 })
                 .authorizeHttpRequests(auth -> auth
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+                        .requestMatchers("/actuator/health", "/actuator/prometheus", "/actuator/metrics").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/book_set/**").hasAnyRole("ADMIN", "LIBRARIAN", "READER")

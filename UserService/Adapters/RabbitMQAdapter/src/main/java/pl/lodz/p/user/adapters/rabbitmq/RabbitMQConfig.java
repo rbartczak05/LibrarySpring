@@ -1,9 +1,8 @@
 package pl.lodz.p.user.adapters.rabbitmq;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -11,23 +10,42 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
-    public static final String EXCHANGE_NAME = "library-system-exchange";
-    public static final String USER_COMPENSATION_QUEUE = "user-compensation-queue";
-    public static final String USER_COMPENSATION_ROUTING_KEY = "user.compensation.key";
+    public static final String USER_CREATED_EXCHANGE = "user-created-exchange";
+    public static final String USER_CREATED_QUEUE    = "user-created-queue";
+    public static final String USER_CREATED_KEY      = "user.created";
+
+    public static final String USER_COMPENSATE_EXCHANGE = "user-compensate-exchange";
+    public static final String USER_COMPENSATE_QUEUE    = "user-compensate-queue";
+    public static final String USER_COMPENSATE_KEY      = "user.compensate";
 
     @Bean
-    public TopicExchange systemExchange() {
-        return new TopicExchange(EXCHANGE_NAME);
+    public TopicExchange userCreatedExchange() {
+        return new TopicExchange(USER_CREATED_EXCHANGE);
     }
 
     @Bean
-    public Queue userCompensationQueue() {
-        return new Queue(USER_COMPENSATION_QUEUE, true);
+    public Queue userCreatedQueue() {
+        return new Queue(USER_CREATED_QUEUE, true);
     }
 
     @Bean
-    public Binding compensationBinding(Queue userCompensationQueue, TopicExchange systemExchange) {
-        return BindingBuilder.bind(userCompensationQueue).to(systemExchange).with(USER_COMPENSATION_ROUTING_KEY);
+    public Binding userCreatedBinding(Queue userCreatedQueue, TopicExchange userCreatedExchange) {
+        return BindingBuilder.bind(userCreatedQueue).to(userCreatedExchange).with(USER_CREATED_KEY);
+    }
+
+    @Bean
+    public TopicExchange userCompensateExchange() {
+        return new TopicExchange(USER_COMPENSATE_EXCHANGE);
+    }
+
+    @Bean
+    public Queue userCompensateQueue() {
+        return new Queue(USER_COMPENSATE_QUEUE, true);
+    }
+
+    @Bean
+    public Binding userCompensateBinding(Queue userCompensateQueue, TopicExchange userCompensateExchange) {
+        return BindingBuilder.bind(userCompensateQueue).to(userCompensateExchange).with(USER_COMPENSATE_KEY);
     }
 
     @Bean

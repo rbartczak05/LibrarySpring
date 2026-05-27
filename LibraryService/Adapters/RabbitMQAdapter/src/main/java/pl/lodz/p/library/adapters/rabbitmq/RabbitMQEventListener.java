@@ -1,5 +1,7 @@
 package pl.lodz.p.library.adapters.rabbitmq;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
@@ -7,6 +9,8 @@ import pl.lodz.p.library.ports.inbound.ClientUseCase;
 
 @Component
 public class RabbitMQEventListener {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RabbitMQEventListener.class);
+
     private final ClientUseCase clientUseCase;
     private final RabbitTemplate rabbitTemplate;
 
@@ -25,16 +29,16 @@ public class RabbitMQEventListener {
                     event.getEmail(),
                     event.getAge()
             );
-            System.out.println("Klient utworzony pomyslnie dla ID: " + event.getId());
+            LOGGER.info("Klient utworzony pomyślnie dla ID: {}", event.getId());
 
         } catch (Exception e) {
-            System.err.println("Blad tworzenia klienta - inicjuje sage kompensacyjna: " + e.getMessage());
+            LOGGER.error("Błąd tworzenia klienta - inicjuję sagę kompensacyjną: {}", e.getMessage());
 
-            ClientCreationRejectedEvent rejection = new ClientCreationRejectedEvent(event.getId(), e.getMessage());
-
+            ClientCreationRejectedEvent rejection =
+                    new ClientCreationRejectedEvent(event.getId(), e.getMessage());
             rabbitTemplate.convertAndSend(
-                    RabbitMQConfig.EXCHANGE_NAME,
-                    RabbitMQConfig.USER_COMPENSATION_ROUTING_KEY,
+                    RabbitMQConfig.USER_COMPENSATE_EXCHANGE,
+                    RabbitMQConfig.USER_COMPENSATE_ROUTING_KEY,
                     rejection
             );
         }
